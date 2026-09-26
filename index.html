@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shree Venkateswara Express - Daily shared cab service between Kolhapur and Pune. Affordable per-seat fares, clean AC cars, and 24/7 punctual service. Book your seat online today.">
+  <title>Daily Shared Cab: Kolhapur ⇄ Pune | Shree Venkateswara Express</title>
+  
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- External CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER / NAVBAR
+       ========================================================================== -->
+  <header class="header">
+    <div class="container navbar">
+      <a href="#" class="logo" aria-label="Shree Venkateswara Express Homepage">
+        <div class="logo-icon-box">
+          <i class="fa-solid fa-taxi"></i>
+        </div>
+        <div class="logo-text-box">
+          <h1>SHREE VENKATESWARA</h1>
+          <span>EXPRESS SHARED CABS</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="#home" class="nav-link">Home</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li><a href="#routes" class="nav-link">Routes & Info</a></li>
+          <li><a href="#why-us" class="nav-link">Why Choose Us</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="#hero-booking-form" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+          <i class="fa-solid fa-ticket"></i> Book Now
+        </a>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- ==========================================================================
+         HERO SECTION
+         ========================================================================== -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge">
+            <i class="fa-solid fa-bolt" style="color: var(--accent);"></i>
+            <span>Daily Hourly Express Trips</span>
+          </div>
+
+          <h1 class="hero-title">
+            Daily Shared Cab: <span style="color: var(--primary);">Kolhapur ⇄ Pune</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Affordable, comfortable, and reliable shared cab service. Enjoy doorstep/point pickups, air-conditioned vehicles, and professional highway drivers. Book your seat today!
+          </p>
+
+          <ul class="hero-features-list">
+            <li><i class="fa-solid fa-circle-check"></i> Fares from ₹499/Seat</li>
+            <li><i class="fa-solid fa-circle-check"></i> 100% AC Comfort</li>
+            <li><i class="fa-solid fa-circle-check"></i> Fixed Hourly Slots</li>
+          </ul>
+
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <a href="tel:+919945188252" class="btn btn-accent">
+              <i class="fa-solid fa-phone"></i> Call +91 99451 88252
+            </a>
+            <a href="#routes" class="btn btn-secondary">
+              <i class="fa-solid fa-circle-info"></i> View Timings
+            </a>
+          </div>
+        </div>
+
+        <!-- HERO QUICK BOOKING FORM -->
+        <div class="booking-card">
+          <div class="booking-card-header">
+            <h3><i class="fa-solid fa-calendar-check" style="color: var(--primary);"></i> Reserve Your Seat</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 4px;">Instant seat availability check & confirmation</p>
+          </div>
+
+          <!-- Inline Success Banner -->
+          <div class="form-success-banner" id="form-success-banner" role="alert"></div>
+
+          <form id="hero-booking-form" novalidate>
+            <div class="booking-form-grid">
+              
+              <!-- Pickup Dropdown -->
+              <div class="form-group">
+                <label for="pickup-select" class="form-label">From (Pickup)</label>
+                <select id="pickup-select" class="form-control" required>
+                  <option value="Kolhapur" selected>Kolhapur</option>
+                  <option value="Pune">Pune</option>
+                </select>
+                <span class="error-message">Please select pickup city</span>
+              </div>
+
+              <!-- Destination Dropdown -->
+              <div class="form-group">
+                <label for="drop-select" class="form-label">To (Drop)</label>
+                <select id="drop-select" class="form-control" required>
+                  <option value="Pune" selected>Pune</option>
+                  <option value="Kolhapur">Kolhapur</option>
+                </select>
+                <span class="error-message">Please select drop city</span>
+              </div>
+
+              <!-- Date Picker -->
+              <div class="form-group">
+                <label for="date-input" class="form-label">Date of Travel</label>
+                <input type="date" id="date-input" class="form-control" required>
+                <span class="error-message">Please select a valid date</span>
+              </div>
+
+              <!-- Passengers Input -->
+              <div class="form-group">
+                <label for="passengers-input" class="form-label">Passengers</label>
+                <input type="number" id="passengers-input" class="form-control" min="1" max="6" value="1" required>
+                <span class="error-message">Select 1 to 6 passengers</span>
+              </div>
+
+              <!-- Passenger Name -->
+              <div class="form-group full-width">
+                <label for="name-input" class="form-label">Full Name</label>
+                <input type="text" id="name-input" class="form-control" placeholder="e.g. Sarthak Patil" required>
+                <span class="error-message">Full name is required</span>
+              </div>
+
+              <!-- Phone Number -->
+              <div class="form-group full-width">
+                <label for="phone-input" class="form-label">Phone Number</label>
+                <input type="tel" id="phone-input" class="form-control" placeholder="e.g. +91 98765 43210" required>
+                <span class="error-message">Phone number is required</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; padding: 14px; font-size: 1.05rem;">
+              <i class="fa-solid fa-magnifying-glass"></i> Check Availability & Reserve
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         IMPORTANT BOOKING INFORMATION SECTION
+         ========================================================================== -->
+    <section class="section-padding" id="routes">
+      <div class="container">
+        <div class="important-info-card">
+          
+          <div class="info-box">
+            <div class="info-icon">
+              <i class="fa-solid fa-users-rays"></i>
+            </div>
+            <div class="info-content">
+              <h4>Daily Shared Cab Service</h4>
+              <p>
+                Our daily shared cabs operate on fixed schedules between Kolhapur (CBS, Kawala Naka) and Pune (Swargate, Wakad, Katraj, Hadapsar). Enjoy clean AC seating with guaranteed departures every 2 hours.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-icon" style="color: var(--primary-cyan);">
+              <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div class="info-content">
+              <h4>Beyond Daily Sharing & Private Hire</h4>
+              <p>
+                Need a dedicated full cab for your family or corporate group? We also offer full vehicle bookings (Innova Crysta, Ertiga, Dzire) for custom routes, outstation travel, and airport drops.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         AIRPORT TRANSFERS & OUTSTATION TRIPS
+         ========================================================================== -->
+    <section class="section-padding" id="services" style="background-color: #FFFFFF;">
+      <div class="container">
+        <div class="outstation-banner">
+          <div class="outstation-text">
+            <div class="badge" style="background-color: rgba(249, 115, 22, 0.1); color: var(--accent);">
+              <i class="fa-solid fa-plane"></i> Dedicated Transfers
+            </div>
+            <h2>Airport Transfers & Outstation Trips</h2>
+            <p>
+              Flying in or out of Pune Airport (PNQ) or Mumbai Airport (BOM)? Planning a one-way ride to another city? Tell us where you need to go — we'll confirm your cab and fare quickly.
+            </p>
+          </div>
+
+          <div style="flex-shrink: 0;">
+            <button class="btn btn-accent open-quote-modal" style="padding: 16px 32px; font-size: 1.05rem;">
+              <i class="fa-solid fa-paper-plane"></i> Get a Custom Quote
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         WHY CHOOSE US (FEATURE CARDS)
+         ========================================================================== -->
+    <section class="section-padding" id="why-us">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Our Commitment</span>
+          <h2>Why Choose Shree Venkateswara Express?</h2>
+          <p>We provide the safest, cleanest, and most punctual shared cab experience on the Kolhapur-Pune highway.</p>
+        </div>
+
+        <div class="features-grid">
+          
+          <!-- Card 1 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <i class="fa-solid fa-id-card"></i>
+            </div>
+            <h3>Professional Drivers</h3>
+            <p>Background-verified, experienced highway chauffeurs committed to smooth and safe transit.</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+              <i class="fa-solid fa-snowflake"></i>
+            </div>
+            <h3>Clean AC Cars</h3>
+            <p>Well-maintained Ertiga, Dzire, and Innova vehicles sanitized thoroughly before every trip.</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper" style="background: rgba(249, 115, 22, 0.1); color: var(--accent);">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+            <h3>Affordable Fares</h3>
+            <p>Transparent per-seat pricing starting at ₹499 with zero hidden booking or toll surcharges.</p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-yellow);">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h3>On-Time Service</h3>
+            <p>Strict departure adherence with live driver tracking so you never miss a schedule.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         HOW IT WORKS (STEPS)
+         ========================================================================== -->
+    <section class="section-padding" style="background-color: #FFFFFF;">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Simple Booking Process</span>
+          <h2>How It Works in 4 Easy Steps</h2>
+          <p>Reserving your seat between Kolhapur and Pune takes less than 60 seconds.</p>
+        </div>
+
+        <div class="steps-grid">
+          
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3>Book Online or Call</h3>
+            <p>Select your travel date, pickup point, and passenger count via our quick form or phone helpline.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3>Get Confirmation</h3>
+            <p>Receive an instant SMS & WhatsApp message with driver details, car number, and pickup time.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3>Meet Your Driver</h3>
+            <p>Board the cab at your designated pickup point (CBS Kolhapur or Swargate/Katraj Pune).</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <h3>Enjoy Your Ride</h3>
+            <p>Sit back, relax in air-conditioned comfort, and reach your destination safely and on time.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         TESTIMONIALS SECTION
+         ========================================================================== -->
+    <section class="section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Customer Reviews</span>
+          <h2>What Our Passengers Say</h2>
+          <p>Read genuine reviews from daily commuters, students, and family travelers.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          
+          <!-- Review 1 -->
+          <div class="testimonial-card">
+            <div class="rating-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="testimonial-quote">
+              "Travelled from Kolhapur to Pune for an urgent meeting. The cab arrived right on time at CBS, the car was super clean, and the driver drove very responsibly on the highway."
+            </p>
+            <div class="user-profile">
+              <div class="avatar">AM</div>
+              <div class="user-info">
+                <h4>Amit Mane</h4>
+                <span>Regular Commuter (Kolhapur ➔ Pune)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="testimonial-card">
+            <div class="rating-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="testimonial-quote">
+              "Affordable per-seat rate and comfortable Ertiga seating! Much faster and more comfortable than state transport buses. Highly recommended for students and working professionals."
+            </p>
+            <div class="user-profile">
+              <div class="avatar" style="background: linear-gradient(135deg, var(--accent), #EA580C);">PP</div>
+              <div class="user-info">
+                <h4>Pooja Patil</h4>
+                <span>IT Professional (Pune ➔ Kolhapur)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="testimonial-card">
+            <div class="rating-stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="testimonial-quote">
+              "Booked a dedicated full Innova Crysta for Pune Airport drop. Excellent service, courteous driver, and zero hidden charges. Will book again!"
+            </p>
+            <div class="user-profile">
+              <div class="avatar" style="background: linear-gradient(135deg, #10B981, #059669);">RD</div>
+              <div class="user-info">
+                <h4>Rajesh Deshmukh</h4>
+                <span>Airport Outstation Rental</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         FAQ ACCORDION SECTION
+         ========================================================================== -->
+    <section class="section-padding" id="faq" style="background-color: #FFFFFF;">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge">Help & FAQ</span>
+          <h2>Frequently Asked Questions</h2>
+          <p>Find quick answers to common questions about our shared cab service.</p>
+        </div>
+
+        <div class="faq-container">
+          
+          <!-- FAQ 1 -->
+          <div class="faq-item active">
+            <button class="faq-button" aria-expanded="true">
+              <span>What are the main pickup and drop points in Kolhapur & Pune?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content" style="max-height: 200px;">
+              <p>
+                In <strong>Kolhapur</strong>, our main pickup points are CBS Bus Stand, Kawala Naka, and Dabholkar Corner. In <strong>Pune</strong>, we pick up and drop at Swargate, Katraj, Wakad Bypass, Chandani Chowk, and Pune Railway Station.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item">
+            <button class="faq-button" aria-expanded="false">
+              <span>How much luggage can I bring per seat?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>
+                Each passenger is allowed 1 medium trolley bag (up to 15 kg) and 1 small backpack. If you have extra heavy luggage, please inform us during booking so we can arrange adequate boot space.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item">
+            <button class="faq-button" aria-expanded="false">
+              <span>What is your cancellation and refund policy?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>
+                Free cancellation is allowed up to 4 hours before your scheduled departure time. Cancellations made within 4 hours of departure attract a nominal 20% processing fee.
+              </p>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item">
+            <button class="faq-button" aria-expanded="false">
+              <span>Can I book a full dedicated cab instead of a single seat?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>
+                Yes! You can book an entire dedicated vehicle (Maruti Dzire, Ertiga, or Innova Crysta) for private family or corporate trips with custom pickup and drop locations.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       GET A QUOTE MODAL DIALOG
+       ========================================================================== -->
+  <div class="modal-backdrop" id="quote-modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="close-modal-btn" aria-label="Close modal">&times;</button>
+      
+      <div style="margin-bottom: 24px;">
+        <span class="badge" style="background-color: rgba(249, 115, 22, 0.1); color: var(--accent);">Custom Travel Inquiry</span>
+        <h3 id="modal-title" style="font-size: 1.5rem; margin-top: 6px;">Get an Outstation / Airport Quote</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Fill in your travel details and our team will call you within 15 minutes with exact pricing.</p>
+      </div>
+
+      <form id="quote-modal-form">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="quote-name" class="form-label">Your Name</label>
+          <input type="text" id="quote-name" class="form-control" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="quote-phone" class="form-label">Phone Number</label>
+          <input type="tel" id="quote-phone" class="form-control" placeholder="Enter your phone number" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="quote-details" class="form-label">Travel Details (Pickup, Destination, Date)</label>
+          <textarea id="quote-details" class="form-control" style="height: 90px; padding: 12px; resize: none;" placeholder="e.g. Pune Airport to Kolhapur on 28th Sep, 3 passengers" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-accent" style="width: 100%; padding: 14px;">
+          <i class="fa-solid fa-paper-plane"></i> Submit Quote Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <!-- Col 1 -->
+        <div>
+          <div class="logo" style="margin-bottom: 16px;">
+            <div class="logo-icon-box">
+              <i class="fa-solid fa-taxi"></i>
+            </div>
+            <div class="logo-text-box">
+              <h1 style="color: #FFFFFF;">SHREE VENKATESWARA</h1>
+              <span>EXPRESS SHARED CABS</span>
+            </div>
+          </div>
+          <p>
+            Kolhapur & Pune's most trusted daily shared cab service. Comfortable, safe, and punctual highway transit with professional drivers and clean AC vehicles.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/919945188252" class="social-icon" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2 -->
+        <div>
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#routes">Routes & Rates</a></li>
+            <li><a href="#why-us">Why Choose Us</a></li>
+            <li><a href="#faq">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3 -->
+        <div>
+          <h4>Contact Details</h4>
+          <ul class="footer-links">
+            <li><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i> CBS Station Road, Kawala Naka, Kolhapur</li>
+            <li><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i> Swargate / Katraj Stand, Pune</li>
+            <li><i class="fa-solid fa-phone" style="color: var(--accent); margin-right: 8px;"></i> +91 99451 88252</li>
+            <li><i class="fa-solid fa-envelope" style="color: var(--accent); margin-right: 8px;"></i> info@svtexpress.com</li>
+          </ul>
+        </div>
+
+        <!-- Col 4 -->
+        <div>
+          <h4>Daily Timings</h4>
+          <p style="font-size: 0.875rem;">
+            <strong>Kolhapur to Pune:</strong><br>
+            6:00 AM, 9:00 AM, 1:00 PM, 5:00 PM, 9:00 PM
+          </p>
+          <p style="font-size: 0.875rem; margin-top: 12px;">
+            <strong>Pune to Kolhapur:</strong><br>
+            6:00 AM, 9:00 AM, 2:00 PM, 6:00 PM, 10:00 PM
+          </p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Shree Venkateswara Express Shared Cabs. All Rights Reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- External JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
