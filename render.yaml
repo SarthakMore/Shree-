@@ -11,7 +11,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: "https://shree-website-93o4.onrender.com,https://shree-2fmkhc165-sarthakmore.vercel.app"
   - type: web
     name: shree-website
     runtime: static
