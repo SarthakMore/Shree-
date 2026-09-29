@@ -1,30 +1,30 @@
 # Free-Tier Deployment
 
-This project has a Vite/React frontend, an Express API, and a MongoDB database. A simple free-tier layout is Vercel for the frontend, Render for the API, and MongoDB Atlas for the database. Provider free-tier limits can change.
+The root multi-page site and Express API are hosted on Render. MongoDB Atlas stores persistent booking and settings data.
 
-## 1. Create the database
+## Render Services
 
-Create a free MongoDB Atlas cluster and a database user. In Atlas Network Access, allow connections from Render (Atlas's `0.0.0.0/0` option is the simple free-tier setup; use a strong database password). Keep the connection string private.
+The root `render.yaml` defines both services. In Render, create or sync the Blueprint for this repository and branch `main`:
 
-## 2. Deploy the API to Render
+- `shree-website`: static site built from the root HTML, CSS, JavaScript, and images.
+- `shree-venkateshwara-api`: Node web service built from `backend/`.
 
-Create a Render Blueprint from this repository and use the included `render.yaml`, or create a Web Service with:
+The current public site is `https://shree-website-93o4.onrender.com` and the API is `https://shree-venkateshwara-api.onrender.com`. Render may assign a different suffix if the static service is recreated; update `FRONTEND_URL` in `render.yaml` if that happens.
 
-- Root directory: `backend`
-- Build command: `npm install`
-- Start command: `npm start`
-- Plan: Free
+## MongoDB Atlas
 
-Set `MONGO_URI` to the Atlas connection string and `FRONTEND_URL` to the exact Vercel site origin, for example `https://your-site.vercel.app`. Multiple allowed origins can be comma-separated. The health endpoint is `/api/health`.
+Create an Atlas database user with `readWrite` access to `anandyatra_db`. Render's free service has dynamic outbound IPs, so the simple setup is to allow `0.0.0.0/0` in Atlas Network Access. This permits connections from any IP; keep the database password strong and unique, and use the limited database role above.
 
-## 3. Deploy the frontend to Vercel
+Render needs `MONGO_URI` set to the Atlas connection string. Keep it only in Render's private environment settings, never in source control or chat.
 
-Import the repository and set the project root directory to `frontend`. Vercel should detect Vite; use `npm run build` and `dist` if it asks for build settings. Set `VITE_API_URL` to the Render service origin, for example `https://shree-venkateshwara-api.onrender.com`, without a trailing slash. Redeploy after setting the variable.
+## Admin Access
 
-## 4. Local development
+Set `ADMIN_PASSWORD` in Render to a long, unique passphrase. Enter it directly into Render's environment settings; do not commit it or send it in chat. Admin sessions expire after eight hours and are revoked when the user logs out or the service restarts.
 
-The Vite development server proxies `/api` to `http://localhost:5000`. Leave `VITE_API_URL` unset locally, start the backend with `npm start` from `backend`, and run `npm run dev` from `frontend`.
+Admin booking and quote data, settings updates, fleet edits, and tour edits require a valid admin session. Customer booking and quote submissions remain public.
 
-## Before using real customer data
+## Local Development
 
-The current admin PIN is hardcoded as `0000`, and admin API operations are not authenticated. Do not publish the admin portal for real bookings until authentication and authorization are implemented. Also verify MongoDB connects successfully; the backend otherwise falls back to non-persistent in-memory data.
+The root static site build can be generated with `node scripts/build-static-site.js`. It uses `API_BASE_URL` if set, otherwise it targets `http://localhost:5000`.
+
+Run the API with `npm start` from `backend`. Set `MONGO_URI` and `ADMIN_PASSWORD` in the local environment before testing persistent data or admin login.

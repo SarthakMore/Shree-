@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const QuoteRequest = require('../models/QuoteRequest');
 const { inMemoryStore, isMongoConnected } = require('../config/db');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 // @route   POST /api/quotes
 // @desc    Create custom quote request
@@ -34,7 +35,7 @@ router.post('/', async (req, res) => {
 
 // @route   GET /api/quotes
 // @desc    Get all quote requests
-router.get('/', async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
     if (isMongoConnected()) {
       const quotes = await QuoteRequest.find().sort({ createdAt: -1 });

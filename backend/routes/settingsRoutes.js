@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const CabSettings = require('../models/CabSettings');
 const { isMongoConnected } = require('../config/db');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 // Default fallback settings in memory
 let inMemorySettings = {
@@ -67,9 +68,9 @@ const handleUpdateSettings = async (req, res) => {
 };
 
 // Route handlers for PUT and POST
-router.put('/', handleUpdateSettings);
-router.post('/', handleUpdateSettings);
-router.put('/update', handleUpdateSettings);
-router.post('/update', handleUpdateSettings);
+router.put('/', requireAdmin, handleUpdateSettings);
+router.post('/', requireAdmin, handleUpdateSettings);
+router.put('/update', requireAdmin, handleUpdateSettings);
+router.post('/update', requireAdmin, handleUpdateSettings);
 
 module.exports = router;

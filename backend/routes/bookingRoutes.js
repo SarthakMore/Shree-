@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const { inMemoryStore, isMongoConnected } = require('../config/db');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 // @route   GET /api/bookings
 // @desc    Get all bookings
-router.get('/', async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
     if (isMongoConnected()) {
       const bookings = await Booking.find().sort({ createdAt: -1 });
@@ -80,7 +81,7 @@ router.post('/', async (req, res) => {
 });
 
 // @route   PUT /api/bookings/:id/status
-router.put('/:id/status', async (req, res) => {
+router.put('/:id/status', requireAdmin, async (req, res) => {
   try {
     const { status, driverName } = req.body;
     const { id } = req.params;
@@ -113,7 +114,7 @@ router.put('/:id/status', async (req, res) => {
 });
 
 // @route   DELETE /api/bookings/:id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (isMongoConnected()) {

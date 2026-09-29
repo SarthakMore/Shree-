@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Tour = require('../models/Tour');
 const { isMongoConnected } = require('../config/db');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 // Default initial travel packages
 let inMemoryTours = [
@@ -83,7 +84,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/tours - Add a new tour package (Admin service)
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const { title, destination, price, photo, duration, description, highlights } = req.body || {};
     if (!title || !price) {
@@ -104,7 +105,7 @@ router.post('/', async (req, res) => {
       try {
         const createdTour = await Tour.create(newTourData);
         return res.status(201).json({ success: true, message: 'Tour package added', data: createdTour });
-      } catch (dbErr) {}
+      } catch (dbErr) { }
     }
 
     const memoryTour = { ...newTourData, _id: 'tour_' + Date.now() };
@@ -116,13 +117,13 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE /api/tours/:id - Delete tour
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (isMongoConnected()) {
       try {
         await Tour.findByIdAndDelete(id);
-      } catch (dbErr) {}
+      } catch (dbErr) { }
     }
     inMemoryTours = inMemoryTours.filter(t => t._id !== id);
     return res.json({ success: true, message: 'Tour package deleted' });

@@ -1,17 +1,25 @@
 const express = require('express');
+const crypto = require('node:crypto');
 const router = express.Router();
+const { createAdminSession, requireAdmin, revokeAdminSession } = require('../middleware/adminAuth');
 
 // Admin & Client Login Endpoint
 router.post('/login', (req, res) => {
   const { role, username, password, name, phone } = req.body || {};
 
   if (role === 'admin') {
-    const cleanPass = (password || '').toString().trim();
-    if (cleanPass === '0000' || cleanPass === '0') {
+    const configuredPassword = process.env.ADMIN_PASSWORD;
+    if (!configuredPassword) {
+      return res.status(503).json({ success: false, message: 'Admin login is not configured' });
+    }
+
+    const providedHash = crypto.createHash('sha256').update(String(password || '')).digest();
+    const configuredHash = crypto.createHash('sha256').update(configuredPassword).digest();
+    if (crypto.timingSafeEqual(providedHash, configuredHash)) {
       return res.json({
         success: true,
         message: 'Admin Authentication Successful!',
-        token: 'sv_admin_sec_token_' + Date.now(),
+        token: createAdminSession(),
         user: { role: 'admin', username: username || 'admin' }
       });
     } else {
@@ -38,6 +46,11 @@ router.post('/login', (req, res) => {
     success: false,
     message: 'Missing required login credentials'
   });
+});
+
+router.post('/logout', requireAdmin, (req, res) => {
+  revokeAdminSession(req.adminToken);
+  return res.json({ success: true });
 });
 
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Car = require('../models/Car');
 const { isMongoConnected } = require('../config/db');
+const { requireAdmin } = require('../middleware/adminAuth');
 
 // Default initial fleet cars
 let inMemoryCars = [
@@ -56,7 +57,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/cars - Add a new car (Admin service)
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const { name, category, photo, ratePerKm, capacity, hourlyRate, status, features } = req.body || {};
     if (!name) {
@@ -92,7 +93,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /api/cars/:id - Update car
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -103,7 +104,7 @@ router.put('/:id', async (req, res) => {
         if (updated) {
           return res.json({ success: true, message: 'Car updated', data: updated });
         }
-      } catch (dbErr) {}
+      } catch (dbErr) { }
     }
 
     const index = inMemoryCars.findIndex(c => c._id === id);
@@ -119,13 +120,13 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/cars/:id - Delete car
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     if (isMongoConnected()) {
       try {
         await Car.findByIdAndDelete(id);
-      } catch (dbErr) {}
+      } catch (dbErr) { }
     }
     inMemoryCars = inMemoryCars.filter(c => c._id !== id);
     return res.json({ success: true, message: 'Car deleted successfully' });

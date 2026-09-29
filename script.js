@@ -10,6 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const HOTLINE_NUMBER = '918669410303';
   const HOTLINE_TEXT = '866 941 0303';
 
+  async function adminFetch(url, options = {}) {
+    const token = localStorage.getItem('sv_admin_token');
+    const headers = new Headers(options.headers || {});
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+
+    const response = await fetch(url, { ...options, headers });
+    if (response.status === 401) {
+      localStorage.removeItem('sv_admin_authenticated');
+      localStorage.removeItem('sv_admin_token');
+      window.location.href = 'login.html';
+    }
+    return response;
+  }
+
   // Helper function to safely dispatch WhatsApp messages without popup blockers
   function safeWhatsAppDispatch(messageText) {
     const waUrl = `https://wa.me/${HOTLINE_NUMBER}?text=${messageText}`;
@@ -330,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.deleteCarRecord = async function (id) {
     if (!confirm('Delete this car from fleet?')) return;
     try {
-      await fetch(`${API_BASE}/api/cars/${id}`, { method: 'DELETE' });
+      await adminFetch(`${API_BASE}/api/cars/${id}`, { method: 'DELETE' });
       loadFleetCars();
     } catch (err) { }
   };
@@ -395,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.deleteTourRecord = async function (id) {
     if (!confirm('Delete travel package?')) return;
     try {
-      await fetch(`${API_BASE}/api/tours/${id}`, { method: 'DELETE' });
+      await adminFetch(`${API_BASE}/api/tours/${id}`, { method: 'DELETE' });
       loadTravelTours();
     } catch (err) { }
   };
@@ -442,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/cars`, {
+        const res = await adminFetch(`${API_BASE}/api/cars`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -473,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/tours`, {
+        const res = await adminFetch(`${API_BASE}/api/tours`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -602,7 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminSystemNotice = document.getElementById('admin-system-notice');
   const adminLogoutTopBtn = document.getElementById('admin-logout-top-btn');
 
-  const isAdminAuth = localStorage.getItem('sv_admin_authenticated') === 'true';
+  const isAdminAuth = localStorage.getItem('sv_admin_authenticated') === 'true'
+    && Boolean(localStorage.getItem('sv_admin_token'));
 
   if (adminPageDashboard && adminPageLoginBox) {
     if (isAdminAuth) {
@@ -617,7 +632,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (adminLogoutTopBtn) {
-    adminLogoutTopBtn.addEventListener('click', () => {
+    adminLogoutTopBtn.addEventListener('click', async () => {
+      try {
+        await adminFetch(`${API_BASE}/api/auth/logout`, { method: 'POST' });
+      } catch (err) { }
       localStorage.removeItem('sv_admin_authenticated');
       localStorage.removeItem('sv_admin_token');
       window.location.reload();
@@ -714,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function sendAdminSettingsUpdate(payload) {
     settingsSyncVersion += 1;
     try {
-      const res = await fetch(`${API_BASE}/api/settings`, {
+      const res = await adminFetch(`${API_BASE}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -777,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
     list.innerHTML = '<div style="padding:16px; color:#64748B;">Loading passenger reservations...</div>';
 
     try {
-      const res = await fetch(`${API_BASE}/api/bookings`);
+      const res = await adminFetch(`${API_BASE}/api/bookings`);
       const data = await res.json();
       if (!data.success || !Array.isArray(data.data)) {
         list.innerHTML = '<div style="padding:16px; color:#991B1B;">Could not load reservation log.</div>';
@@ -849,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
           };
 
           try {
-            const res = await fetch(`${API_BASE}/api/bookings/${id}/status`, {
+            const res = await adminFetch(`${API_BASE}/api/bookings/${id}/status`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
@@ -883,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
       downloadBookingsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing...';
 
       try {
-        const response = await fetch(`${API_BASE}/api/bookings`);
+        const response = await adminFetch(`${API_BASE}/api/bookings`);
         const result = await response.json();
         if (!response.ok || !result.success || !Array.isArray(result.data)) {
           throw new Error(result.message || 'Could not load reservations for download.');
