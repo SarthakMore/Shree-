@@ -17,3 +17,6 @@ services:
     runtime: static
     buildCommand: node scripts/build-static-site.js
     staticPublishPath: dist
+    envVars:
+      - key: API_BASE_URL
+        value: https://shree-venkateshwara-api.onrender.com
