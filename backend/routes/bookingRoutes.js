@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a new shared cab booking with Tiered Seat Position Pricing
 router.post('/', async (req, res) => {
   try {
-    const { name, phone, pickup, drop, date, time, seatPosition, passengers, vehicle, totalFare, specialNotes } = req.body;
+    const { name, phone, pickup, drop, date, time, seatPosition, passengers, vehicle, totalFare, specialNotes, driverName } = req.body;
 
     if (!name || !phone || !pickup || !drop || !date) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
@@ -49,7 +49,8 @@ router.post('/', async (req, res) => {
         vehicle: vehicle || 'Maruti Ertiga / Dzire',
         totalFare: calculatedFare,
         specialNotes: specialNotes || '',
-        status: 'Pending'
+        status: 'Pending',
+        driverName: driverName || ''
       });
       return res.status(201).json({ success: true, message: 'Booking created successfully', data: newBooking });
     } else {
@@ -67,6 +68,7 @@ router.post('/', async (req, res) => {
         totalFare: calculatedFare,
         specialNotes: specialNotes || '',
         status: 'Pending',
+        driverName: driverName || '',
         createdAt: new Date().toISOString()
       };
       inMemoryStore.bookings.unshift(newMemBooking);
@@ -80,11 +82,16 @@ router.post('/', async (req, res) => {
 // @route   PUT /api/bookings/:id/status
 router.put('/:id/status', async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, driverName } = req.body;
     const { id } = req.params;
+    const update = { status };
+
+    if (typeof driverName !== 'undefined') {
+      update.driverName = (driverName || '').trim();
+    }
 
     if (isMongoConnected()) {
-      const updatedBooking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
+      const updatedBooking = await Booking.findByIdAndUpdate(id, update, { new: true });
       if (!updatedBooking) {
         return res.status(404).json({ success: false, message: 'Booking not found' });
       }
@@ -92,6 +99,9 @@ router.put('/:id/status', async (req, res) => {
     } else {
       const bookingIndex = inMemoryStore.bookings.findIndex(b => b._id === id);
       if (bookingIndex !== -1) {
+        if (typeof driverName !== 'undefined') {
+          inMemoryStore.bookings[bookingIndex].driverName = (driverName || '').trim();
+        }
         inMemoryStore.bookings[bookingIndex].status = status;
         return res.json({ success: true, data: inMemoryStore.bookings[bookingIndex] });
       }

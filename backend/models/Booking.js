@@ -52,6 +52,11 @@ const bookingSchema = new mongoose.Schema({
     enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],
     default: 'Pending'
   },
+  driverName: {
+    type: String,
+    default: '',
+    trim: true
+  },
   specialNotes: {
     type: String,
     default: ''

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Admin Dashboard & Control Center | Shree Venkateshwara Express</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=9.0">
+</head>
+
+<body>
+
+  <!-- HEADER / NAVBAR -->
+  <header class="header">
+    <div class="container navbar">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
+        <div class="logo-text-box">
+          <h1>SHREE VENKATESHWARA</h1>
+          <span>EXPRESS SHARED CABS</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="login.html" class="nav-link">Login Portal</a></li>
+          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
+          <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+        </ul>
+      </nav>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="tel:+918669410303" class="btn btn-secondary"
+          style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
+          <i class="fa-solid fa-phone"></i> 866 941 0303
+        </a>
+        <button id="admin-logout-top-btn" class="btn btn-accent"
+          style="display: none; padding: 8px 16px; font-size: 0.85rem; background: #EF4444; border-color: #EF4444;">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding: 40px 0; background: #F8FAFC;">
+    <div class="container" style="max-width: 1050px;">
+
+      <div class="section-header" style="margin-bottom: 28px;">
+        <span class="badge"><i class="fa-solid fa-shield-halved"></i> Secured Control Center</span>
+        <h2>Admin Management Dashboard</h2>
+        <p>Dynamic management service for live fares, fleet cars, travel packages, rate per KM, and real-time
+          reservation logs.</p>
+      </div>
+
+      <!-- ADMIN LOGIN GATEWAY (IF NOT LOGGED IN) -->
+      <div id="admin-page-login-box" class="auth-card"
+        style="max-width: 500px; margin: 0 auto 32px; background: #FFFFFF; border: 2px solid var(--primary); border-radius: 16px; padding: 32px;">
+        <div class="auth-card-header" style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px;">
+          <div class="auth-icon-box admin-icon"
+            style="background: #FFFFFF; width: 56px; height: 56px; borderRadius: 14px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid rgba(18, 52, 71, 0.12); box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);">
+            <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="admin-profile-logo" />
+          </div>
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; margin: 0;">Admin Security System</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">Enter Administrator Password to
+              authenticate</p>
+          </div>
+        </div>
+
+        <div id="admin-page-login-msg" class="auth-status-banner" style="display: none;"></div>
+
+        <form id="admin-page-login-form">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="admin-page-username" class="form-label">Username</label>
+            <input type="text" id="admin-page-username" class="form-control" placeholder="Enter Username (e.g. admin)"
+              required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="admin-page-password" class="form-label">Password</label>
+            <input type="password" id="admin-page-password" class="form-control" placeholder="Enter Password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700;">
+            <i class="fa-solid fa-key"></i> Authenticate & Unlock Services
+          </button>
+        </form>
+      </div>
+
+      <!-- ADMIN CONTROL CENTER DASHBOARD (SHOWN WHEN LOGGED IN) -->
+      <div id="admin-page-dashboard" style="display: none;">
+
+        <!-- Action Status Notice -->
+        <div id="admin-system-notice" class="auth-status-banner" style="display: none; margin-bottom: 20px;"></div>
+
+        <!-- STATS & SYNC OVERVIEW BAR -->
+        <div class="admin-stat-cards"
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div class="stat-card"
+            style="background:#FFFFFF; padding:16px; border-radius:12px; border:1px solid #E2E8F0;">
+            <span class="stat-title" style="font-size:0.8rem; color:#64748B;">Cab Status</span>
+            <strong id="dash-cab-status-badge" class="stat-val status-green"
+              style="font-size:1.2rem; color:#10B981;">AVAILABLE</strong>
+          </div>
+          <div class="stat-card"
+            style="background:#FFFFFF; padding:16px; border-radius:12px; border:1px solid #E2E8F0;">
+            <span class="stat-title" style="font-size:0.8rem; color:#64748B;">Rate / KM</span>
+            <strong id="dash-rate-km" class="stat-val" style="font-size:1.2rem; color:var(--primary);">₹14/km</strong>
+          </div>
+          <div class="stat-card"
+            style="background:#FFFFFF; padding:16px; border-radius:12px; border:1px solid #E2E8F0;">
+            <span class="stat-title" style="font-size:0.8rem; color:#64748B;">Front Row (VIP)</span>
+            <strong id="dash-front-fare" class="stat-val" style="font-size:1.2rem;">₹650</strong>
+          </div>
+          <div class="stat-card"
+            style="background:#FFFFFF; padding:16px; border-radius:12px; border:1px solid #E2E8F0;">
+            <span class="stat-title" style="font-size:0.8rem; color:#64748B;">Middle Row</span>
+            <strong id="dash-middle-fare" class="stat-val" style="font-size:1.2rem;">₹550</strong>
+          </div>
+          <div class="stat-card"
+            style="background:#FFFFFF; padding:16px; border-radius:12px; border:1px solid #E2E8F0;">
+            <span class="stat-title" style="font-size:0.8rem; color:#64748B;">Third Row</span>
+            <strong id="dash-third-fare" class="stat-val" style="font-size:1.2rem;">₹450</strong>
+          </div>
+        </div>
+
+        <!-- SECTION 1: LIVE FARES, RATE PER KM & CAB STATUS CONTROL -->
+        <div
+          style="background:#FFFFFF; border:2px solid var(--primary); border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 6px 16px rgba(0,0,0,0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin:0;">
+              <i class="fa-solid fa-sliders" style="color:var(--primary); margin-right:8px;"></i> Live Fares, Rate Per
+              KM & Cab Status
+            </h4>
+            <span
+              style="background:#DCFCE7; color:#15803D; padding:4px 12px; border-radius:9999px; font-weight:700; font-size:0.75rem;">
+              <i class="fa-solid fa-wifi"></i> Instant Live Broadcast
+            </span>
+          </div>
+
+          <form id="admin-fares-form"
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+            <div class="form-group">
+              <label class="form-label">Front Row Fare (₹) [Max 1 Px]</label>
+              <input type="number" id="edit-front-fare" class="form-control" value="650" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Middle Row Fare (₹) [Max 3 Px]</label>
+              <input type="number" id="edit-middle-fare" class="form-control" value="550" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Third Row Fare (₹) [Max 2 Px]</label>
+              <input type="number" id="edit-third-fare" class="form-control" value="450" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rental Rate Per KM (₹/km)</label>
+              <input type="number" id="edit-rate-km" class="form-control" value="14" required>
+            </div>
+
+            <div style="grid-column: 1 / -1; display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+              <button type="submit" class="btn btn-primary" style="flex:1; padding:12px; font-weight:700;">
+                <i class="fa-solid fa-floppy-disk"></i> Save & Broadcast Fares to Main Page
+              </button>
+              <button type="button" id="page-set-available-btn" class="btn btn-secondary"
+                style="padding:12px 20px; font-weight:700; color:#10B981; border-color:#10B981;">
+                <i class="fa-solid fa-circle-check"></i> Set AVAILABLE
+              </button>
+              <button type="button" id="page-set-full-btn" class="btn btn-accent"
+                style="padding:12px 20px; font-weight:700; background:#EF4444; border-color:#EF4444;">
+                <i class="fa-solid fa-circle-xmark"></i> Set FULL / SOLD OUT
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- SECTION 2: FLEET CARS MANAGEMENT SERVICE (ADD NEW CARS WITH PHOTOS) -->
+        <div
+          style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+          <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin-bottom:12px;">
+            <i class="fa-solid fa-car-side" style="color:var(--primary); margin-right:8px;"></i> Fleet Cars Service (Add
+            Cars with Photos & Rates per KM)
+          </h4>
+          <p style="font-size:0.88rem; color:#64748B; margin-bottom:16px;">Add new vehicle models to your rental &
+            shared cab fleet. Photos and per-km rates will render instantly on all customer pages.</p>
+
+          <form id="admin-add-car-form"
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; background:#F8FAFC; padding:20px; border-radius:12px; margin-bottom:20px;">
+            <div class="form-group">
+              <label class="form-label">Car Model Name</label>
+              <input type="text" id="car-input-name" class="form-control" placeholder="e.g. VinFast Limo Green EV"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category / Type</label>
+              <select id="car-input-category" class="form-control">
+                <option value="EV SUV">EV SUV (100% Electric)</option>
+                <option value="Luxury Limo">Luxury Limo</option>
+                <option value="Executive Sedan">Executive Sedan</option>
+                <option value="Outstation Minivan">Outstation Minivan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo Image URL</label>
+              <input type="url" id="car-input-photo" class="form-control"
+                placeholder="https://images.unsplash.com/photo-..." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rate Per KM (₹/km)</label>
+              <input type="number" id="car-input-ratekm" class="form-control" placeholder="e.g. 14" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passenger Capacity (Seats)</label>
+              <input type="number" id="car-input-capacity" class="form-control" value="7" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hourly Rental Rate (₹/hr)</label>
+              <input type="number" id="car-input-hourly" class="form-control" value="450" required>
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <button type="submit" class="btn btn-primary" style="padding:12px 24px; font-weight:700;">
+                <i class="fa-solid fa-plus-circle"></i> Add Car to Fleet
+              </button>
+            </div>
+          </form>
+
+          <!-- ACTIVE CARS LIST -->
+          <h5 style="font-size:1rem; font-weight:700; margin-bottom:12px;">Active Fleet Cars List</h5>
+          <div id="admin-cars-list"
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            <!-- Cars loaded via JS -->
+          </div>
+        </div>
+
+        <!-- SECTION 3: TRAVEL PACKAGES SERVICE (ADD TOUR PACKAGES) -->
+        <div
+          style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+          <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin-bottom:12px;">
+            <i class="fa-solid fa-route" style="color:var(--primary); margin-right:8px;"></i> Traveling Packages Service
+            (Add Tour Packages)
+          </h4>
+          <p style="font-size:0.88rem; color:#64748B; margin-bottom:16px;">Add outstation travel & holiday packages in
+            Maharashtra with custom pricing, photos, and destinations.</p>
+
+          <form id="admin-add-tour-form"
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; background:#F8FAFC; padding:20px; border-radius:12px; margin-bottom:20px;">
+            <div class="form-group">
+              <label class="form-label">Package Title</label>
+              <input type="text" id="tour-input-title" class="form-control" placeholder="e.g. Mahabaleshwar Hill Tour"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destination</label>
+              <input type="text" id="tour-input-destination" class="form-control" placeholder="e.g. Mahabaleshwar"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Package Price (₹)</label>
+              <input type="number" id="tour-input-price" class="form-control" placeholder="e.g. 4999" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo Image URL</label>
+              <input type="url" id="tour-input-photo" class="form-control" placeholder="https://images.unsplash.com/..."
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration</label>
+              <input type="text" id="tour-input-duration" class="form-control" placeholder="e.g. 2 Days / 1 Night"
+                required>
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">Description & Highlights</label>
+              <input type="text" id="tour-input-desc" class="form-control"
+                placeholder="Brief tour overview and attractions covered" required>
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <button type="submit" class="btn btn-primary" style="padding:12px 24px; font-weight:700;">
+                <i class="fa-solid fa-map-location-dot"></i> Add Travel Package
+              </button>
+            </div>
+          </form>
+
+          <!-- ACTIVE TOURS LIST -->
+          <h5 style="font-size:1rem; font-weight:700; margin-bottom:12px;">Active Travel Packages</h5>
+          <div id="admin-tours-list"
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            <!-- Tours loaded via JS -->
+          </div>
+        </div>
+
+        <!-- SECTION 4: LIVE RESERVATIONS LOG -->
+        <div
+          style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin:0;">
+              <i class="fa-solid fa-list-check" style="color:var(--primary); margin-right:8px;"></i> Live Passenger
+              Reservations Log
+            </h4>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <button type="button" id="download-bookings-btn" class="btn btn-primary"
+                style="padding:8px 16px; font-size:0.85rem; font-weight:700;">
+                <i class="fa-solid fa-download"></i> Download CSV
+              </button>
+              <button type="button" id="refresh-bookings-btn" class="btn btn-secondary"
+                style="padding:8px 16px; font-size:0.85rem; font-weight:700;">
+                <i class="fa-solid fa-rotate-right"></i> Refresh Log
+              </button>
+            </div>
+          </div>
+
+          <div id="dash-bookings-list" class="admin-bookings-container" style="max-height:400px; overflow-y:auto;">
+            <!-- Bookings loaded dynamically via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="text-align: center;">
+      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js?v=7.0"></script>
+</body>
+
+</html>

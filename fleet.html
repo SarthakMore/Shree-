@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Fleet | Shree Venkateshwara Express</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=9.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .fleet-hero {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 100%);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #dbeafe;
+        }
+
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 28px;
+        }
+
+        .fleet-empty {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container navbar">
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
+                <div class="logo-text-box">
+                    <h1>SHREE VENKATESHWARA</h1>
+                    <span>EXPRESS SHARED CABS</span>
+                </div>
+            </a>
+
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="login.html" class="nav-link">Login Portal</a></li>
+                    <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
+                    <li><a href="fleet.html" class="nav-link active">Our Fleet</a></li>
+                    <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+                </ul>
+            </nav>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="tel:+918669410303" class="btn btn-secondary"
+                    style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
+                    <i class="fa-solid fa-phone"></i> 866 941 0303
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 48px 0; background: #F8FAFC;">
+        <div class="container" style="max-width: 1200px;">
+            <div class="fleet-hero">
+                <span class="badge"><i class="fa-solid fa-car-side"></i> Electric Fleet</span>
+                <h2 style="margin-top: 12px; font-size: clamp(2rem, 4vw, 3rem);">Our Fleet & Rental Rates</h2>
+                <p style="margin-top: 12px; max-width: 760px; color: #475569; font-size: 1rem; line-height: 1.7;">
+                    Explore our current private hire and shared-cab fleet with live passenger capacity, EV comfort, and
+                    transparent per-km pricing.
+                </p>
+            </div>
+
+            <div id="fleet-cars-container" class="fleet-grid" aria-live="polite"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=7.0"></script>
+</body>
+
+</html>

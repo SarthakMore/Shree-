@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE } from '../api';
 
 export default function HeroWidget({ settings, onBookingCreated }) {
   const [formData, setFormData] = useState({
@@ -15,9 +16,9 @@ export default function HeroWidget({ settings, onBookingCreated }) {
 
   const [loading, setLoading] = useState(false);
 
-  const frontFare = settings?.frontSeatFare || 649;
-  const middleFare = settings?.middleSeatFare || 499;
-  const thirdFare = settings?.thirdSeatFare || 399;
+  const frontFare = settings?.frontSeatFare || 650;
+  const middleFare = settings?.middleSeatFare || 550;
+  const thirdFare = settings?.thirdSeatFare || 450;
   const isCabFull = settings?.cabStatus === 'FULL';
 
   const pickupLocations = [
@@ -42,10 +43,31 @@ export default function HeroWidget({ settings, onBookingCreated }) {
     'Pune (Vimannagar / Airport PNQ)'
   ];
 
+  const getMaxPassengers = () => {
+    if (formData.seatPosition.includes('Front')) return 1;
+    if (formData.seatPosition.includes('Third')) return 2;
+    return 3;
+  };
+
+  const maxPassengersAllowed = getMaxPassengers();
+
+  const handleSeatChange = (e) => {
+    const seat = e.target.value;
+    let maxSeats = 3;
+    if (seat.includes('Front')) maxSeats = 1;
+    if (seat.includes('Third')) maxSeats = 2;
+
+    setFormData(prev => ({
+      ...prev,
+      seatPosition: seat,
+      passengers: prev.passengers > maxSeats ? maxSeats : prev.passengers
+    }));
+  };
+
   const handlePickupChange = (e) => {
     const val = e.target.value;
-    const defaultDrop = val.toLowerCase().includes('kolhapur') || val.toLowerCase().includes('karad') || val.toLowerCase().includes('satara') 
-      ? 'Pune (Swargate Stand)' 
+    const defaultDrop = val.toLowerCase().includes('kolhapur') || val.toLowerCase().includes('karad') || val.toLowerCase().includes('satara')
+      ? 'Pune (Swargate Stand)'
       : 'Kolhapur (CBS Stand)';
     setFormData(prev => ({ ...prev, pickup: val, drop: defaultDrop }));
   };
@@ -62,7 +84,7 @@ export default function HeroWidget({ settings, onBookingCreated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isCabFull) {
-      alert('This cab is currently FULL / SOLD OUT. Please call hotline +91 866 843 2935 for next slot.');
+      alert('This cab is currently FULL / SOLD OUT. Please call hotline +91 866 941 0303 for next slot.');
       return;
     }
 
@@ -71,7 +93,7 @@ export default function HeroWidget({ settings, onBookingCreated }) {
     const payload = { ...formData, vehicle: 'VinFast Limo Green EV', totalFare };
 
     try {
-      const response = await fetch('/api/bookings', {
+      const response = await fetch(`${API_BASE}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -91,74 +113,28 @@ export default function HeroWidget({ settings, onBookingCreated }) {
   };
 
   return (
-    <section className="hero-ev-banner" id="hero">
-      <div className="hero-ev-content">
-        <div className="hero-ev-badge">
-          <i className="fa-solid fa-leaf" style={{ color: '#00B100' }}></i> Same Roads, Greener Tomorrow 🌱
+    <section className="hero-widget-section" id="booking-pill">
+      <div className="hero-content">
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 177, 0, 0.15)', color: '#00B100', padding: '6px 16px', borderRadius: '20px', fontWeight: 'bold', fontSize: '0.85rem', marginBottom: '16px' }}>
+          <i className="fa-solid fa-charging-station"></i> Daily Express 100% Electric Shared Cab Engine
         </div>
 
-        <h2 className="hero-ev-title">
-          Explore the Highway with Your <span className="gradient-green-text">VinFast EV ⚡</span>
-        </h2>
+        <h1 style={{ fontFamily: 'Outfit', fontSize: '2.8rem', fontWeight: 900, color: '#0C0E2E', lineHeight: '1.15', marginBottom: '12px' }}>
+          Kolhapur ⇄ Pune Daily Shared EV Cab
+        </h1>
 
-        <p className="hero-ev-subtitle">
-          Experience Shree Venkateswara's 100% Electric Silent Luxury Shared Cab Service between <strong>Kolhapur ⇄ Pune</strong>. Zero carbon emissions, ultra-smooth whisper quiet rides, and premium leatherette recliner seats.
+        <p style={{ color: '#475569', fontSize: '1.1rem', maxWidth: '780px', margin: '0 auto 28px' }}>
+          Book guaranteed individual seats in flagship <strong>VinFast Limo Green EV</strong>. Strict Per-Row Passenger Limits — Front Row (Max 1 Seat), Middle Row (Max 3 Seats), Third Row (Max 2 Seats).
         </p>
 
-        {/* Feature Pills */}
-        <div className="ev-features-pills">
-          <div className="ev-pill-item">
-            <div className="ev-pill-icon"><i className="fa-solid fa-leaf"></i></div>
-            <span>Eco-Friendly Travel</span>
-          </div>
-          <div className="ev-pill-item">
-            <div className="ev-pill-icon"><i className="fa-solid fa-charging-station"></i></div>
-            <span>EV Charging Support</span>
-          </div>
-          <div className="ev-pill-item">
-            <div className="ev-pill-icon"><i className="fa-solid fa-shield-halved"></i></div>
-            <span>Verified EV Chauffeurs</span>
-          </div>
-          <div className="ev-pill-item">
-            <div className="ev-pill-icon"><i className="fa-solid fa-car"></i></div>
-            <span>VinFast Limo Green EV</span>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '30px' }}>
-          <a href="tel:+918668432935" className="btn-green" style={{ padding: '14px 28px', fontSize: '1.05rem' }}>
-            <i className="fa-solid fa-phone"></i> Call Hotline: +91 866 843 2935
-          </a>
-          <a href="https://wa.me/918668432935?text=Hi%20Shree%20Venkateswara%20EV,%20I%20want%20to%20book%20a%20shared%20cab%20seat." target="_blank" rel="noreferrer" className="btn-outline-green" style={{ padding: '14px 28px', fontSize: '1.05rem' }}>
-            <i className="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-          </a>
-        </div>
-      </div>
-
-      {/* HORIZONTAL FLOATING PILL BOOKING WIDGET */}
-      <div className="booking-pill-widget" id="booking-pill">
-        
-        {/* Cab Availability Status Indicator Banner */}
-        {isCabFull ? (
-          <div style={{ width: '100%', background: '#FEE2E2', border: '2px solid #EF4444', color: '#991B1B', padding: '12px 20px', borderRadius: '16px', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <i className="fa-solid fa-circle-xmark" style={{ color: '#DC2626', marginRight: '8px', fontSize: '1.2rem' }}></i>
-              <strong>🔴 CURRENT CAB SLOT IS FULL / SOLD OUT</strong>
-              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#7F1D1D' }}>{settings?.statusNote || 'Call +91 866 843 2935 for next slot availability.'}</div>
-            </div>
-            <a href="tel:+918668432935" className="btn-green" style={{ background: '#DC2626', padding: '8px 16px', fontSize: '0.85rem' }}>
-              <i className="fa-solid fa-phone"></i> Call Hotline
-            </a>
-          </div>
-        ) : (
-          <div style={{ width: '100%', background: '#DCFCE7', border: '1px solid #16A34A', color: '#14532D', padding: '8px 16px', borderRadius: '14px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <i className="fa-solid fa-circle-check" style={{ color: '#16A34A' }}></i>
-            <span>🟢 CAB FREE / ACCEPTING RESERVATIONS</span> • {settings?.statusNote}
+        {isCabFull && (
+          <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '12px 20px', borderRadius: '12px', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '20px', border: '1px solid #EF4444' }}>
+            <i className="fa-solid fa-circle-exclamation"></i> CURRENT CAB SLOT IS FULL / SOLD OUT. Call hotline +91 866 941 0303 for upcoming departure.
           </div>
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', width: '100%', gap: '16px', alignItems: 'center', flexWrap: 'wrap', opacity: isCabFull ? 0.6 : 1 }}>
-          
+
           <div className="pill-form-group">
             <span className="pill-label"><i className="fa-solid fa-location-dot" style={{ color: '#00B100' }}></i> From (Pickup)</span>
             <select className="pill-select" value={formData.pickup} onChange={handlePickupChange} disabled={isCabFull}>
@@ -179,10 +155,10 @@ export default function HeroWidget({ settings, onBookingCreated }) {
 
           <div className="pill-form-group">
             <span className="pill-label"><i className="fa-solid fa-chair" style={{ color: '#00B100' }}></i> Seat Tier</span>
-            <select className="pill-select" value={formData.seatPosition} onChange={(e) => setFormData({ ...formData, seatPosition: e.target.value })} disabled={isCabFull}>
-              <option value="Front Row (VIP)">Front Row VIP (₹{frontFare})</option>
-              <option value="Middle Row (Comfort)">Middle Row Comfort (₹{middleFare})</option>
-              <option value="Third Row (Economy)">Third Row Economy (₹{thirdFare})</option>
+            <select className="pill-select" value={formData.seatPosition} onChange={handleSeatChange} disabled={isCabFull}>
+              <option value="Front Row (VIP)">Front Row (Max 1 Seat • ₹{frontFare})</option>
+              <option value="Middle Row (Comfort)">Middle Row (Max 3 Seats • ₹{middleFare})</option>
+              <option value="Third Row (Economy)">Third Row (Max 2 Seats • ₹{thirdFare})</option>
             </select>
           </div>
 
@@ -192,8 +168,21 @@ export default function HeroWidget({ settings, onBookingCreated }) {
           </div>
 
           <div className="pill-form-group">
-            <span className="pill-label"><i className="fa-solid fa-users"></i> Travelers</span>
-            <input type="number" className="pill-input" min="1" max="6" value={formData.passengers} onChange={(e) => setFormData({ ...formData, passengers: parseInt(e.target.value) || 1 })} required disabled={isCabFull} />
+            <span className="pill-label"><i className="fa-solid fa-users"></i> Passengers</span>
+            <input
+              type="number"
+              className="pill-input"
+              min="1"
+              max={maxPassengersAllowed}
+              value={formData.passengers}
+              onChange={(e) => {
+                let val = parseInt(e.target.value) || 1;
+                if (val > maxPassengersAllowed) val = maxPassengersAllowed;
+                setFormData({ ...formData, passengers: val });
+              }}
+              required
+              disabled={isCabFull}
+            />
           </div>
 
           <div style={{ flex: '1', minWidth: '180px' }}>

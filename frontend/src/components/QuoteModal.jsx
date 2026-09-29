@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE } from '../api';
 
 export default function QuoteModal({ onClose }) {
   const [formData, setFormData] = useState({ name: '', phone: '', travelDetails: '' });
@@ -7,7 +8,7 @@ export default function QuoteModal({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('/api/quotes', {
+      await fetch(`${API_BASE}/api/quotes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -22,7 +23,7 @@ export default function QuoteModal({ onClose }) {
     <div className="modal-overlay">
       <div className="modal-container" style={{ maxWidth: '520px' }}>
         <button className="modal-close" onClick={onClose}>&times;</button>
-        
+
         <div style={{ marginBottom: '20px' }}>
           <span style={{ background: 'rgba(0, 229, 255, 0.15)', color: '#00B0FF', fontWeight: 'bold', fontSize: '0.8rem', padding: '4px 12px', borderRadius: '20px' }}>
             CUSTOM TRAVEL INQUIRY

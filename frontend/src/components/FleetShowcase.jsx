@@ -1,95 +1,98 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_BASE } from '../api';
 
 export default function FleetShowcase({ settings }) {
-  const frontFare = settings?.frontSeatFare || 649;
-  const middleFare = settings?.middleSeatFare || 499;
-  const thirdFare = settings?.thirdSeatFare || 399;
+  const [cars, setCars] = useState([]);
+  const frontFare = settings?.frontSeatFare || 650;
+  const middleFare = settings?.middleSeatFare || 550;
+  const thirdFare = settings?.thirdSeatFare || 450;
+  const rateKm = settings?.ratePerKm || 14;
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/cars`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setCars(data.data);
+        }
+      })
+      .catch(err => console.log('Cars offline fallback'));
+  }, []);
 
   return (
-    <section className="container" style={{ padding: '70px 0' }} id="ev-fleet">
-      <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 40px' }}>
-        <span style={{ background: 'rgba(0, 177, 0, 0.15)', color: '#00B100', padding: '6px 18px', borderRadius: '20px', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase' }}>
-          ⚡ Exclusive 100% Electric Fleet
+    <section className="container" style={{ padding: '60px 20px' }} id="ev-fleet">
+      <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 40px' }}>
+        <span style={{ background: '#DBEAFE', color: '#1E40AF', padding: '6px 18px', borderRadius: '20px', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase' }}>
+          ⚡ Dynamic Vehicle Fleet & Rental Rates
         </span>
-        <h2 style={{ fontFamily: 'Outfit', fontSize: '2.6rem', fontWeight: 900, color: '#0C0E2E', marginTop: '8px' }}>
-          Meet the VinFast Limo Green EV
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: '#0F172A', marginTop: '8px' }}>
+          Our Rental Fleet & Rates Per KM
         </h2>
         <p style={{ color: '#475569', fontSize: '1.05rem' }}>
-          Our flagship luxury electric SUV operating daily zero-emission express trips between Kolhapur and Pune.
+          All vehicles available for hourly rental, outstation travel, and daily shared express trips. Standard Rental Rate starts at <strong>₹{rateKm}/km</strong>.
         </p>
       </div>
 
-      {/* EXCLUSIVE VINFAST LIMO GREEN EV CARD */}
-      <div className="ev-vehicle-card">
-        <div>
-          <img 
-            src="/vinfast_limo_green.jpg" 
-            alt="VinFast Limo Green Electric SUV" 
-            className="ev-car-img" 
-          />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#DCFCE7', color: '#15803D', width: 'max-content', padding: '4px 12px', borderRadius: '20px', fontWeight: 'bold', fontSize: '0.8rem' }}>
-            <i className="fa-solid fa-leaf"></i> 100% ELECTRIC ZERO EMISSIONS
-          </div>
-
-          <h3 style={{ fontFamily: 'Outfit', fontSize: '2rem', fontWeight: 900, color: '#0C0E2E' }}>
-            VinFast Limo Green EV (7-Seater)
-          </h3>
-
-          <p style={{ color: '#475569', fontSize: '0.98rem' }}>
-            Powered by advanced electric powertrain technology, offering a whisper-quiet cabin, panoramic glass roof, dual-zone climate control AC, and plush leatherette recliners.
-          </p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', background: '#F8FAFC', padding: '16px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
-            <div style={{ fontSize: '0.88rem', fontWeight: 'bold', color: '#0F172A' }}>
-              <i className="fa-solid fa-bolt" style={{ color: '#00B100', marginRight: '6px' }}></i> Range: 450 KM / Charge
-            </div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 'bold', color: '#0F172A' }}>
-              <i className="fa-solid fa-volume-xmark" style={{ color: '#00B100', marginRight: '6px' }}></i> Silent Cabin Ride
-            </div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 'bold', color: '#0F172A' }}>
-              <i className="fa-solid fa-snowflake" style={{ color: '#00E5FF', marginRight: '6px' }}></i> Dual Climate AC
-            </div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 'bold', color: '#0F172A' }}>
-              <i className="fa-solid fa-plug" style={{ color: '#00B100', marginRight: '6px' }}></i> USB Fast Charging
-            </div>
-          </div>
-
-          {/* Dynamic Seat Tiers Pricing Box */}
-          <div id="seat-rates" style={{ background: '#F0FDF4', border: '2px solid #00B100', borderRadius: '16px', padding: '16px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#059669', textTransform: 'uppercase' }}>Live Dynamic Seat Fares</span>
-            
-            <div style={{ display: 'flex', justifyBetween: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        {cars.length > 0 ? (
+          cars.map(car => (
+            <div key={car._id} style={{ background: '#FFFFFF', borderRadius: '16px', border: '1.5px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <strong style={{ color: '#0C0E2E' }}>⭐ Front Row (VIP)</strong>
-                <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748B' }}>Co-passenger luxury view</span>
+                <div style={{ position: 'relative', height: '220px' }}>
+                  <img src={car.photo} alt={car.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <span style={{ position: 'absolute', top: '12px', right: '12px', background: '#10B981', color: '#FFFFFF', padding: '4px 14px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.82rem' }}>
+                    ₹{car.ratePerKm || rateKm}/km Rate
+                  </span>
+                  <span style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(15,23,42,0.85)', color: '#FFFFFF', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600 }}>
+                    {car.category}
+                  </span>
+                </div>
+                <div style={{ padding: '20px' }}>
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A', marginBottom: '8px' }}>{car.name}</h3>
+                  <div style={{ display: 'flex', gap: '16px', color: '#64748B', fontSize: '0.88rem', marginBottom: '14px' }}>
+                    <span><i className="fa-solid fa-users" style={{ color: '#2563EB' }}></i> {car.capacity} Seats</span>
+                    <span><i className="fa-solid fa-gauge-high" style={{ color: '#10B981' }}></i> ₹{car.ratePerKm || rateKm}/km</span>
+                    <span><i className="fa-solid fa-clock" style={{ color: '#EAB308' }}></i> ₹{car.hourlyRate || 450}/hr</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 16px', fontSize: '0.85rem', color: '#475569' }}>
+                    {(car.features || ['100% AC Comfort', 'Clean Hygiene Interior', 'Zero Emissions']).map((f, i) => (
+                      <li key={i} style={{ marginBottom: '4px' }}><i className="fa-solid fa-check" style={{ color: '#10B981', marginRight: '6px' }}></i>{f}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.25rem', fontWeight: 900, color: '#00B100' }}>₹{frontFare} / seat</span>
+              <div style={{ padding: '0 20px 20px' }}>
+                <a 
+                  href={`https://wa.me/918669410303?text=${encodeURIComponent(`Hi! I want to hire ${car.name} at ₹${car.ratePerKm || rateKm}/km rate.`)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={{ display: 'block', background: '#2563EB', color: 'white', textCenter: 'center', textDecoration: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', textAlign: 'center' }}
+                >
+                  <i className="fa-brands fa-whatsapp"></i> Hire at ₹{car.ratePerKm || rateKm}/km
+                </a>
+              </div>
             </div>
-
-            <div style={{ display: 'flex', justifyBetween: 'space-between', alignItems: 'center', marginTop: '8px', borderTop: '1px solid #DCFCE7', paddingTop: '8px' }}>
-              <div>
-                <strong style={{ color: '#0C0E2E' }}>👍 Middle Row (Comfort)</strong>
-                <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748B' }}>Bucket recliner seating</span>
+          ))
+        ) : (
+          <div style={{ background: '#FFFFFF', padding: '24px', borderRadius: '16px', border: '1.5px solid #2563EB' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>VinFast Limo Green EV (Flagship 7-Seater)</h3>
+            <p style={{ color: '#64748B', margin: '8px 0 14px' }}>Standard Rental Rate: <strong>₹{rateKm}/km</strong></p>
+            <div style={{ background: '#F0FDF4', padding: '16px', borderRadius: '12px', border: '1px solid #10B981' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span>Front Row (VIP)</span>
+                <strong>₹{frontFare} / seat</strong>
               </div>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.25rem', fontWeight: 900, color: '#2563EB' }}>₹{middleFare} / seat</span>
-            </div>
-
-            <div style={{ display: 'flex', justifyBetween: 'space-between', alignItems: 'center', marginTop: '8px', borderTop: '1px solid #DCFCE7', paddingTop: '8px' }}>
-              <div>
-                <strong style={{ color: '#0C0E2E' }}>💰 Third Row (Economy)</strong>
-                <span style={{ display: 'block', fontSize: '0.75rem', color: '#64748B' }}>Economy budget saver</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span>Middle Row (Comfort)</span>
+                <strong>₹{middleFare} / seat</strong>
               </div>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.25rem', fontWeight: 900, color: '#059669' }}>₹{thirdFare} / seat</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Third Row (Economy)</span>
+                <strong>₹{thirdFare} / seat</strong>
+              </div>
             </div>
           </div>
-
-          <a href="#booking-pill" className="btn-green" style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: '1.05rem', marginTop: '10px' }}>
-            <i className="fa-solid fa-charging-station"></i> Book Seat in VinFast Limo Green EV
-          </a>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -3,15 +3,19 @@ const mongoose = require('mongoose');
 const cabSettingsSchema = new mongoose.Schema({
   frontSeatFare: {
     type: Number,
-    default: 649
+    default: 650
   },
   middleSeatFare: {
     type: Number,
-    default: 499
+    default: 550
   },
   thirdSeatFare: {
     type: Number,
-    default: 399
+    default: 450
+  },
+  ratePerKm: {
+    type: Number,
+    default: 14
   },
   cabStatus: {
     type: String,

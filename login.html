@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Login Access Portal | Shree Venkateshwara Express</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- External CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=9.0">
+</head>
+
+<body>
+
+  <!-- HEADER / NAVBAR -->
+  <header class="header">
+    <div class="container navbar">
+      <a href="index.html" class="logo">
+        <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
+        <div class="logo-text-box">
+          <h1>SHREE VENKATESHWARA</h1>
+          <span>EXPRESS SHARED CABS</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="login.html" class="nav-link active">Login Portal</a></li>
+          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
+          <li><a href="fleet.html" class="nav-link">Our Fleet</a></li>
+          <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+        </ul>
+      </nav>
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a href="tel:+918669410303" class="btn btn-secondary"
+          style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
+          <i class="fa-solid fa-phone"></i> 866 941 0303
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding: 56px 0; background: linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 100%);">
+    <div class="container" style="max-width: 1000px;">
+
+      <div class="section-header" style="margin-bottom: 36px;">
+        <span class="badge"><i class="fa-solid fa-shield-halved"></i> Authentication Portal</span>
+        <h2>Shree Venkateshwara Login Portal</h2>
+        <p>Choose <strong>Client Login</strong> to save passenger details for smooth ticket booking or <strong>Admin
+            Portal</strong> to access management dashboard.</p>
+      </div>
+
+      <div class="dual-auth-grid">
+
+        <!-- PANEL 1: CLIENT / PASSENGER LOGIN -->
+        <div class="auth-card client-auth-card">
+          <div class="auth-card-header">
+            <div class="auth-icon-box client-icon">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <h3>Client / Passenger Login</h3>
+              <p>Login with your Phone & Name for smooth ticket booking</p>
+            </div>
+          </div>
+
+          <div id="client-logged-in-banner" class="auth-status-banner" style="display: none;">
+            <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.25rem;"></i>
+            <div>
+              <strong>Logged In as Client</strong><br>
+              <span id="client-user-details-text">Passenger</span>
+            </div>
+            <button type="button" id="client-logout-btn" class="btn-sm-text"
+              style="margin-left: auto; color: var(--error);">Logout</button>
+          </div>
+
+          <form id="client-login-form">
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="client-name-input" class="form-label">Full Name</label>
+              <input type="text" id="client-name-input" class="form-control" placeholder="e.g. Sarthak Patil" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label for="client-phone-input" class="form-label">Phone Number (For WhatsApp Ticket)</label>
+              <input type="tel" id="client-phone-input" class="form-control" placeholder="e.g. 866 941 0303" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+              <i class="fa-solid fa-right-to-bracket"></i> Login as Passenger
+            </button>
+          </form>
+        </div>
+
+        <!-- PANEL 2: ADMIN CONTROL LOGIN (PASSWORD BLANK PLACEHOLDER - NO 0000 TEXT PRINTED) -->
+        <div class="auth-card admin-auth-card">
+          <div class="auth-card-header">
+            <div class="auth-icon-box admin-icon">
+              <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <div>
+              <h3>Admin Control Login</h3>
+              <p>System Administrator Access</p>
+            </div>
+          </div>
+
+          <div id="admin-login-msg" class="auth-status-banner" style="display: none;"></div>
+
+          <form id="admin-login-form">
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="admin-user-input" class="form-label">Admin Username</label>
+              <input type="text" id="admin-user-input" class="form-control" placeholder="Enter Username" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label for="admin-pass-input" class="form-label">Password</label>
+              <input type="password" id="admin-pass-input" class="form-control" placeholder="Enter Password" required>
+            </div>
+
+            <button type="submit" class="btn btn-accent" style="width: 100%; padding: 12px;">
+              <i class="fa-solid fa-lock-open"></i> Login to Admin Dashboard
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="text-align: center;">
+      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js?v=6.0"></script>
+</body>
+
+</html>
