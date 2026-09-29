@@ -19,7 +19,7 @@ Render needs `MONGO_URI` set to the Atlas connection string. Keep it only in Ren
 
 ## Admin Access
 
-Set `ADMIN_PASSWORD` in Render to a long, unique passphrase. Enter it directly into Render's environment settings; do not commit it or send it in chat. Admin sessions expire after eight hours and are revoked when the user logs out or the service restarts.
+Render generates and stores `ADMIN_PASSWORD` privately for the API. To sign in, reveal it in the API service's Environment settings; do not commit it or send it in chat. Admin sessions expire after eight hours and are revoked when the user logs out or the service restarts.
 
 Admin booking and quote data, settings updates, fleet edits, and tour edits require a valid admin session. Customer booking and quote submissions remain public.
 

@@ -13,7 +13,7 @@ services:
       - key: FRONTEND_URL
         value: "https://shree-website-93o4.onrender.com,https://shree-2fmkhc165-sarthakmore.vercel.app"
       - key: ADMIN_PASSWORD
-        sync: false
+        generateValue: true
   - type: web
     name: shree-website
     runtime: static
