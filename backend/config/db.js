@@ -48,7 +48,9 @@ const connectDB = async () => {
     console.log(`✅ MongoDB Connected Successfully: ${mongoose.connection.host}`);
   } catch (err) {
     isMongoConnected = false;
-    console.log(`⚠️ MongoDB Connection Offline. Active MERN In-Memory Database Engine Running.`);
+    const errorName = err instanceof Error ? err.name : 'UnknownError';
+    const errorCode = err && typeof err === 'object' && 'code' in err ? `, code ${err.code}` : '';
+    console.error(`⚠️ MongoDB Connection Offline (${errorName}${errorCode}). Active MERN In-Memory Database Engine Running.`);
   }
 };
 
