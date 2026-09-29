@@ -1,0 +1,5 @@
+{
+    "installCommand": "echo Static site requires no package installation",
+    "buildCommand": "node scripts/build-static-site.js",
+    "outputDirectory": "dist"
+}
