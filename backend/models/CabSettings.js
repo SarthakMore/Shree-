@@ -24,7 +24,7 @@ const cabSettingsSchema = new mongoose.Schema({
   },
   statusNote: {
     type: String,
-    default: 'VinFast Limo Green EV is accepting reservations for upcoming hourly slots.'
+    default: 'Premium car rentals are available with or without a professional driver.'
   }
 }, {
   timestamps: true

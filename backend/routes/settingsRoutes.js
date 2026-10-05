@@ -11,7 +11,7 @@ let inMemorySettings = {
   thirdSeatFare: 450,
   ratePerKm: 14,
   cabStatus: 'AVAILABLE',
-  statusNote: 'VinFast Limo Green EV is accepting reservations for upcoming hourly slots.'
+  statusNote: 'Premium car rentals are available with or without a professional driver.'
 };
 
 // GET /api/settings

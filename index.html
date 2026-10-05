@@ -3,13 +3,18 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2a8c7b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Shree Express">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app-icon-192.png">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="description"
-    content="Shree Venkateshwara Express - Daily shared cab service between Kolhapur and Pune in VinFast Limo Green EV. Per-row seat booking, clean AC comfort, and 24/7 punctual service.">
-  <title>Home | Shree Venkateshwara Express Shared Cabs</title>
+    content="Premium car rentals with or without a skilled driver. Enjoy reliable, punctual service, comfortable cars, and affordable options from Shree Venkateshwara.">
+  <title>Home | Shree Venkateshwara Car Rentals</title>
 
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +25,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=9.0">
+  <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
@@ -34,7 +39,7 @@
         <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
         <div class="logo-text-box">
           <h1>SHREE VENKATESHWARA</h1>
-          <span>EXPRESS SHARED CABS</span>
+          <span>PREMIUM CAR RENTALS</span>
         </div>
       </a>
 
@@ -42,8 +47,10 @@
         <ul class="nav-menu" id="nav-menu">
           <li><a href="index.html" class="nav-link active">Home</a></li>
           <li><a href="login.html" class="nav-link">Login Portal</a></li>
-          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
-          <li><a href="fleet.html" class="nav-link">Our Fleet</a></li>
+          <li><a href="shared-cabs.html" class="nav-link" title="Coming Soon"
+              aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                aria-hidden="true"></i> Coming Soon</a></li>
+          <li><a href="fleet.html" class="nav-link">Rent A Car</a></li>
           <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
         </ul>
       </nav>
@@ -56,7 +63,8 @@
         <a href="login.html" class="btn btn-primary" style="padding: 10px 18px; font-size: 0.875rem;">
           <i class="fa-solid fa-user-lock"></i> <span id="nav-user-text">Login</span>
         </a>
-        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-controls="nav-menu"
+          aria-expanded="false">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
@@ -70,8 +78,8 @@
     <section class="hero" style="padding: 64px 0 44px; background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);">
       <div class="container" style="text-align: center; max-width: 960px;">
         <div class="badge" style="margin-bottom: 20px;">
-          <i class="fa-solid fa-bolt" style="color: var(--accent);"></i>
-          <span>VinFast Limo Green EV • 100% Electric Shared Express Cabs</span>
+          <i class="fa-solid fa-car-side" style="color: var(--accent);"></i>
+          <span>Premium Cars • With or Without a Driver</span>
         </div>
 
         <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 16px; color: var(--text-heading);">
@@ -79,27 +87,31 @@
         </h1>
 
         <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6;">
-          Kolhapur & Pune's most trusted daily shared cab service and outstation travel provider. Follow our attached
-          pages below to log in, reserve shared cab seats, or book full vehicle tour packages!
+          Choose a premium car with a skilled driver or enjoy the freedom to drive yourself. Count on reliable service,
+          punctual pickups, and affordable options.
         </p>
 
         <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px;">
           <a href="login.html" class="btn btn-primary" style="padding: 16px 28px; font-size: 1rem;">
             <i class="fa-solid fa-user-check"></i> 1. Open Login Portal
           </a>
+          <a href="fleet.html" class="btn btn-secondary"
+            style="padding: 16px 28px; font-size: 1rem; border-color: var(--primary); color: var(--primary);">
+            <i class="fa-solid fa-car-side"></i> 2. Rent A Car
+          </a>
           <a href="shared-cabs.html" class="btn btn-accent" style="padding: 16px 28px; font-size: 1rem;">
-            <i class="fa-solid fa-van-shuttle"></i> 2. Reserve Shared Cab Seat
+            <i class="fa-regular fa-clock" aria-hidden="true"></i> 3. Additional Services: Coming Soon
           </a>
           <a href="airport-tours.html" class="btn btn-secondary"
             style="padding: 16px 28px; font-size: 1rem; border-color: var(--primary); color: var(--primary);">
-            <i class="fa-solid fa-plane-departure"></i> 3. Airport & Tour Packages
+            <i class="fa-solid fa-plane-departure"></i> 4. Airport & Tour Packages
           </a>
         </div>
       </div>
     </section>
 
     <!-- ==========================================================================
-         ATTACHED PAGES SEQUENCE CARDS (Home -> Login -> Shared Cabs -> Airport & Tours -> Admin)
+         ATTACHED PAGES SEQUENCE CARDS (Home -> Login -> More Services -> Airport & Tours -> Admin)
          ========================================================================== -->
     <section class="section-padding" style="background-color: #FFFFFF;">
       <div class="container">
@@ -117,7 +129,7 @@
             style="text-decoration: none; color: inherit; transition: var(--transition-smooth); border-color: var(--primary);">
             <div class="step-number" style="background: var(--primary);">1</div>
             <h3>Home Page</h3>
-            <p>Main landing introduction, EV fleet features, hotline contacts, and multi-page sequence overview.</p>
+            <p>Premium rental cars, skilled drivers, affordable options, and service information.</p>
             <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--primary);">
               Current Page <i class="fa-solid fa-arrow-right"></i>
             </div>
@@ -134,15 +146,14 @@
             </div>
           </a>
 
-          <!-- PAGE 3: DAILY SHARED CABS -->
+          <!-- PAGE 3: ADDITIONAL RENTAL SERVICES -->
           <a href="shared-cabs.html" class="step-card"
             style="text-decoration: none; color: inherit; transition: var(--transition-smooth);">
             <div class="step-number" style="background: var(--primary);">3</div>
-            <h3>Daily Shared Cabs</h3>
-            <p>Per-row seat booking engine with Front, Middle, and Third Row selections. Rates managed dynamically by
-              admin.</p>
+            <h3>Additional Rental Services</h3>
+            <p>We're preparing more convenient rental options. Contact us for current availability.</p>
             <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--primary);">
-              Open Shared Cabs Page <i class="fa-solid fa-arrow-right"></i>
+              <i class="fa-regular fa-clock" aria-hidden="true"></i> Coming Soon
             </div>
           </a>
 
@@ -151,7 +162,7 @@
             style="text-decoration: none; color: inherit; transition: var(--transition-smooth);">
             <div class="step-number" style="background: var(--accent);">4</div>
             <h3>Airport & Tours</h3>
-            <p>Pune/Mumbai airport transfers and 6 famous Maharashtra sightseeing trip packages with WhatsApp tickets.
+            <p>Airport transfers and Maharashtra sightseeing packages with convenient WhatsApp enquiries.
             </p>
             <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--accent);">
               Open Airport & Tours Page <i class="fa-solid fa-arrow-right"></i>
@@ -173,41 +184,41 @@
         <div class="section-header">
           <span class="badge">Our Fleet & Features</span>
           <h2>Why Ride With Shree Venkateshwara Express?</h2>
-          <p>The safest, cleanest, and most punctual shared cab experience on the Kolhapur-Pune highway.</p>
+          <p>Premium cars, skilled drivers, reliable pickups, and affordable rental options for your journey.</p>
         </div>
 
         <div class="features-grid">
 
           <div class="feature-card">
             <div class="feature-icon-wrapper">
-              <i class="fa-solid fa-leaf"></i>
+              <i class="fa-solid fa-car-side"></i>
             </div>
-            <h3>100% Electric EV Fleet</h3>
-            <p>VinFast Limo Green EV with zero engine vibration, zero emissions, and silent cabin comfort.</p>
+            <h3>Premium Cars</h3>
+            <p>Comfortable, well-maintained vehicles for business, family, and airport travel.</p>
           </div>
 
           <div class="feature-card">
             <div class="feature-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
-              <i class="fa-solid fa-chair"></i>
+              <i class="fa-solid fa-user-check"></i>
             </div>
-            <h3>Per-Row Seat Choice</h3>
-            <p>Front Row (1 seat max), Middle Row (3 seats max), or Economy Third Row (3 seats max) per-row rates.</p>
+            <h3>Skilled Drivers</h3>
+            <p>Professional drivers focused on safe, comfortable, and courteous service.</p>
           </div>
 
           <div class="feature-card">
             <div class="feature-icon-wrapper" style="background: rgba(249, 115, 22, 0.1); color: var(--accent);">
               <i class="fa-solid fa-phone"></i>
             </div>
-            <h3>24/7 Hotline Support</h3>
-            <p>Direct phone assistance & live ride dispatch coordinator hotline at <strong>866 941 0303</strong>.</p>
+            <h3>Reliable & Punctual</h3>
+            <p>Dependable pickup coordination to help your day run smoothly.</p>
           </div>
 
           <div class="feature-card">
             <div class="feature-icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-yellow);">
               <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
-            <h3>On-Time Departure</h3>
-            <p>Strict departure adherence with live driver tracking so you never miss a schedule.</p>
+            <h3>Affordable Options</h3>
+            <p>Clear rental quotes with choices to suit your trip and budget.</p>
           </div>
 
         </div>
@@ -227,12 +238,11 @@
             </div>
             <div class="logo-text-box">
               <h1 style="color: #FFFFFF;">SHREE VENKATESHWARA</h1>
-              <span>EXPRESS SHARED CABS</span>
+              <span>PREMIUM CAR RENTALS</span>
             </div>
           </div>
           <p>
-            Kolhapur & Pune's most trusted daily shared cab service. VinFast Limo Green EV fleet with per-row seat
-            choice, clean AC comfort, and 24/7 hotline support.
+            Premium cars for self-drive and chauffeur-driven journeys, supported by skilled drivers and clear quotes.
           </p>
         </div>
 
@@ -241,7 +251,7 @@
           <ul class="footer-links">
             <li><a href="index.html">1. Home Page</a></li>
             <li><a href="login.html">2. Login Portal</a></li>
-            <li><a href="shared-cabs.html">3. Daily Shared Cabs</a></li>
+            <li><a href="shared-cabs.html">3. Additional Services: Coming Soon</a></li>
             <li><a href="airport-tours.html">4. Airport & Tours</a></li>
           </ul>
         </div>
@@ -253,33 +263,33 @@
                 941 0303</strong></li>
             <li><i class="fa-brands fa-whatsapp" style="color: #25D366; margin-right: 8px;"></i> WhatsApp: +91 866 941
               0303</li>
-            <li><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i> CBS Station
-              Road, Kolhapur</li>
-            <li><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right: 8px;"></i> Swargate
-              Stand, Pune</li>
+            <li><i class="fa-solid fa-car-side" style="color: var(--accent); margin-right: 8px;"></i> Self-drive
+              and chauffeur-driven rentals</li>
+            <li><i class="fa-solid fa-clock" style="color: var(--accent); margin-right: 8px;"></i> Punctual pickup
+              coordination</li>
           </ul>
         </div>
 
         <div>
-          <h4>Daily Schedule</h4>
+          <h4>Rental Services</h4>
           <p style="font-size: 0.875rem;">
-            <strong>Kolhapur to Pune:</strong><br>
-            6:00 AM, 9:00 AM, 1:00 PM, 5:00 PM, 9:00 PM
+            <strong>Choose your drive:</strong><br>
+            Rent a car or request a professional driver.
           </p>
           <p style="font-size: 0.875rem; margin-top: 12px;">
-            <strong>Pune to Kolhapur:</strong><br>
-            6:00 AM, 9:00 AM, 2:00 PM, 6:00 PM, 10:00 PM
+            <strong>Need a quote?</strong><br>
+            Call or message our rental team.
           </p>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+        <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
       </div>
     </div>
   </footer>
 
-  <script src="script.js?v=6.0"></script>
+  <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

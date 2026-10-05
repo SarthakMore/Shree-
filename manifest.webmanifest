@@ -1,0 +1,24 @@
+{
+    "name": "Shree Venkateshwara Car Rentals",
+    "short_name": "Shree Rentals",
+    "description": "Premium car rentals with or without a skilled driver. Reliable, punctual service and affordable options.",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#f7f8f5",
+    "theme_color": "#2a8c7b",
+    "icons": [
+        {
+            "src": "images/app-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "images/app-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}

@@ -45,21 +45,21 @@ export default function AuthPortal({ onAdminLoginSuccess, onClientLogin }) {
   return (
     <section className="auth-landing-section" id="auth-portal">
       <div className="container" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <span className="ev-badge" style={{ background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB', padding: '6px 16px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.85rem' }}>
+          <span className="access-badge" style={{ background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB', padding: '6px 16px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.85rem' }}>
             <i className="fa-solid fa-shield-halved"></i> Access Portal
           </span>
           <h2 style={{ fontSize: '2.2rem', fontWeight: '800', margin: '12px 0 8px', color: '#111827' }}>
             Welcome to Shree Venkateshwara Express
           </h2>
           <p style={{ color: '#64748B', fontSize: '1.05rem' }}>
-            Please log in below. Select <strong>Client Login</strong> for fast seat reservations or <strong>Admin Portal</strong> for fleet management.
+            Please log in below. Use <strong>Client Login</strong> for your rental requests or <strong>Admin Portal</strong> for fleet management.
           </p>
         </div>
 
         <div className="dual-auth-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
-          
+
           {/* PANEL 1: CLIENT / PASSENGER LOGIN */}
           <div className="auth-card client-auth-card" style={{ background: '#FFFFFF', borderRadius: '16px', padding: '28px', border: '1.5px solid #E2E8F0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
@@ -68,7 +68,7 @@ export default function AuthPortal({ onAdminLoginSuccess, onClientLogin }) {
               </div>
               <div>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: '700', margin: 0, color: '#111827' }}>Client / Passenger Login</h3>
-                <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>Login with your Phone & Name for smooth ticket booking</p>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>Login with your phone and name for rental enquiries</p>
               </div>
             </div>
 
@@ -115,8 +115,8 @@ export default function AuthPortal({ onAdminLoginSuccess, onClientLogin }) {
             </div>
 
             {adminMsg && (
-              <div style={{ 
-                background: adminMsg.type === 'success' ? '#ECFDF5' : '#FEE2E2', 
+              <div style={{
+                background: adminMsg.type === 'success' ? '#ECFDF5' : '#FEE2E2',
                 border: `1px solid ${adminMsg.type === 'success' ? '#10B981' : '#EF4444'}`,
                 color: adminMsg.type === 'success' ? '#065F46' : '#991B1B',
                 borderRadius: '8px', padding: '10px 14px', fontSize: '0.85rem', marginBottom: '14px', fontWeight: 'bold'

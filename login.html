@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2a8c7b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Shree Express">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app-icon-192.png">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -18,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=9.0">
+  <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
@@ -30,7 +35,7 @@
         <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
         <div class="logo-text-box">
           <h1>SHREE VENKATESHWARA</h1>
-          <span>EXPRESS SHARED CABS</span>
+          <span>PREMIUM CAR RENTALS</span>
         </div>
       </a>
 
@@ -38,8 +43,10 @@
         <ul class="nav-menu" id="nav-menu">
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="login.html" class="nav-link active">Login Portal</a></li>
-          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
-          <li><a href="fleet.html" class="nav-link">Our Fleet</a></li>
+          <li><a href="shared-cabs.html" class="nav-link" title="Coming Soon"
+              aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                aria-hidden="true"></i> Coming Soon</a></li>
+          <li><a href="fleet.html" class="nav-link">Rent A Car</a></li>
           <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
         </ul>
       </nav>
@@ -49,6 +56,10 @@
           style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
           <i class="fa-solid fa-phone"></i> 866 941 0303
         </a>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-controls="nav-menu"
+          aria-expanded="false" type="button">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -59,7 +70,7 @@
       <div class="section-header" style="margin-bottom: 36px;">
         <span class="badge"><i class="fa-solid fa-shield-halved"></i> Authentication Portal</span>
         <h2>Shree Venkateshwara Login Portal</h2>
-        <p>Choose <strong>Client Login</strong> to save passenger details for smooth ticket booking or <strong>Admin
+        <p>Choose <strong>Client Login</strong> to save your details for rental enquiries or <strong>Admin
             Portal</strong> to access management dashboard.</p>
       </div>
 
@@ -72,8 +83,8 @@
               <i class="fa-solid fa-user-check"></i>
             </div>
             <div>
-              <h3>Client / Passenger Login</h3>
-              <p>Login with your Phone & Name for smooth ticket booking</p>
+              <h3>Customer Login</h3>
+              <p>Login with your phone and name for rental enquiries</p>
             </div>
           </div>
 
@@ -94,12 +105,12 @@
             </div>
 
             <div class="form-group" style="margin-bottom: 18px;">
-              <label for="client-phone-input" class="form-label">Phone Number (For WhatsApp Ticket)</label>
+              <label for="client-phone-input" class="form-label">Phone Number</label>
               <input type="tel" id="client-phone-input" class="form-control" placeholder="e.g. 866 941 0303" required>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
-              <i class="fa-solid fa-right-to-bracket"></i> Login as Passenger
+              <i class="fa-solid fa-right-to-bracket"></i> Login as Customer
             </button>
           </form>
         </div>
@@ -142,11 +153,11 @@
 
   <footer class="footer">
     <div class="container" style="text-align: center;">
-      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+      <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <script src="script.js?v=6.0"></script>
+  <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

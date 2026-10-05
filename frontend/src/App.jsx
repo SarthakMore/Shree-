@@ -3,20 +3,17 @@ import { API_BASE } from './api';
 import Navbar from './components/Navbar';
 import AuthPortal from './components/AuthPortal';
 import MainPortals from './components/MainPortals';
-import HeroWidget from './components/HeroWidget';
 import MaharashtraTours from './components/MaharashtraTours';
 import ImportantInfo from './components/ImportantInfo';
 import FleetShowcase from './components/FleetShowcase';
 import FareCalculator from './components/FareCalculator';
 import FAQAccordion from './components/FAQAccordion';
-import BookingVoucherModal from './components/BookingVoucherModal';
 import QuoteModal from './components/QuoteModal';
 import AdminPanelModal from './components/AdminPanel';
 import Footer from './components/Footer';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
-  const [activeVoucher, setActiveVoucher] = useState(null);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
 
@@ -26,7 +23,7 @@ export default function App() {
     middleSeatFare: 550,
     thirdSeatFare: 450,
     cabStatus: 'AVAILABLE',
-    statusNote: 'VinFast Limo Green EV is accepting reservations for upcoming hourly slots.'
+    statusNote: 'Premium car rentals are available with or without a professional driver.'
   });
 
   const fetchSettings = async () => {
@@ -67,25 +64,28 @@ export default function App() {
             <section style={{ padding: '60px 20px 40px', background: 'linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)', textAlign: 'center' }}>
               <div style={{ maxWidth: '960px', margin: '0 auto' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#DBEAFE', color: '#1E40AF', padding: '8px 18px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.88rem', marginBottom: '20px' }}>
-                  <i className="fa-solid fa-bolt" style={{ color: '#2563EB' }}></i>
-                  VinFast Limo Green EV • 100% Electric Express Shared Cabs
+                  <i className="fa-solid fa-car-side" style={{ color: '#2563EB' }}></i>
+                  Premium Cars • With or Without a Driver
                 </div>
                 <h1 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#0F172A', marginBottom: '16px', lineHeight: 1.2 }}>
                   Welcome to <span style={{ color: '#2563EB' }}>Shree Venkateshwara Express</span>
                 </h1>
                 <p style={{ fontSize: '1.125rem', color: '#475569', marginBottom: '32px', lineHeight: 1.6 }}>
-                  Kolhapur & Pune's most trusted daily shared cab service and outstation travel provider. Use our navigation bar above or attached pages below to log in, reserve shared cab seats, or book full vehicle tour packages!
+                  Choose a premium car for your next trip, with a skilled driver or the freedom to drive yourself. Enjoy reliable service, punctual pickups, and affordable options.
                 </p>
 
                 <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '40px' }}>
                   <button onClick={() => handleNavigate('login')} style={{ background: '#2563EB', color: '#FFFFFF', border: 'none', padding: '16px 28px', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <i className="fa-solid fa-user-check"></i> 1. Open Login Portal
                   </button>
-                  <button onClick={() => handleNavigate('shared-cabs')} style={{ background: '#10B981', color: '#FFFFFF', border: 'none', padding: '16px 28px', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <i className="fa-solid fa-van-shuttle"></i> 2. Reserve Shared Cab Seat
+                  <button onClick={() => document.getElementById('rental-fleet')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: '#FFFFFF', color: '#2563EB', border: '2px solid #2563EB', padding: '16px 28px', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <i className="fa-solid fa-car-side"></i> 2. Rent A Car
                   </button>
+                  <div style={{ background: '#F1F5F9', color: '#475569', padding: '16px 28px', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <i className="fa-regular fa-clock" aria-hidden="true"></i> 3. Additional Rental Services: Coming Soon
+                  </div>
                   <button onClick={() => handleNavigate('airport-tours')} style={{ background: '#FFFFFF', color: '#2563EB', border: '2px solid #2563EB', padding: '16px 28px', borderRadius: '12px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <i className="fa-solid fa-plane-departure"></i> 3. Airport & Tour Packages
+                    <i className="fa-solid fa-plane-departure"></i> 4. Airport & Tour Packages
                   </button>
                 </div>
               </div>
@@ -103,19 +103,19 @@ export default function App() {
           <div style={{ padding: '40px 0' }}>
             <AuthPortal
               onAdminLoginSuccess={() => handleNavigate('admin')}
-              onClientLogin={() => handleNavigate('shared-cabs')}
+              onClientLogin={() => handleNavigate('home')}
             />
           </div>
         )}
 
-        {/* PAGE 3: DAILY SHARED CABS SCHEDULE */}
+        {/* PAGE 3: ADDITIONAL RENTAL SERVICES */}
         {currentPage === 'shared-cabs' && (
-          <div style={{ padding: '20px 0' }}>
-            <HeroWidget
-              settings={settings}
-              onBookingCreated={(newBooking) => setActiveVoucher(newBooking)}
-            />
-            <FareCalculator />
+          <div style={{ padding: '72px 20px', textAlign: 'center', background: '#F8FAFC', minHeight: '50vh', display: 'grid', placeItems: 'center' }}>
+            <section>
+              <i className="fa-regular fa-clock" aria-hidden="true" style={{ fontSize: '2.5rem', color: '#64748B', marginBottom: '16px' }}></i>
+              <h2 style={{ color: '#0F172A', margin: '0 0 8px' }}>Additional Rental Services</h2>
+              <p style={{ color: '#64748B', margin: 0 }}>Coming Soon</p>
+            </section>
           </div>
         )}
 
@@ -143,13 +143,6 @@ export default function App() {
       <Footer />
 
       {/* Modals */}
-      {activeVoucher && (
-        <BookingVoucherModal
-          booking={activeVoucher}
-          onClose={() => setActiveVoucher(null)}
-        />
-      )}
-
       {showQuoteModal && (
         <QuoteModal
           onClose={() => setShowQuoteModal(false)}

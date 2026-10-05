@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2a8c7b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Shree Express">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app-icon-192.png">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -18,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=9.0">
+  <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
@@ -30,7 +35,7 @@
         <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
         <div class="logo-text-box">
           <h1>SHREE VENKATESHWARA</h1>
-          <span>EXPRESS SHARED CABS</span>
+          <span>PREMIUM CAR RENTALS</span>
         </div>
       </a>
 
@@ -38,7 +43,9 @@
         <ul class="nav-menu" id="nav-menu">
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="login.html" class="nav-link">Login Portal</a></li>
-          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
+          <li><a href="shared-cabs.html" class="nav-link" title="Coming Soon"
+              aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                aria-hidden="true"></i> Coming Soon</a></li>
           <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
         </ul>
       </nav>
@@ -51,6 +58,10 @@
         <button id="admin-logout-top-btn" class="btn btn-accent"
           style="display: none; padding: 8px 16px; font-size: 0.85rem; background: #EF4444; border-color: #EF4444;">
           <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-controls="nav-menu"
+          aria-expanded="false" type="button">
+          <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
@@ -191,32 +202,53 @@
         <div
           style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
           <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin-bottom:12px;">
-            <i class="fa-solid fa-car-side" style="color:var(--primary); margin-right:8px;"></i> Fleet Cars Service (Add
-            Cars with Photos & Rates per KM)
+            <i class="fa-solid fa-car-side" style="color:var(--primary); margin-right:8px;"></i> Rental Fleet Management
           </h4>
-          <p style="font-size:0.88rem; color:#64748B; margin-bottom:16px;">Add new vehicle models to your rental &
-            shared cab fleet. Photos and per-km rates will render instantly on all customer pages.</p>
+          <p style="font-size:0.88rem; color:#64748B; margin-bottom:16px;">Add premium vehicles, photos, and rental
+            rates for customer enquiries.</p>
 
+          <h5 id="car-form-title" style="font-size:1rem; font-weight:700; margin-bottom:12px;">Add Car to Fleet</h5>
           <form id="admin-add-car-form"
             style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; background:#F8FAFC; padding:20px; border-radius:12px; margin-bottom:20px;">
+            <input type="hidden" id="car-input-edit-id" value="">
             <div class="form-group">
               <label class="form-label">Car Model Name</label>
-              <input type="text" id="car-input-name" class="form-control" placeholder="e.g. VinFast Limo Green EV"
+              <input type="text" id="car-input-name" class="form-control" placeholder="e.g. Premium 7-Seater SUV"
                 required>
             </div>
             <div class="form-group">
               <label class="form-label">Category / Type</label>
               <select id="car-input-category" class="form-control">
-                <option value="EV SUV">EV SUV (100% Electric)</option>
+                <option value="Premium SUV">Premium SUV</option>
                 <option value="Luxury Limo">Luxury Limo</option>
                 <option value="Executive Sedan">Executive Sedan</option>
                 <option value="Outstation Minivan">Outstation Minivan</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Photo Image URL</label>
-              <input type="url" id="car-input-photo" class="form-control"
-                placeholder="https://images.unsplash.com/photo-..." required>
+              <label class="form-label">Photo 1 URL (main photo)</label>
+              <input type="url" id="car-input-photo-1" class="form-control"
+                placeholder="https://example.com/car-front.jpg" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo 2 URL (required)</label>
+              <input type="url" id="car-input-photo-2" class="form-control"
+                placeholder="https://example.com/car-side.jpg" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo 3 URL (optional)</label>
+              <input type="url" id="car-input-photo-3" class="form-control"
+                placeholder="https://example.com/car-interior.jpg">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo 4 URL (optional)</label>
+              <input type="url" id="car-input-photo-4" class="form-control"
+                placeholder="https://example.com/car-rear.jpg">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Photo 5 URL (optional)</label>
+              <input type="url" id="car-input-photo-5" class="form-control"
+                placeholder="https://example.com/car-detail.jpg">
             </div>
             <div class="form-group">
               <label class="form-label">Rate Per KM (₹/km)</label>
@@ -231,8 +263,13 @@
               <input type="number" id="car-input-hourly" class="form-control" value="450" required>
             </div>
             <div style="grid-column: 1 / -1;">
-              <button type="submit" class="btn btn-primary" style="padding:12px 24px; font-weight:700;">
+              <button type="submit" id="car-submit-btn" class="btn btn-primary"
+                style="padding:12px 24px; font-weight:700;">
                 <i class="fa-solid fa-plus-circle"></i> Add Car to Fleet
+              </button>
+              <button type="button" id="car-cancel-edit-btn" class="btn btn-secondary"
+                style="padding:12px 24px; font-weight:700; display:none;">
+                Cancel Edit
               </button>
             </div>
           </form>
@@ -333,11 +370,11 @@
 
   <footer class="footer">
     <div class="container" style="text-align: center;">
-      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+      <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <script src="script.js?v=7.0"></script>
+  <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

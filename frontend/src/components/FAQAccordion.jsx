@@ -5,20 +5,20 @@ export default function FAQAccordion() {
 
   const faqs = [
     {
-      q: 'What are the main pickup and drop points in Kolhapur & Pune?',
-      a: 'In Kolhapur, our main pickup points are CBS Bus Stand, Kawala Naka, and Dabholkar Corner. In Pune, we drop and pick up at Swargate, Katraj Tunnel, Wakad Bypass, Chandani Chowk, and Pune Airport.'
+      q: 'Can I rent a car with or without a driver?',
+      a: 'Yes. Choose a self-drive rental or request a skilled professional driver when you book.'
     },
     {
-      q: 'How much luggage can I bring per seat?',
-      a: 'Each passenger is allowed 1 medium trolley bag (up to 15 kg) plus 1 handbag/backpack. For heavy additional luggage, please notify us in advance.'
+      q: 'What vehicles are available?',
+      a: 'We offer premium cars for personal, family, airport, and outstation travel. Contact us to confirm availability for your dates.'
     },
     {
-      q: 'What is the cancellation and refund policy?',
-      a: 'Free cancellation is allowed up to 4 hours prior to departure time. Cancellations made within 4 hours carry a nominal 20% re-scheduling fee.'
+      q: 'Are rental prices affordable and clear?',
+      a: 'We provide a clear quote before confirming your booking, with options to suit your trip and budget.'
     },
     {
-      q: 'Can I book a dedicated private cab instead of a shared seat?',
-      a: 'Yes! We offer dedicated full vehicle hires (Innova Crysta, Ertiga, Dzire) with doorstep pickup for private family or corporate trips.'
+      q: 'Are pickups reliable and on time?',
+      a: 'We coordinate your pickup in advance and work to provide dependable, punctual service throughout your trip.'
     }
   ];
 
@@ -38,7 +38,7 @@ export default function FAQAccordion() {
           const isOpen = activeIndex === idx;
           return (
             <div key={idx} style={{ background: 'white', borderRadius: '16px', border: '1.5px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
-              <button 
+              <button
                 onClick={() => setActiveIndex(isOpen ? -1 : idx)}
                 style={{ width: '100%', padding: '20px 24px', background: 'none', border: 'none', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'Outfit', fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}
               >

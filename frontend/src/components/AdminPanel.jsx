@@ -13,15 +13,16 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
     thirdSeatFare: 450,
     ratePerKm: 14,
     cabStatus: 'AVAILABLE',
-    statusNote: 'VinFast Limo Green EV is accepting reservations for upcoming hourly slots.'
+    statusNote: 'Premium car rentals are available with or without a professional driver.'
   });
   const [savingSettings, setSavingSettings] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
   // Fleet Cars & Tours State
   const [cars, setCars] = useState([]);
-  const [newCar, setNewCar] = useState({ name: '', category: 'EV SUV', photo: '', ratePerKm: 14, capacity: 7, hourlyRate: 450 });
-  
+  const [editingCarId, setEditingCarId] = useState(null);
+  const [newCar, setNewCar] = useState({ name: '', category: 'Premium SUV', photos: ['', '', '', '', ''], ratePerKm: 14, capacity: 7, hourlyRate: 450 });
+
   const [tours, setTours] = useState([]);
   const [newTour, setNewTour] = useState({ title: '', destination: '', price: 4999, photo: '', duration: '2 Days / 1 Night', description: '' });
 
@@ -58,7 +59,7 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
       if (data.success && data.data) {
         setCars(data.data);
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchTours = async () => {
@@ -68,7 +69,7 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
       if (data.success && data.data) {
         setTours(data.data);
       }
-    } catch (err) {}
+    } catch (err) { }
   };
 
   useEffect(() => {
@@ -130,18 +131,25 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
     }
   };
 
-  const handleAddCar = async (e) => {
+  const handleSaveCar = async (e) => {
     e.preventDefault();
+    const photos = newCar.photos.map(photo => photo.trim()).filter(Boolean).slice(0, 5);
+    if (photos.length < 2) {
+      alert('Add at least two car photo URLs.');
+      return;
+    }
+
     try {
-      const res = await fetch(`${API_BASE}/api/cars`, {
-        method: 'POST',
+      const res = await fetch(`${API_BASE}/api/cars${editingCarId ? `/${editingCarId}` : ''}`, {
+        method: editingCarId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newCar)
+        body: JSON.stringify({ ...newCar, photo: photos[0], photos })
       });
       const data = await res.json();
       if (data.success) {
-        alert('New Car added to Fleet!');
-        setNewCar({ name: '', category: 'EV SUV', photo: '', ratePerKm: 14, capacity: 7, hourlyRate: 450 });
+        alert(editingCarId ? 'Car details updated.' : 'New car added to the fleet.');
+        setEditingCarId(null);
+        setNewCar({ name: '', category: 'Premium SUV', photos: ['', '', '', '', ''], ratePerKm: 14, capacity: 7, hourlyRate: 450 });
         fetchCars();
       }
     } catch (err) {
@@ -149,12 +157,30 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
     }
   };
 
+  const handleEditCar = (car) => {
+    const photos = (Array.isArray(car.photos) && car.photos.length ? car.photos : [car.photo || '']).slice(0, 5);
+    setNewCar({
+      name: car.name || '',
+      category: car.category || 'Premium SUV',
+      photos: [...photos, ...Array(Math.max(0, 5 - photos.length)).fill('')],
+      ratePerKm: car.ratePerKm || 14,
+      capacity: car.capacity || 7,
+      hourlyRate: car.hourlyRate || 450
+    });
+    setEditingCarId(car._id);
+  };
+
+  const handleCancelCarEdit = () => {
+    setEditingCarId(null);
+    setNewCar({ name: '', category: 'Premium SUV', photos: ['', '', '', '', ''], ratePerKm: 14, capacity: 7, hourlyRate: 450 });
+  };
+
   const handleDeleteCar = async (id) => {
     if (!window.confirm('Delete this car model?')) return;
     try {
       await fetch(`${API_BASE}/api/cars/${id}`, { method: 'DELETE' });
       fetchCars();
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleAddTour = async (e) => {
@@ -181,7 +207,7 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
     try {
       await fetch(`${API_BASE}/api/tours/${id}`, { method: 'DELETE' });
       fetchTours();
-    } catch (err) {}
+    } catch (err) { }
   };
 
   return (
@@ -193,27 +219,27 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
           </h3>
           <span style={{ fontSize: '0.85rem', color: '#64748B', fontWeight: 600 }}>Real-time Live Sync & Dynamic Fleet Management</span>
         </div>
-        
+
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button 
+          <button
             onClick={() => setActiveTab('pricing')}
             style={{ background: activeTab === 'pricing' ? '#2563EB' : '#F1F5F9', color: activeTab === 'pricing' ? 'white' : '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.88rem' }}
           >
             <i className="fa-solid fa-indian-rupee-sign"></i> Fares & Status
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('cars')}
             style={{ background: activeTab === 'cars' ? '#2563EB' : '#F1F5F9', color: activeTab === 'cars' ? 'white' : '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.88rem' }}
           >
             <i className="fa-solid fa-car"></i> Cars ({cars.length})
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('tours')}
             style={{ background: activeTab === 'tours' ? '#2563EB' : '#F1F5F9', color: activeTab === 'tours' ? 'white' : '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.88rem' }}
           >
             <i className="fa-solid fa-route"></i> Tours ({tours.length})
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('bookings')}
             style={{ background: activeTab === 'bookings' ? '#2563EB' : '#F1F5F9', color: activeTab === 'bookings' ? 'white' : '#0F172A', border: 'none', padding: '8px 16px', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.88rem' }}
           >
@@ -239,26 +265,26 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
               <label style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#0F172A', display: 'block', marginBottom: '8px' }}>
                 <i className="fa-solid fa-car-side" style={{ color: '#2563EB' }}></i> Current Cab Availability Status
               </label>
-              
+
               <div style={{ display: 'flex', gap: '16px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 'bold', color: '#15803D', background: settings.cabStatus === 'AVAILABLE' ? '#DCFCE7' : '#F1F5F9', padding: '10px 18px', borderRadius: '10px', border: '1px solid #10B981' }}>
-                  <input 
-                    type="radio" 
-                    name="cabStatus" 
-                    value="AVAILABLE" 
-                    checked={settings.cabStatus === 'AVAILABLE'} 
-                    onChange={(e) => setSettings({ ...settings, cabStatus: e.target.value })} 
+                  <input
+                    type="radio"
+                    name="cabStatus"
+                    value="AVAILABLE"
+                    checked={settings.cabStatus === 'AVAILABLE'}
+                    onChange={(e) => setSettings({ ...settings, cabStatus: e.target.value })}
                   />
                   🟢 Cab Free / Accepting Bookings
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 'bold', color: '#B91C1C', background: settings.cabStatus === 'FULL' ? '#FEE2E2' : '#F1F5F9', padding: '10px 18px', borderRadius: '10px', border: '1px solid #EF4444' }}>
-                  <input 
-                    type="radio" 
-                    name="cabStatus" 
-                    value="FULL" 
-                    checked={settings.cabStatus === 'FULL'} 
-                    onChange={(e) => setSettings({ ...settings, cabStatus: e.target.value })} 
+                  <input
+                    type="radio"
+                    name="cabStatus"
+                    value="FULL"
+                    checked={settings.cabStatus === 'FULL'}
+                    onChange={(e) => setSettings({ ...settings, cabStatus: e.target.value })}
                   />
                   🔴 Cab Full / All Seats Booked
                 </label>
@@ -268,45 +294,45 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>Front Row VIP Fare (₹)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1', marginTop: '4px' }}
-                  value={settings.frontSeatFare} 
-                  onChange={(e) => setSettings({ ...settings, frontSeatFare: parseInt(e.target.value) || 0 })} 
-                  required 
+                  value={settings.frontSeatFare}
+                  onChange={(e) => setSettings({ ...settings, frontSeatFare: parseInt(e.target.value) || 0 })}
+                  required
                 />
               </div>
 
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>Middle Row Comfort Fare (₹)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1', marginTop: '4px' }}
-                  value={settings.middleSeatFare} 
-                  onChange={(e) => setSettings({ ...settings, middleSeatFare: parseInt(e.target.value) || 0 })} 
-                  required 
+                  value={settings.middleSeatFare}
+                  onChange={(e) => setSettings({ ...settings, middleSeatFare: parseInt(e.target.value) || 0 })}
+                  required
                 />
               </div>
 
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>Third Row Economy Fare (₹) [Max 2 Seats]</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1', marginTop: '4px' }}
-                  value={settings.thirdSeatFare} 
-                  onChange={(e) => setSettings({ ...settings, thirdSeatFare: parseInt(e.target.value) || 0 })} 
-                  required 
+                  value={settings.thirdSeatFare}
+                  onChange={(e) => setSettings({ ...settings, thirdSeatFare: parseInt(e.target.value) || 0 })}
+                  required
                 />
               </div>
 
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>Rental Rate Per KM (₹/km)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1', marginTop: '4px' }}
-                  value={settings.ratePerKm || 14} 
-                  onChange={(e) => setSettings({ ...settings, ratePerKm: parseInt(e.target.value) || 14 })} 
-                  required 
+                  value={settings.ratePerKm || 14}
+                  onChange={(e) => setSettings({ ...settings, ratePerKm: parseInt(e.target.value) || 14 })}
+                  required
                 />
               </div>
             </div>
@@ -320,18 +346,29 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
 
       {activeTab === 'cars' && (
         <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1.5px solid #CBD5E1' }}>
-          <h4 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '14px' }}><i className="fa-solid fa-plus-circle" style={{ color: '#2563EB' }}></i> Add New Car to Fleet (with Photos & Rate per KM)</h4>
-          <form onSubmit={handleAddCar} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-            <input type="text" placeholder="Car Name" value={newCar.name} onChange={e => setNewCar({...newCar, name: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <select value={newCar.category} onChange={e => setNewCar({...newCar, category: e.target.value})} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }}>
-              <option value="EV SUV">EV SUV</option>
+          <h4 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '14px' }}><i className={`fa-solid ${editingCarId ? 'fa-pen-to-square' : 'fa-plus-circle'}`} style={{ color: '#2563EB' }}></i> {editingCarId ? 'Edit Car Details' : 'Add New Car to Fleet'} (up to 5 photos & rate per KM)</h4>
+          <form onSubmit={handleSaveCar} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+            <input type="text" placeholder="Car Name" value={newCar.name} onChange={e => setNewCar({ ...newCar, name: e.target.value })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <select value={newCar.category} onChange={e => setNewCar({ ...newCar, category: e.target.value })} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }}>
+              <option value="Premium SUV">Premium SUV</option>
               <option value="Luxury Limo">Luxury Limo</option>
               <option value="Executive Sedan">Executive Sedan</option>
             </select>
-            <input type="url" placeholder="Photo Image URL" value={newCar.photo} onChange={e => setNewCar({...newCar, photo: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="number" placeholder="Rate / KM (₹)" value={newCar.ratePerKm} onChange={e => setNewCar({...newCar, ratePerKm: Number(e.target.value)})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="number" placeholder="Capacity Seats" value={newCar.capacity} onChange={e => setNewCar({...newCar, capacity: Number(e.target.value)})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <button type="submit" style={{ background: '#10B981', color: 'white', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Add Car</button>
+            {newCar.photos.map((photo, index) => (
+              <input
+                key={index}
+                type="url"
+                placeholder={`Photo ${index + 1} URL${index < 2 ? ' (required)' : ' (optional)'}`}
+                value={photo}
+                required={index < 2}
+                onChange={e => setNewCar({ ...newCar, photos: newCar.photos.map((currentPhoto, photoIndex) => photoIndex === index ? e.target.value : currentPhoto) })}
+                style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }}
+              />
+            ))}
+            <input type="number" placeholder="Rate / KM (₹)" value={newCar.ratePerKm} onChange={e => setNewCar({ ...newCar, ratePerKm: Number(e.target.value) })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="number" placeholder="Capacity Seats" value={newCar.capacity} onChange={e => setNewCar({ ...newCar, capacity: Number(e.target.value) })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <button type="submit" style={{ background: '#10B981', color: 'white', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>{editingCarId ? 'Save Changes' : 'Add Car'}</button>
+            {editingCarId && <button type="button" onClick={handleCancelCarEdit} style={{ background: '#FFFFFF', color: '#334155', border: '1px solid #CBD5E1', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Cancel Edit</button>}
           </form>
 
           <h5 style={{ fontWeight: 800, marginBottom: '10px' }}>Current Active Fleet</h5>
@@ -343,7 +380,10 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
                   <strong style={{ fontSize: '0.9rem' }}>{c.name}</strong><br />
                   <span style={{ fontSize: '0.75rem', color: '#64748B' }}>₹{c.ratePerKm}/km • {c.capacity} Seats</span>
                 </div>
-                <button onClick={() => handleDeleteCar(c._id)} style={{ background: '#EF4444', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-trash"></i></button>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button type="button" title="Edit car" aria-label={`Edit ${c.name}`} onClick={() => handleEditCar(c)} style={{ background: '#2563EB', color: 'white', border: 'none', padding: '6px 8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-pen-to-square"></i></button>
+                  <button type="button" title="Delete car" aria-label={`Delete ${c.name}`} onClick={() => handleDeleteCar(c._id)} style={{ background: '#EF4444', color: 'white', border: 'none', padding: '6px 8px', borderRadius: '6px', cursor: 'pointer' }}><i className="fa-solid fa-trash"></i></button>
+                </div>
               </div>
             ))}
           </div>
@@ -354,11 +394,11 @@ export default function AdminPanel({ onClose, onSettingsUpdated }) {
         <div style={{ background: '#F8FAFC', padding: '24px', borderRadius: '16px', border: '1.5px solid #CBD5E1' }}>
           <h4 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '14px' }}><i className="fa-solid fa-route" style={{ color: '#2563EB' }}></i> Add Traveling Package</h4>
           <form onSubmit={handleAddTour} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-            <input type="text" placeholder="Package Title" value={newTour.title} onChange={e => setNewTour({...newTour, title: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="text" placeholder="Destination" value={newTour.destination} onChange={e => setNewTour({...newTour, destination: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="number" placeholder="Price (₹)" value={newTour.price} onChange={e => setNewTour({...newTour, price: Number(e.target.value)})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="url" placeholder="Photo Image URL" value={newTour.photo} onChange={e => setNewTour({...newTour, photo: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
-            <input type="text" placeholder="Duration (e.g. 2 Days)" value={newTour.duration} onChange={e => setNewTour({...newTour, duration: e.target.value})} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="text" placeholder="Package Title" value={newTour.title} onChange={e => setNewTour({ ...newTour, title: e.target.value })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="text" placeholder="Destination" value={newTour.destination} onChange={e => setNewTour({ ...newTour, destination: e.target.value })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="number" placeholder="Price (₹)" value={newTour.price} onChange={e => setNewTour({ ...newTour, price: Number(e.target.value) })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="url" placeholder="Photo Image URL" value={newTour.photo} onChange={e => setNewTour({ ...newTour, photo: e.target.value })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
+            <input type="text" placeholder="Duration (e.g. 2 Days)" value={newTour.duration} onChange={e => setNewTour({ ...newTour, duration: e.target.value })} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #CBD5E1' }} />
             <button type="submit" style={{ background: '#10B981', color: 'white', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Add Package</button>
           </form>
 

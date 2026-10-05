@@ -13,8 +13,8 @@ let inMemoryTours = [
     price: 4999,
     photo: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800&auto=format&fit=crop',
     duration: '2 Days / 1 Night',
-    description: 'Explore Venna Lake, Elephant Head Point, Mapro Garden & Panchgani Tableland with private EV limo.',
-    highlights: ['Doorstep Pick & Drop', 'Mapro Garden Visit', 'Venna Lake Boating', '100% Private Limo AC']
+    description: 'Explore Venna Lake, Elephant Head Point, Mapro Garden & Panchgani Tableland in a premium car with a skilled driver.',
+    highlights: ['Convenient Pickup', 'Mapro Garden Visit', 'Venna Lake Boating', 'Private, Air-Conditioned Car']
   },
   {
     _id: 'tour_2',
@@ -58,13 +58,13 @@ let inMemoryTours = [
   },
   {
     _id: 'tour_6',
-    title: 'Kolhapur Mahalaxmi Temple & Rankala Lake Express',
-    destination: 'Kolhapur',
+    title: 'Temple & Lakeside Heritage Tour',
+    destination: 'Maharashtra',
     price: 4499,
     photo: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop',
     duration: '1 Day Full Tour',
     description: 'Shree Mahalaxmi Ambabai Darshan, Panhala Fort heritage walk, and Rankala Lake sunset.',
-    highlights: ['Mahalaxmi Temple VIP Line', 'Panhala Fort Fortification', 'Rankala Chowpatty', 'Authentic Kolhapuri Thali']
+    highlights: ['Temple Visit', 'Historic Fort', 'Lakeside Stop', 'Local Cuisine']
   }
 ];
 

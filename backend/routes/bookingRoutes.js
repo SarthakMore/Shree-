@@ -20,8 +20,15 @@ router.get('/', requireAdmin, async (req, res) => {
 });
 
 // @route   POST /api/bookings
-// @desc    Create a new shared cab booking with Tiered Seat Position Pricing
+// @desc    Create a vehicle booking
 router.post('/', async (req, res) => {
+  if (process.env.SHARED_CAB_BOOKINGS_ENABLED !== 'true') {
+    return res.status(503).json({
+      success: false,
+      message: 'Bookings are temporarily unavailable.'
+    });
+  }
+
   try {
     const { name, phone, pickup, drop, date, time, seatPosition, passengers, vehicle, totalFare, specialNotes, driverName } = req.body;
 

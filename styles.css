@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SHREE VENKATESWARA EXPRESS - KOLHAPUR ⇄ PUNE SHARED CABS
+  SHREE VENKATESWARA PREMIUM CAR RENTALS
   Design System: 8px Grid | Deep Navy, Muted Teal & Soft Sage
    ========================================================================== */
 
@@ -215,6 +215,21 @@ h4 {
   align-items: center;
   justify-content: space-between;
   height: 72px;
+}
+
+.header .navbar>nav {
+  flex: 1;
+  min-width: 0;
+  margin: 0 24px;
+}
+
+.header .nav-menu {
+  justify-content: center;
+  gap: 20px;
+}
+
+.header .nav-link {
+  white-space: nowrap;
 }
 
 .logo {
@@ -862,6 +877,45 @@ h4 {
 
 /* RESPONSIVE DESIGN BREAKPOINTS */
 @media (max-width: 992px) {
+  .header .navbar {
+    gap: 8px;
+  }
+
+  .header .navbar>nav {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .header .hamburger-btn {
+    display: block;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .header .nav-menu {
+    position: fixed;
+    top: calc(72px + env(safe-area-inset-top));
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px;
+    gap: 20px;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-150%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .header .nav-menu.is-active {
+    transform: translateY(0);
+  }
+
+  .header .nav-link {
+    display: block;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
   }
@@ -1744,5 +1798,81 @@ a[style*="#EA580C" i] {
 
   .admin-stat-cards {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    gap: 8px;
+  }
+
+  .navbar .logo {
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .navbar .logo-image {
+    width: 48px;
+    height: 48px;
+  }
+
+  .navbar .logo-text-box h1 {
+    font-size: 0.9rem;
+  }
+
+  .navbar .logo-text-box span {
+    font-size: 0.6rem;
+  }
+
+  .hamburger-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .hero h1 {
+    font-size: 2rem !important;
+  }
+
+  .section-padding {
+    padding: 56px 0;
+  }
+
+  .packages-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .package-card {
+    min-width: 0;
+    padding: 20px;
+  }
+
+  .package-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .navbar>div:last-child>.btn-secondary {
+    display: none;
+  }
+
+  .navbar .logo-image {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar .logo-text-box h1 {
+    font-size: 0.8rem;
+  }
+
+  .nav-menu {
+    top: calc(72px + env(safe-area-inset-top));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
 }

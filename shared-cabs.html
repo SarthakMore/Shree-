@@ -2,253 +2,72 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Daily Shared Cab Schedule | Shree Venkateshwara Express</title>
-
-  <!-- Google Fonts & Font Awesome Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=9.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2a8c7b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Shree Rentals">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="description" content="Additional rental services from Shree Venkateshwara Car Rentals are coming soon.">
+    <title>Additional Rental Services Coming Soon | Shree Venkateshwara Car Rentals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
-
-  <!-- HEADER / NAVBAR (EXCLUSIVELY FOR CUSTOMERS - ADMIN REMOVED FROM HEADER) -->
-  <header class="header">
-    <div class="container navbar">
-      <a href="index.html" class="logo">
-        <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
-        <div class="logo-text-box">
-          <h1>SHREE VENKATESHWARA</h1>
-          <span>EXPRESS SHARED CABS</span>
-        </div>
-      </a>
-
-      <nav>
-        <ul class="nav-menu" id="nav-menu">
-          <li><a href="index.html" class="nav-link">Home</a></li>
-          <li><a href="login.html" class="nav-link">Login Portal</a></li>
-          <li><a href="shared-cabs.html" class="nav-link active">Daily Shared Cabs</a></li>
-          <li><a href="fleet.html" class="nav-link">Our Fleet</a></li>
-          <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
-        </ul>
-      </nav>
-
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <a href="tel:+918669410303" class="btn btn-secondary"
-          style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
-          <i class="fa-solid fa-phone"></i> 866 941 0303
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <main style="padding: 48px 0; background: #F8FAFC;">
-    <div class="container" style="max-width: 1040px;">
-
-      <div class="section-header" style="margin-bottom: 32px;">
-        <span class="badge"><i class="fa-solid fa-van-shuttle"></i> Shared Cab Engine</span>
-        <h2>Daily Shared Cab Schedule: Kolhapur ⇄ Pune</h2>
-        <p>Select your preferred row — <strong>Front Row (Max 1 Seat)</strong>, <strong>Middle Row (Max 3
-            Seats)</strong>, or <strong>Third Row (Max 2 Seats)</strong>!</p>
-      </div>
-
-      <!-- HERO QUICK BOOKING FORM WITH PER-ROW SEAT SELECTION -->
-      <div class="booking-card" id="booking-form-section"
-        style="background: #FFFFFF; border-radius: 16px; padding: 32px; border: 1px solid #E2E8F0; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
-        <div class="booking-card-header">
-          <h3><i class="fa-solid fa-calendar-check" style="color: var(--primary);"></i> Reserve Your Seat</h3>
-          <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 4px;">VinFast Limo Green EV (Per-Row
-            Passenger Limits)</p>
-        </div>
-
-        <!-- Inline Status Banner -->
-        <div id="cab-status-banner"
-          style="display:none; padding:12px 16px; borderRadius:10px; fontWeight:bold; fontSize:0.9rem; margin-bottom:20px; align-items:center; gap:8px;">
-        </div>
-
-        <form id="hero-booking-form" novalidate>
-          <div class="booking-form-grid">
-
-            <!-- Pickup Dropdown -->
-            <div class="form-group">
-              <label for="pickup-select" class="form-label">From (Pickup)</label>
-              <select id="pickup-select" class="form-control" required>
-                <option value="Kolhapur (CBS Stand)" selected>Kolhapur (CBS / Kawala Naka)</option>
-                <option value="Kolhapur (Tarabai Park)">Kolhapur (Tarabai Park)</option>
-                <option value="Karad (Highway Bypass)">Karad (Bypass)</option>
-                <option value="Satara (Bypass)">Satara (Bypass)</option>
-                <option value="Shirwal (Parge Chowk)">Shirwal (Parge Chowk)</option>
-                <option value="Pune (Swargate)">Pune (Swargate)</option>
-                <option value="Pune (Katraj Stand)">Pune (Katraj Stand)</option>
-                <option value="Pune (Wakad Bypass)">Pune (Wakad Bypass)</option>
-              </select>
-              <span class="error-message">Please select pickup city</span>
-            </div>
-
-            <!-- Destination Dropdown -->
-            <div class="form-group">
-              <label for="drop-select" class="form-label">To (Drop)</label>
-              <select id="drop-select" class="form-control" required>
-                <option value="Pune (Swargate)" selected>Pune (Swargate)</option>
-                <option value="Pune (Katraj Stand)">Pune (Katraj Stand)</option>
-                <option value="Pune (Wakad Bypass)">Pune (Wakad Bypass)</option>
-                <option value="Pune (Airport PNQ)">Pune Airport (PNQ)</option>
-                <option value="Shirwal (Parge Chowk)">Shirwal (Parge Chowk)</option>
-                <option value="Satara (Bypass)">Satara (Bypass)</option>
-                <option value="Karad (Bypass)">Karad (Bypass)</option>
-                <option value="Kolhapur (CBS Stand)">Kolhapur (CBS Stand)</option>
-              </select>
-              <span class="error-message">Please select drop city</span>
-            </div>
-
-            <!-- Date Picker -->
-            <div class="form-group">
-              <label for="date-input" class="form-label">Date of Travel</label>
-              <input type="date" id="date-input" class="form-control" required>
-              <span class="error-message">Please select a valid date</span>
-            </div>
-
-            <!-- SEAT ROW SELECTION WITH DYNAMIC PASSENGER LIMIT -->
-            <div class="form-group">
-              <label for="row-select" class="form-label">Seat Row Tier</label>
-              <select id="row-select" class="form-control" required>
-                <option value="front" selected>Front Row (Max 1 Seat)</option>
-                <option value="middle">Middle Row (Max 3 Seats)</option>
-                <option value="third">Third Row (Max 2 Seats)</option>
-              </select>
-            </div>
-
-            <!-- Passengers Input -->
-            <div class="form-group">
-              <label for="passengers-input" class="form-label">Passengers Count</label>
-              <input type="number" id="passengers-input" class="form-control" min="1" max="1" value="1" required>
-              <span class="error-message" id="passenger-limit-msg">Front row limit is max 1 passenger</span>
-            </div>
-
-            <!-- Passenger Name -->
-            <div class="form-group full-width">
-              <label for="name-input" class="form-label">Full Name</label>
-              <input type="text" id="name-input" class="form-control" placeholder="e.g. Sarthak Patil" required>
-              <span class="error-message">Full name is required</span>
-            </div>
-
-            <!-- Phone Number -->
-            <div class="form-group full-width">
-              <label for="phone-input" class="form-label">Phone Number</label>
-              <input type="tel" id="phone-input" class="form-control" placeholder="e.g. 866 941 0303" required>
-              <span class="error-message">Phone number is required</span>
-            </div>
-          </div>
-
-          <!-- VISUAL SEAT SELECTION & INTERACTIVE CAB MAP -->
-          <div class="seat-selection-container">
-            <div class="seat-selection-header">
-              <h4><i class="fa-solid fa-chair" style="color:var(--primary);"></i> Pick Seat directly on Interactive
-                Layout</h4>
-              <span class="capacity-tag">Max 6 Passengers Capacity (1 Front + 3 Middle + 2 Rear)</span>
-            </div>
-
-            <!-- Rates managed dynamically by admin panel -->
-
-            <!-- CAR CABIN MAP -->
-            <div class="car-cabin-map">
-              <div class="cabin-label">FRONT WINDSHIELD / HOOD</div>
-
-              <!-- ROW 1: DRIVER & FRONT SEAT -->
-              <div class="seat-row-container">
-                <span class="row-tag">Row 1 (Front - Max 1 Seat)</span>
-                <div class="seats-flex">
-                  <div class="seat-box driver-box">
-                    <i class="fa-solid fa-steering-wheel"></i>
-                    <span>Driver</span>
-                  </div>
-                  <button type="button" class="seat-btn seat-front-btn selected" data-row="front" data-seat-id="F1">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Front P1</span>
-                  </button>
+    <header class="header">
+        <div class="container navbar">
+            <a href="index.html" class="logo" aria-label="Shree Venkateshwara Car Rentals home">
+                <img src="images/logo.jpeg" alt="Shree Venkateshwara" class="logo-image" />
+                <div class="logo-text-box">
+                    <h1>SHREE VENKATESHWARA</h1>
+                    <span>PREMIUM CAR RENTALS</span>
                 </div>
-              </div>
-
-              <!-- ROW 2: MIDDLE ROW (MAX 3 SEATS) -->
-              <div class="seat-row-container">
-                <span class="row-tag">Row 2 (Middle - Max 3 Seats)</span>
-                <div class="seats-flex">
-                  <button type="button" class="seat-btn seat-middle-btn" data-row="middle" data-seat-id="M1">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Middle Left</span>
-                  </button>
-                  <button type="button" class="seat-btn seat-middle-btn" data-row="middle" data-seat-id="M2">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Middle Center</span>
-                  </button>
-                  <button type="button" class="seat-btn seat-middle-btn" data-row="middle" data-seat-id="M3">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Middle Right</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- ROW 3: THIRD ROW (MAX 2 SEATS) -->
-              <div class="seat-row-container">
-                <span class="row-tag">Row 3 (Back - Max 2 Seats)</span>
-                <div class="seats-flex">
-                  <button type="button" class="seat-btn seat-third-btn" data-row="third" data-seat-id="T1">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Rear Left</span>
-                  </button>
-                  <button type="button" class="seat-btn seat-third-btn" data-row="third" data-seat-id="T2">
-                    <i class="fa-solid fa-chair"></i>
-                    <span class="seat-name">Rear Right</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="cabin-label" style="margin-top:16px;">REAR LUGGAGE TRUNK</div>
+            </a>
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="login.html" class="nav-link">Login Portal</a></li>
+                    <li><a href="shared-cabs.html" class="nav-link active" title="Coming Soon"
+                            aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                                aria-hidden="true"></i> Coming Soon</a></li>
+                    <li><a href="fleet.html" class="nav-link">Rent A Car</a></li>
+                    <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+                </ul>
+            </nav>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="tel:+918669410303" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+                    <i class="fa-solid fa-phone"></i> 866 941 0303
+                </a>
+                <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu"
+                    aria-controls="nav-menu" aria-expanded="false" type="button">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
+        </div>
+    </header>
 
-            <!-- SELECTION SUMMARY BAR -->
-            <div class="selection-summary-bar"
-              style="margin-top:20px; background:#F8FAFC; padding:16px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <span style="font-size:0.85rem; color:var(--text-muted);">Selected Seat(s):</span>
-                <div id="selected-seats-list" style="margin-top:4px; font-weight:bold;">Front P1 (₹650)</div>
-              </div>
-              <div style="text-align:right;">
-                <span style="font-size:0.85rem; color:var(--text-muted);">Total Estimated Fare:</span>
-                <div id="total-fare-amount" style="font-size:1.6rem; font-weight:800; color:var(--primary);">₹650</div>
-              </div>
-            </div>
+    <main style="min-height: 55vh; display: grid; place-items: center; padding: 64px 20px; background: #F8FAFC;">
+        <section style="max-width: 680px; text-align: center;">
+            <span class="badge"><i class="fa-regular fa-clock" aria-hidden="true"></i> Coming Soon</span>
+            <h2 style="margin: 16px 0 10px;">Additional Rental Services</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">We're preparing more convenient rental options.
+                Contact us for premium cars with or without a skilled driver.</p>
+            <a href="tel:+918669410303" class="btn btn-primary"><i class="fa-solid fa-phone"></i> Call 866 941 0303</a>
+        </section>
+    </main>
 
-          </div>
-
-          <button type="submit" id="book-submit-btn" class="btn btn-primary"
-            style="width: 100%; margin-top: 20px; padding: 14px; font-size: 1.05rem;">
-            <i class="fa-solid fa-paper-plane"></i> Confirm Seat Reservation & Get WhatsApp Ticket
-          </button>
-        </form>
-      </div>
-
-    </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container" style="text-align: center;">
-      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
-    </div>
-  </footer>
-
-  <script src="script.js?v=7.0"></script>
+    <footer class="footer">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

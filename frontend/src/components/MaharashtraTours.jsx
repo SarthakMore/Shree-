@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE } from '../api';
 
+const customerCopy = (value = '') => String(value)
+  .replace(/100%\s*(?:Electric|EV)|Zero Emissions?/gi, 'Premium comfort')
+  .replace(/\b(?:VinFast|Electric|EV|Shared Cabs?|Kolhapur|Pune)\b/gi, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+
 export default function MaharashtraTours() {
   const [tours, setTours] = useState([]);
   useEffect(() => {
@@ -23,11 +29,11 @@ export default function MaharashtraTours() {
       `*NEW TOUR PACKAGE BOOKING - SHREE VENKATESHWARA EXPRESS*\n\n` +
       `👤 *Passenger Name:* ${passName}\n` +
       `📞 *Contact Phone:* ${passPhone}\n` +
-      `🗺️ *Selected Tour Package:* ${pkg.title}\n` +
+      `🗺️ *Selected Tour Package:* ${customerCopy(pkg.title)}\n` +
       `💰 *Package Rate:* ₹${pkg.price} (Full Private Vehicle)\n` +
       `⏱️ *Duration:* ${pkg.duration || '1 Day Tour'}\n` +
-      `⚡ *Vehicle Fleet:* VinFast Limo Green EV / AC Outstation Cab\n\n` +
-      `Please confirm my tour package booking and driver assignment!`
+      `🚘 *Rental:* Premium air-conditioned car with a skilled driver\n\n` +
+      `Please confirm my tour package and pickup details!`
     );
 
     window.open(`https://wa.me/918669410303?text=${waMsg}`, '_blank');
@@ -65,21 +71,21 @@ export default function MaharashtraTours() {
 
                 <div style={{ padding: '24px 24px 12px' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 'bold', background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB', padding: '4px 10px', borderRadius: '9999px' }}>
-                    <i className="fa-solid fa-route"></i> {pkg.destination || 'Maharashtra'} • {pkg.duration || '1 Day Tour'}
+                    <i className="fa-solid fa-route"></i> {customerCopy(pkg.destination || 'Maharashtra')} • {pkg.duration || '1 Day Tour'}
                   </span>
 
                   <h3 style={{ fontSize: '1.25rem', fontWeight: '800', margin: '10px 0 6px', color: '#111827' }}>
-                    {pkg.title}
+                    {customerCopy(pkg.title)}
                   </h3>
 
                   <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0 0 16px', lineHeight: 1.5 }}>
-                    {pkg.description}
+                    {customerCopy(pkg.description)}
                   </p>
 
                   <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(pkg.highlights || ['Doorstep Pick & Drop', '100% AC Comfort']).map((item, i) => (
+                    {(pkg.highlights || ['Convenient Pickup', 'Premium comfort']).map((item, i) => (
                       <li key={i} style={{ fontSize: '0.85rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <i className="fa-solid fa-check" style={{ color: '#10B981' }}></i> {item}
+                        <i className="fa-solid fa-check" style={{ color: '#10B981' }}></i> {customerCopy(item)}
                       </li>
                     ))}
                   </ul>

@@ -6,9 +6,36 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').catch(() => { });
+  }
+
   const API_BASE = 'http://localhost:5000';
   const HOTLINE_NUMBER = '918669410303';
   const HOTLINE_TEXT = '866 941 0303';
+  const rentalDisplayText = (value, fallback = 'Premium Car') => {
+    const cleaned = String(value || '')
+      .replace(/100%\s*(?:Electric|EV)|Zero Emissions?/gi, 'Premium comfort')
+      .replace(/\b(?:VinFast|Electric|EV|Shared Cabs?|Kolhapur|Pune)\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return cleaned || fallback;
+  };
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+  const safePhotoUrl = value => {
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+    } catch {
+      return '';
+    }
+  };
 
   async function adminFetch(url, options = {}) {
     const token = localStorage.getItem('sv_admin_token');
@@ -57,28 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. FROM & TO DROPDOWN AUTO-POPULATE OPPOSITE CITY
-  const pickupSelect = document.getElementById('pickup-select');
-  const dropSelect = document.getElementById('drop-select');
-
-  if (pickupSelect && dropSelect) {
-    pickupSelect.addEventListener('change', () => {
-      if (pickupSelect.value.startsWith('Kolhapur') && dropSelect.value.startsWith('Kolhapur')) {
-        dropSelect.value = 'Pune (Swargate)';
-      } else if (pickupSelect.value.startsWith('Pune') && dropSelect.value.startsWith('Pune')) {
-        dropSelect.value = 'Kolhapur (CBS Stand)';
-      }
-    });
-
-    dropSelect.addEventListener('change', () => {
-      if (dropSelect.value.startsWith('Pune') && pickupSelect.value.startsWith('Pune')) {
-        pickupSelect.value = 'Kolhapur (CBS Stand)';
-      } else if (dropSelect.value.startsWith('Kolhapur') && pickupSelect.value.startsWith('Kolhapur')) {
-        pickupSelect.value = 'Pune (Swargate)';
-      }
-    });
-  }
-
   // 3. DATE PICKER - PREVENT PAST DATES
   const dateInput = document.getElementById('date-input');
   if (dateInput) {
@@ -102,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     thirdSeatFare: 450,
     ratePerKm: 14,
     cabStatus: 'AVAILABLE',
-    statusNote: 'VinFast Limo Green EV is accepting reservations for upcoming hourly slots.'
+    statusNote: 'Premium car rentals are available with or without a professional driver.'
   };
   let settingsSyncVersion = 0;
 
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passengerLimitMsg.innerHTML = `<i class="fa-solid fa-couch" style="color:var(--primary);"></i> <strong>Middle Row Selected:</strong> Comfort Seats for up to 3 Passengers (₹${liveSettings.middleSeatFare} per seat)`;
       } else {
         passengerLimitMsg.style.display = 'block';
-        passengerLimitMsg.innerHTML = `<i class="fa-solid fa-chair" style="color:var(--text-muted);"></i> <strong>Third Row Selected:</strong> Economy Shared Seats for up to 3 Passengers (₹${liveSettings.thirdSeatFare} per seat)`;
+        passengerLimitMsg.innerHTML = `<i class="fa-solid fa-chair" style="color:var(--text-muted);"></i> <strong>Rear seats selected:</strong> Up to 3 passengers (₹${liveSettings.thirdSeatFare} per seat)`;
       }
     }
 
@@ -237,12 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
             statusBanner.style.display = 'flex';
             statusBanner.style.backgroundColor = '#FEE2E2';
             statusBanner.style.color = '#991B1B';
-            statusBanner.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>SORRY, TODAY'S HOURLY CAB SLOTS ARE FULL!</strong> ${liveSettings.statusNote}`;
+            statusBanner.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>THIS VEHICLE IS CURRENTLY UNAVAILABLE.</strong> ${liveSettings.statusNote}`;
           }
           if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.5';
-            submitBtn.innerHTML = `<i class="fa-solid fa-ban"></i> CAB SLOTS FULL - CALL ${HOTLINE_TEXT}`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-ban"></i> VEHICLE UNAVAILABLE - CALL ${HOTLINE_TEXT}`;
           }
         } else {
           if (statusBanner) {
@@ -254,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.style.opacity = '1';
-            submitBtn.innerHTML = '<i class="fa-solid fa-ticket"></i> Confirm Seat Reservation & Get WhatsApp Ticket';
+            submitBtn.innerHTML = '<i class="fa-solid fa-car-side"></i> Request Rental Confirmation';
           }
         }
 
@@ -284,44 +289,117 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('fleet-cars-container');
     if (!container) return;
 
-    container.innerHTML = cars.map(car => `
-      <div class="vehicle-card" style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:16px; overflow:hidden; transition:transform 0.2s, box-shadow 0.2s;">
-        <div style="position:relative; height:200px; overflow:hidden;">
-          <img src="${car.photo}" alt="${car.name}" style="width:100%; height:100%; object-fit:cover;">
-          <span style="position:absolute; top:12px; right:12px; background:#10B981; color:#FFFFFF; padding:4px 12px; border-radius:9999px; font-weight:bold; font-size:0.75rem;">
-            ₹${car.ratePerKm}/km Rate
-          </span>
-          <span style="position:absolute; top:12px; left:12px; background:rgba(15,23,42,0.85); color:#FFFFFF; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600;">
-            ${car.category}
-          </span>
-        </div>
-        <div style="padding:20px;">
-          <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:8px; color:#0F172A;">${car.name}</h3>
-          <div style="display:flex; gap:16px; color:#64748B; font-size:0.88rem; margin-bottom:14px;">
-            <span><i class="fa-solid fa-users" style="color:var(--primary);"></i> ${car.capacity} Seats</span>
-            <span><i class="fa-solid fa-gauge-high" style="color:#10B981;"></i> ₹${car.ratePerKm}/km Rate</span>
-            <span><i class="fa-solid fa-clock" style="color:#EAB308;"></i> ₹${car.hourlyRate}/hr</span>
+    container.innerHTML = cars.map(car => {
+      const photos = (Array.isArray(car.photos) && car.photos.length ? car.photos : [car.photo])
+        .map(safePhotoUrl)
+        .filter(Boolean)
+        .slice(0, 5);
+      const carName = rentalDisplayText(car.name);
+      const rate = Number(car.ratePerKm) || 14;
+      const photoGallery = photos.length > 1 ? `
+        <div style="display:flex; gap:8px; padding:10px 12px; overflow-x:auto;">
+          ${photos.map((photo, index) => `<button type="button" class="fleet-photo-thumb" data-photo-src="${escapeHtml(photo)}" aria-label="Show photo ${index + 1} of ${escapeHtml(carName)}" style="border:1px solid #CBD5E1; padding:0; border-radius:6px; width:56px; height:44px; flex:0 0 auto; overflow:hidden; cursor:pointer; background:#F8FAFC;"><img src="${escapeHtml(photo)}" alt="" style="width:100%; height:100%; object-fit:cover;"></button>`).join('')}
+        </div>` : '';
+
+      return `
+        <div class="vehicle-card" style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:16px; overflow:hidden; transition:transform 0.2s, box-shadow 0.2s;">
+          <div style="position:relative; height:220px; overflow:hidden;">
+            <img class="vehicle-photo" src="${escapeHtml(photos[0] || '')}" alt="${escapeHtml(carName)}" style="width:100%; height:100%; object-fit:cover;">
+            <span style="position:absolute; top:12px; right:12px; background:#10B981; color:#FFFFFF; padding:4px 12px; border-radius:9999px; font-weight:bold; font-size:0.75rem;">
+              ₹${rate}/km
+            </span>
+            <span style="position:absolute; top:12px; left:12px; background:rgba(15,23,42,0.85); color:#FFFFFF; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600;">
+              ${escapeHtml(rentalDisplayText(car.category))}
+            </span>
           </div>
-          <ul style="list-style:none; padding:0; margin:0 0 16px; font-size:0.82rem; color:#475569;">
-            ${(car.features || []).map(f => `<li style="margin-bottom:4px;"><i class="fa-solid fa-check" style="color:#10B981; margin-right:6px;"></i>${f}</li>`).join('')}
-          </ul>
-          <button onclick="dispatchCarHireWhatsApp('${car.name}', ${car.ratePerKm})" class="btn btn-primary" style="width:100%; text-align:center; padding:10px; font-weight:700; cursor:pointer;">
-            <i class="fa-brands fa-whatsapp"></i> Hire Car at ₹${car.ratePerKm}/km
-          </button>
-        </div>
-      </div>
-    `).join('');
+          ${photoGallery}
+          <div style="padding:20px;">
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:8px; color:#0F172A;">${escapeHtml(carName)}</h3>
+            <div style="display:flex; gap:16px; color:#64748B; font-size:0.88rem; margin-bottom:14px;">
+              <span><i class="fa-solid fa-users" style="color:var(--primary);"></i> ${Number(car.capacity) || 0} Seats</span>
+              <span><i class="fa-solid fa-gauge-high" style="color:#10B981;"></i> ₹${rate}/km</span>
+              <span><i class="fa-solid fa-clock" style="color:#EAB308;"></i> ₹${Number(car.hourlyRate) || 0}/hr</span>
+            </div>
+            <ul style="list-style:none; padding:0; margin:0 0 16px; font-size:0.82rem; color:#475569;">
+              ${(car.features || []).map(feature => `<li style="margin-bottom:4px;"><i class="fa-solid fa-check" style="color:#10B981; margin-right:6px;"></i>${escapeHtml(rentalDisplayText(feature, 'Premium comfort'))}</li>`).join('')}
+            </ul>
+            <button type="button" class="fleet-hire-car btn btn-primary" data-car-name="${escapeHtml(carName)}" data-rate="${rate}" style="width:100%; text-align:center; padding:10px; font-weight:700; cursor:pointer;">
+              <i class="fa-brands fa-whatsapp"></i> Hire Car at ₹${rate}/km
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+
+    container.querySelectorAll('.fleet-photo-thumb').forEach(button => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.vehicle-card');
+        const mainPhoto = card?.querySelector('.vehicle-photo');
+        if (mainPhoto) mainPhoto.src = button.dataset.photoSrc;
+      });
+    });
+
+    container.querySelectorAll('.fleet-hire-car').forEach(button => {
+      button.addEventListener('click', () => {
+        openCarHireModal(button.dataset.carName, Number(button.dataset.rate));
+      });
+    });
   }
 
-  window.dispatchCarHireWhatsApp = function (name, rateKm) {
-    const msg = encodeURIComponent(
-      `*VEHICLE RENTAL INQUIRY - SHREE VENKATESHWARA EXPRESS*\n\n` +
-      `🚗 *Vehicle Model:* ${name}\n` +
-      `💳 *Rate per KM:* ₹${rateKm}/km AC Outstation Hire\n\n` +
-      `Please confirm car availability and pickup slot!`
-    );
-    safeWhatsAppDispatch(msg);
-  };
+  const carHireModal = document.getElementById('car-hire-modal');
+  const carHireForm = document.getElementById('car-hire-form');
+  const closeCarHireModalBtn = document.getElementById('close-car-hire-modal');
+
+  function closeCarHireModal() {
+    if (!carHireModal) return;
+    carHireModal.classList.remove('is-open');
+    carHireModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function openCarHireModal(name, rateKm) {
+    if (!carHireModal) return;
+    const currentDate = new Date();
+    const minimumDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    carHireModal.dataset.carName = name;
+    carHireModal.dataset.rateKm = String(rateKm);
+    document.getElementById('car-hire-title').textContent = name;
+    document.getElementById('car-hire-rate').textContent = `₹${rateKm}/km`;
+    document.getElementById('car-hire-date').min = minimumDate;
+    carHireModal.classList.add('is-open');
+    carHireModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('car-hire-name').focus();
+  }
+
+  if (closeCarHireModalBtn) closeCarHireModalBtn.addEventListener('click', closeCarHireModal);
+  if (carHireModal) {
+    carHireModal.addEventListener('click', event => {
+      if (event.target === carHireModal) closeCarHireModal();
+    });
+  }
+  if (carHireForm) {
+    carHireForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = document.getElementById('car-hire-name').value.trim();
+      const phone = document.getElementById('car-hire-phone').value.trim();
+      const date = document.getElementById('car-hire-date').value;
+      const destination = document.getElementById('car-hire-destination').value.trim();
+      const driverOption = carHireForm.querySelector('input[name="car-hire-driver-option"]:checked')?.value || 'With driver';
+      const message = encodeURIComponent(
+        `*CAR RENTAL ENQUIRY - SHREE VENKATESHWARA*\n\n` +
+        `*Name:* ${name}\n` +
+        `*Phone:* ${phone}\n` +
+        `*Trip date:* ${date}\n` +
+        `*Car:* ${carHireModal.dataset.carName}\n` +
+        `*Rate:* ₹${carHireModal.dataset.rateKm}/km\n` +
+        `*Destination:* ${destination}\n` +
+        `*Rental option:* ${driverOption}`
+      );
+      safeWhatsAppDispatch(message);
+      carHireForm.reset();
+      closeCarHireModal();
+    });
+  }
 
   function renderAdminCarsList(cars) {
     const listEl = document.getElementById('admin-cars-list');
@@ -329,16 +407,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     listEl.innerHTML = cars.map(car => `
       <div style="background:#F8FAFC; border:1px solid #CBD5E1; border-radius:12px; padding:14px; display:flex; gap:12px; align-items:center;">
-        <img src="${car.photo}" alt="${car.name}" style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
+        <img src="${escapeHtml(safePhotoUrl(car.photo))}" alt="${escapeHtml(rentalDisplayText(car.name))}" style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
         <div style="flex:1;">
-          <h5 style="margin:0; font-size:0.95rem; font-weight:700;">${car.name}</h5>
-          <span style="font-size:0.75rem; color:#64748B;">${car.category} • ₹${car.ratePerKm}/km • ${car.capacity} Seats</span>
+          <h5 style="margin:0; font-size:0.95rem; font-weight:700;">${escapeHtml(rentalDisplayText(car.name))}</h5>
+          <span style="font-size:0.75rem; color:#64748B;">${escapeHtml(rentalDisplayText(car.category))} • ₹${Number(car.ratePerKm) || 0}/km • ${Number(car.photos?.length || (car.photo ? 1 : 0))} photos • ${Number(car.capacity) || 0} Seats</span>
         </div>
+        <button type="button" class="edit-car-record btn btn-secondary" data-car-id="${escapeHtml(car._id)}" aria-label="Edit ${escapeHtml(rentalDisplayText(car.name))}" style="padding:6px 10px; font-size:0.75rem;">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
         <button onclick="deleteCarRecord('${car._id}')" class="btn btn-accent" style="padding:6px 12px; font-size:0.75rem; background:#EF4444; border-color:#EF4444;">
           <i class="fa-solid fa-trash"></i>
         </button>
       </div>
     `).join('');
+
+    listEl.querySelectorAll('.edit-car-record').forEach(button => {
+      button.addEventListener('click', () => window.editCarRecord(button.dataset.carId));
+    });
+  }
+
+  window.editCarRecord = async function (id) {
+    try {
+      const response = await adminFetch(`${API_BASE}/api/cars`);
+      const result = await response.json();
+      const car = result.data?.find(item => item._id === id);
+      if (!result.success || !car) return;
+
+      const photos = (Array.isArray(car.photos) && car.photos.length ? car.photos : [car.photo || '']).slice(0, 5);
+      document.getElementById('car-input-edit-id').value = car._id;
+      document.getElementById('car-input-name').value = car.name || '';
+      document.getElementById('car-input-category').value = car.category || 'Premium SUV';
+      document.getElementById('car-input-ratekm').value = car.ratePerKm || 14;
+      document.getElementById('car-input-capacity').value = car.capacity || 7;
+      document.getElementById('car-input-hourly').value = car.hourlyRate || 450;
+      for (let index = 0; index < 5; index += 1) {
+        document.getElementById(`car-input-photo-${index + 1}`).value = photos[index] || '';
+      }
+      document.getElementById('car-form-title').textContent = `Edit ${rentalDisplayText(car.name)}`;
+      document.getElementById('car-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Car Changes';
+      document.getElementById('car-cancel-edit-btn').style.display = 'inline-flex';
+      document.getElementById('admin-add-car-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (err) {
+      alert('Unable to load car details for editing.');
+    }
+  };
+
+  const cancelCarEditBtn = document.getElementById('car-cancel-edit-btn');
+  if (cancelCarEditBtn) {
+    cancelCarEditBtn.addEventListener('click', () => {
+      document.getElementById('admin-add-car-form').reset();
+      document.getElementById('car-input-edit-id').value = '';
+      document.getElementById('car-form-title').textContent = 'Add Car to Fleet';
+      document.getElementById('car-submit-btn').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Car to Fleet';
+      cancelCarEditBtn.style.display = 'none';
+    });
   }
 
   window.deleteCarRecord = async function (id) {
@@ -446,29 +568,42 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addCarForm) {
     addCarForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const editId = document.getElementById('car-input-edit-id')?.value || '';
+      const photos = Array.from({ length: 5 }, (_, index) =>
+        document.getElementById(`car-input-photo-${index + 1}`)?.value.trim()
+      ).filter(Boolean);
+      if (photos.length < 2) {
+        alert('Add at least two car photo URLs.');
+        return;
+      }
       const payload = {
         name: document.getElementById('car-input-name')?.value,
         category: document.getElementById('car-input-category')?.value,
-        photo: document.getElementById('car-input-photo')?.value,
+        photo: photos[0],
+        photos,
         ratePerKm: document.getElementById('car-input-ratekm')?.value,
         capacity: document.getElementById('car-input-capacity')?.value,
         hourlyRate: document.getElementById('car-input-hourly')?.value
       };
 
       try {
-        const res = await adminFetch(`${API_BASE}/api/cars`, {
-          method: 'POST',
+        const res = await adminFetch(`${API_BASE}/api/cars${editId ? `/${editId}` : ''}`, {
+          method: editId ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
         if (data.success) {
-          alert('Car added to fleet successfully!');
+          alert(editId ? 'Car details updated successfully!' : 'Car added to fleet successfully!');
           addCarForm.reset();
+          document.getElementById('car-input-edit-id').value = '';
+          document.getElementById('car-form-title').textContent = 'Add Car to Fleet';
+          document.getElementById('car-submit-btn').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Car to Fleet';
+          document.getElementById('car-cancel-edit-btn').style.display = 'none';
           loadFleetCars();
         }
       } catch (err) {
-        alert('Car saved to memory fleet!');
+        alert(editId ? 'Failed to update car.' : 'Car saved to memory fleet!');
       }
     });
   }
@@ -761,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (pageSetAvailableBtn) {
     pageSetAvailableBtn.addEventListener('click', () => {
-      sendAdminSettingsUpdate({ cabStatus: 'AVAILABLE', statusNote: 'VinFast Limo Green EV is accepting reservations.' });
+      sendAdminSettingsUpdate({ cabStatus: 'AVAILABLE', statusNote: 'Premium car rentals are available.' });
     });
   }
 
@@ -1011,20 +1146,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 12. SHARED CAB RESERVATION SUBMIT HANDLER (MATCHES hero-booking-form & booking-form)
+  // 12. LEGACY BOOKING FORM HANDLER
   const bookingForm = document.getElementById('hero-booking-form') || document.getElementById('booking-form');
   if (bookingForm) {
     bookingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (liveSettings.cabStatus === 'FULL') {
-        alert(`Sorry, today's cab slots are FULL. Please call hotline ${HOTLINE_TEXT}.`);
+        alert(`This vehicle is currently unavailable. Please call ${HOTLINE_TEXT} for other rental options.`);
         return;
       }
 
       const passengerName = document.getElementById('name-input')?.value || 'Valued Passenger';
       const passengerPhone = document.getElementById('phone-input')?.value || HOTLINE_TEXT;
-      const pickup = document.getElementById('pickup-select')?.value || 'Kolhapur (CBS Stand)';
-      const drop = document.getElementById('drop-select')?.value || 'Pune (Swargate)';
+      const pickup = document.getElementById('pickup-select')?.value || 'Pickup Point';
+      const drop = document.getElementById('drop-select')?.value || 'Destination';
       const travelDate = document.getElementById('date-input')?.value || new Date().toISOString().split('T')[0];
       const travelTime = document.getElementById('time-select')?.value || '07:00 AM';
       const selectedRow = rowSelect ? rowSelect.value : 'front';
@@ -1045,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         time: travelTime,
         seatPosition: selectedRow === 'front' ? 'Front Row (VIP)' : selectedRow === 'middle' ? 'Middle Row (Comfort)' : 'Third Row (Economy)',
         passengers: seatCount,
-        vehicle: 'VinFast Limo Green EV',
+        vehicle: 'Premium Rental Car',
         totalFare: totalAmount,
         status: 'Confirmed',
         specialNotes: `Route: ${pickup} to ${drop}`
@@ -1066,15 +1201,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const waMsg = encodeURIComponent(
-        `*SHREE VENKATESHWARA EXPRESS - CONFIRMED CAB TICKET*\n\n` +
+        `*SHREE VENKATESHWARA - RENTAL REQUEST*\n\n` +
         `👤 *Passenger Name:* ${passengerName}\n` +
         `📞 *Contact Phone:* ${passengerPhone}\n` +
         `📍 *Route:* ${pickup} ➔ ${drop}\n` +
         `📅 *Date & Time:* ${travelDate} at ${travelTime}\n` +
         `💺 *Seat Selection:* ${selectedRow.toUpperCase()} Row (${seatCount} Seat${seatCount > 1 ? 's' : ''})\n` +
         `💳 *Total Ticket Fare:* ₹${totalAmount}\n` +
-        `🚗 *Vehicle Model:* VinFast Limo Green EV (100% Electric)\n\n` +
-        `Please issue driver details and boarding gate info!`
+        `🚘 *Vehicle:* Premium Rental Car\n\n` +
+        `Please confirm vehicle availability and pickup details.`
       );
 
       safeWhatsAppDispatch(waMsg);

@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2a8c7b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Shree Express">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app-icon-192.png">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -18,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=9.0">
+  <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 
 <body>
@@ -30,7 +35,7 @@
         <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
         <div class="logo-text-box">
           <h1>SHREE VENKATESHWARA</h1>
-          <span>EXPRESS SHARED CABS</span>
+          <span>PREMIUM CAR RENTALS</span>
         </div>
       </a>
 
@@ -38,8 +43,10 @@
         <ul class="nav-menu" id="nav-menu">
           <li><a href="index.html" class="nav-link">Home</a></li>
           <li><a href="login.html" class="nav-link">Login Portal</a></li>
-          <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
-          <li><a href="fleet.html" class="nav-link">Our Fleet</a></li>
+          <li><a href="shared-cabs.html" class="nav-link" title="Coming Soon"
+              aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                aria-hidden="true"></i> Coming Soon</a></li>
+          <li><a href="fleet.html" class="nav-link">Rent A Car</a></li>
           <li><a href="airport-tours.html" class="nav-link active">Airport & Tours</a></li>
         </ul>
       </nav>
@@ -49,6 +56,10 @@
           style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
           <i class="fa-solid fa-phone"></i> 866 941 0303
         </a>
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu" aria-controls="nav-menu"
+          aria-expanded="false" type="button">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -64,8 +75,7 @@
           </div>
           <h2>Airport Transfers & Outstation Full Vehicle Hire</h2>
           <p>
-            Book a full dedicated AC cab (VinFast Limo Green EV / Ertiga) for Pune Airport (PNQ), Mumbai Airport (BOM),
-            or family outstation travel. 100% private, door-step pickup, zero waiting time.
+            Book a premium car for airport transfers or private trips, with a skilled driver and convenient pickup.
           </p>
         </div>
 
@@ -93,7 +103,7 @@
             <div class="pkg-price">₹3,800 <span>/ full cab</span></div>
           </div>
           <h3>Mahabaleshwar & Panchgani Getaway</h3>
-          <p class="pkg-route">Kolhapur/Pune ➔ Panchgani ➔ Mapro Garden ➔ Arthur's Seat ➔ Venna Lake</p>
+          <p class="pkg-route">Flexible pickup ➔ Panchgani ➔ Mapro Garden ➔ Arthur's Seat ➔ Venna Lake</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> 1-Day or 2-Day Flexible Private Cab</li>
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Strawberry Farms & Viewpoints
@@ -114,11 +124,11 @@
             <div class="pkg-price">₹4,500 <span>/ full cab</span></div>
           </div>
           <h3>Shirdi Sai Baba Pilgrimage Express</h3>
-          <p class="pkg-route">Pune/Kolhapur ➔ Shirdi Temple ➔ Dwarkamai ➔ Shani Shingnapur</p>
+          <p class="pkg-route">Flexible pickup ➔ Shirdi Temple ➔ Dwarkamai ➔ Shani Shingnapur</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> VIP Darshan Assistance</li>
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Same-day or Overnight Return Trip</li>
-            <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Clean Quiet AC EV Comfort</li>
+            <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Comfortable, air-conditioned travel</li>
           </ul>
           <button class="btn btn-accent pkg-book-btn" data-pkg-name="Shirdi Sai Baba Pilgrimage Express"
             data-pkg-price="₹4,500">
@@ -134,7 +144,7 @@
             <div class="pkg-price">₹5,200 <span>/ full cab</span></div>
           </div>
           <h3>Konkan Coast & Ganpatipule Beach Tour</h3>
-          <p class="pkg-route">Kolhapur/Pune ➔ Ratnagiri ➔ Ganpatipule Beach & Temple ➔ Are Ware Beach Drive</p>
+          <p class="pkg-route">Flexible pickup ➔ Ratnagiri ➔ Ganpatipule Beach & Temple ➔ Are Ware Beach Drive</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Scenic Coastal Highway Drive</li>
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Ganpatipule Temple & Water Sports Stop
@@ -154,7 +164,7 @@
             <div class="pkg-price">₹3,200 <span>/ full cab</span></div>
           </div>
           <h3>Lonavala & Khandala Scenic Getaway</h3>
-          <p class="pkg-route">Pune ➔ Lonavala Lake ➔ Tiger Point ➔ Bhushi Dam ➔ Karla Caves</p>
+          <p class="pkg-route">Flexible pickup ➔ Lonavala Lake ➔ Tiger Point ➔ Bhushi Dam ➔ Karla Caves</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Express Highway Smooth Drive</li>
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Chikki Markets & Waterfall Viewpoints
@@ -175,7 +185,7 @@
             <div class="pkg-price">₹6,500 <span>/ full cab</span></div>
           </div>
           <h3>Ashtavinayak Darshan Special Circuit</h3>
-          <p class="pkg-route">Pune/Kolhapur ➔ 8 Sacred Ganesha Temples Circuit (Mayureshwar, Mahaganapati, etc.)</p>
+          <p class="pkg-route">Flexible pickup ➔ 8 Sacred Ganesha Temples Circuit (Mayureshwar, Mahaganapati, etc.)</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Complete 8-Temple Devotional Circuit
             </li>
@@ -188,23 +198,23 @@
           </button>
         </div>
 
-        <!-- Package 6: Kolhapur Mahalaxmi & Panhala Fort -->
+        <!-- Package 6: Temple & Panhala Fort -->
         <div class="package-card">
           <div class="package-header">
             <span class="pkg-tag" style="background:rgba(37, 99, 235, 0.1); color:var(--primary);"><i
                 class="fa-solid fa-landmark"></i> Heritage Circuit</span>
             <div class="pkg-price">₹2,800 <span>/ full cab</span></div>
           </div>
-          <h3>Kolhapur Mahalaxmi & Panhala Fort Tour</h3>
-          <p class="pkg-route">Kolhapur ➔ Mahalaxmi Ambabai Temple ➔ Rankala Lake ➔ Panhala Hill Fort</p>
+          <h3>Temple & Panhala Fort Tour</h3>
+          <p class="pkg-route">Flexible pickup ➔ Mahalaxmi Ambabai Temple ➔ Rankala Lake ➔ Panhala Hill Fort</p>
           <ul class="pkg-highlights">
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Sacred Temple Darshan & Fort Sightseeing
             </li>
-            <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Authentic Kolhapuri Misal & Food Stop
+            <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Local cuisine stop
             </li>
             <li><i class="fa-solid fa-check" style="color:var(--success);"></i> Flexible Pickup & Drop Timings</li>
           </ul>
-          <button class="btn btn-accent pkg-book-btn" data-pkg-name="Kolhapur Mahalaxmi & Panhala Fort Tour"
+          <button class="btn btn-accent pkg-book-btn" data-pkg-name="Temple & Panhala Fort Tour"
             data-pkg-price="₹2,800">
             <i class="fa-brands fa-whatsapp"></i> Reserve Package on WhatsApp
           </button>
@@ -242,7 +252,7 @@
         <div class="form-group" style="margin-bottom: 20px;">
           <label for="quote-details" class="form-label">Travel Details (Pickup, Destination, Date)</label>
           <textarea id="quote-details" class="form-control" style="height: 90px; padding: 12px; resize: none;"
-            placeholder="e.g. Pune Airport to Kolhapur on 28th Sep, 3 passengers" required></textarea>
+            placeholder="e.g. Airport transfer on 28th Sep, with driver" required></textarea>
         </div>
 
         <button type="submit" class="btn btn-accent" style="width: 100%; padding: 14px;">
@@ -254,11 +264,11 @@
 
   <footer class="footer">
     <div class="container" style="text-align: center;">
-      <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+      <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <script src="script.js?v=6.0"></script>
+  <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

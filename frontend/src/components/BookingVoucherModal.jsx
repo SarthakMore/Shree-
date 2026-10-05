@@ -14,7 +14,7 @@ export default function BookingVoucherModal({ booking, onClose }) {
     `👥 *Seats:* ${booking.passengers || booking.seatCount || 1} Seat(s)%0A` +
     `💳 *Total Fare:* ₹${(booking.totalFare || 0).toLocaleString('en-IN')}%0A` +
     `------------------------------------%0A` +
-    `Hotline: +91 866 941 0303. Please confirm VinFast EV dispatch!`;
+    `Hotline: +91 866 941 0303. Please confirm my car and driver details.`;
 
   const waUrl = `https://wa.me/918669410303?text=${whatsappText}`;
 
@@ -22,7 +22,7 @@ export default function BookingVoucherModal({ booking, onClose }) {
     <div className="modal-overlay">
       <div className="modal-container">
         <button className="modal-close" onClick={onClose}>&times;</button>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '16px' }}>
           <span style={{ background: '#DCFCE7', color: '#15803D', fontWeight: 'bold', fontSize: '0.8rem', padding: '4px 12px', borderRadius: '20px' }}>
             <i className="fa-solid fa-circle-check"></i> SEAT RESERVED IN DATABASE
@@ -48,7 +48,7 @@ export default function BookingVoucherModal({ booking, onClose }) {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '8px', marginBottom: '12px' }}>
             <span style={{ fontWeight: 'bold', color: '#64748B', fontSize: '0.85rem' }}>VEHICLE</span>
-            <span style={{ fontWeight: 'bold', color: '#0F172A' }}>VinFast Limo Green EV</span>
+            <span style={{ fontWeight: 'bold', color: '#0F172A' }}>Premium Rental Car</span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', paddingBottom: '8px', marginBottom: '12px' }}>

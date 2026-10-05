@@ -3,15 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Fleet | Shree Venkateshwara Express</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2a8c7b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Shree Express">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="images/app-icon-192.png">
+    <title>Rent A Car | Shree Venkateshwara</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=9.0">
+    <link rel="stylesheet" href="styles.css?v=10.0">
     <style>
         body {
             margin: 0;
@@ -51,7 +56,7 @@
                 <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
                 <div class="logo-text-box">
                     <h1>SHREE VENKATESHWARA</h1>
-                    <span>EXPRESS SHARED CABS</span>
+                    <span>PREMIUM CAR RENTALS</span>
                 </div>
             </a>
 
@@ -59,8 +64,10 @@
                 <ul class="nav-menu" id="nav-menu">
                     <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="login.html" class="nav-link">Login Portal</a></li>
-                    <li><a href="shared-cabs.html" class="nav-link">Daily Shared Cabs</a></li>
-                    <li><a href="fleet.html" class="nav-link active">Our Fleet</a></li>
+                    <li><a href="shared-cabs.html" class="nav-link" title="Coming Soon"
+                            aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
+                                aria-hidden="true"></i> Coming Soon</a></li>
+                    <li><a href="fleet.html" class="nav-link active">Rent A Car</a></li>
                     <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
                 </ul>
             </nav>
@@ -70,6 +77,10 @@
                     style="padding: 8px 16px; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">
                     <i class="fa-solid fa-phone"></i> 866 941 0303
                 </a>
+                <button class="hamburger-btn" id="hamburger-btn" aria-label="Toggle navigation menu"
+                    aria-controls="nav-menu" aria-expanded="false" type="button">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -77,11 +88,11 @@
     <main style="padding: 48px 0; background: #F8FAFC;">
         <div class="container" style="max-width: 1200px;">
             <div class="fleet-hero">
-                <span class="badge"><i class="fa-solid fa-car-side"></i> Electric Fleet</span>
-                <h2 style="margin-top: 12px; font-size: clamp(2rem, 4vw, 3rem);">Our Fleet & Rental Rates</h2>
+                <span class="badge"><i class="fa-solid fa-car-side"></i> Premium Cars</span>
+                <h2 style="margin-top: 12px; font-size: clamp(2rem, 4vw, 3rem);">Rent A Car & View Rates</h2>
                 <p style="margin-top: 12px; max-width: 760px; color: #475569; font-size: 1rem; line-height: 1.7;">
-                    Explore our current private hire and shared-cab fleet with live passenger capacity, EV comfort, and
-                    transparent per-km pricing.
+                    Explore premium cars for self-drive and chauffeur-driven rentals, with clear pricing and convenient
+                    booking.
                 </p>
             </div>
 
@@ -89,13 +100,57 @@
         </div>
     </main>
 
+    <div class="modal-backdrop" id="car-hire-modal" aria-hidden="true" role="dialog" aria-labelledby="car-hire-title">
+        <div class="modal-dialog">
+            <button type="button" id="close-car-hire-modal" class="modal-close-btn" aria-label="Close rental enquiry">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <span class="badge">CAR RENTAL ENQUIRY</span>
+            <h3 id="car-hire-title" style="margin:12px 36px 6px 0;">Request to Hire</h3>
+            <p id="car-hire-rate" style="margin-bottom:20px; color:var(--text-muted);"></p>
+            <form id="car-hire-form">
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="car-hire-name" class="form-label">Full name</label>
+                    <input type="text" id="car-hire-name" class="form-control" autocomplete="name" required>
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="car-hire-phone" class="form-label">Phone number</label>
+                    <input type="tel" id="car-hire-phone" class="form-control" autocomplete="tel" required>
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="car-hire-date" class="form-label">Trip date</label>
+                    <input type="date" id="car-hire-date" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label for="car-hire-destination" class="form-label">Destination</label>
+                    <input type="text" id="car-hire-destination" class="form-control"
+                        placeholder="Where would you like to go?" required>
+                </div>
+                <fieldset style="border:0; padding:0; margin:0 0 20px;">
+                    <legend class="form-label" style="margin-bottom:8px;">Rental option</legend>
+                    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+                        <label style="display:inline-flex; align-items:center; gap:8px;">
+                            <input type="radio" name="car-hire-driver-option" value="With driver" checked> With driver
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:8px;">
+                            <input type="radio" name="car-hire-driver-option" value="Self-drive"> Self-drive
+                        </label>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">
+                    <i class="fa-brands fa-whatsapp"></i> Continue to WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container" style="text-align: center;">
-            <p>&copy; 2026 Shree Venkateshwara Express Shared Cabs. All Rights Reserved.</p>
+            <p>&copy; 2026 Shree Venkateshwara Car Rentals. All Rights Reserved.</p>
         </div>
     </footer>
 
-    <script src="script.js?v=7.0"></script>
+    <script src="script.js?v=10.0"></script>
 </body>
 
 </html>

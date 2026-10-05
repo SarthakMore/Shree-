@@ -10,10 +10,10 @@ export default function ImportantInfo({ onOpenQuote }) {
           </div>
           <div>
             <h4 style={{ fontFamily: 'Outfit', fontSize: '1.25rem', fontWeight: 800, color: 'white', marginBottom: '8px' }}>
-              Daily Shared Cab Schedule
+              Rentals With or Without a Driver
             </h4>
             <p style={{ color: '#CBD5E1', fontSize: '0.92rem' }}>
-              Frequent hourly departures from Kolhapur (CBS, Kawala Naka) to Pune (Swargate, Katraj, Wakad Bypass). Enjoy guaranteed air-conditioned seating.
+              Choose a premium car for self-drive freedom or travel with a skilled, professional driver.
             </p>
           </div>
         </div>
@@ -27,7 +27,7 @@ export default function ImportantInfo({ onOpenQuote }) {
               Airport & Full Vehicle Hire
             </h4>
             <p style={{ color: '#CBD5E1', fontSize: '0.92rem' }}>
-              Need a dedicated full car for family or Pune/Mumbai Airport transfer? Book private Innova Crysta or Dzire with custom door pickup.
+              Arrange a dependable airport transfer or private trip with a punctual pickup and a clear, affordable quote.
             </p>
             <button onClick={onOpenQuote} className="btn-cyan" style={{ marginTop: '12px', padding: '8px 16px', fontSize: '0.85rem' }}>
               <i className="fa-solid fa-paper-plane"></i> Request Custom Quote

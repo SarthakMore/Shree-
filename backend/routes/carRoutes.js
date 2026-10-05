@@ -4,24 +4,56 @@ const Car = require('../models/Car');
 const { isMongoConnected } = require('../config/db');
 const { requireAdmin } = require('../middleware/adminAuth');
 
+const defaultCarPhoto = 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop';
+const galleryFallbackPhotos = [
+  defaultCarPhoto,
+  'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&auto=format&fit=crop'
+];
+
+function cleanPhotos(photos) {
+  return Array.isArray(photos)
+    ? photos.filter(photo => typeof photo === 'string' && photo.trim()).map(photo => photo.trim()).slice(0, 5)
+    : [];
+}
+
+function normalizePhotos(photos, fallbackPhoto) {
+  const normalized = cleanPhotos(photos);
+  const primaryPhoto = normalized[0] || (typeof fallbackPhoto === 'string' && fallbackPhoto.trim()) || defaultCarPhoto;
+  if (!normalized.length) normalized.push(primaryPhoto);
+  if (normalized.length < 2) {
+    const secondPhoto = galleryFallbackPhotos.find(photo => photo !== primaryPhoto) || defaultCarPhoto;
+    normalized.push(secondPhoto);
+  }
+  return { photo: primaryPhoto, photos: normalized.slice(0, 5) };
+}
+
 // Default initial fleet cars
 let inMemoryCars = [
   {
     _id: 'car_1',
-    name: 'VinFast Limo Green EV',
-    category: 'EV SUV',
+    name: 'Premium 7-Seater SUV',
+    category: 'Premium SUV',
     photo: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop',
+    photos: [
+      'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop'
+    ],
     ratePerKm: 14,
     capacity: 7,
     hourlyRate: 450,
     status: 'AVAILABLE',
-    features: ['100% Electric EV', 'Zero Emissions', 'Leather Reclining Seats', 'High Speed Wi-Fi']
+    features: ['Premium comfort', 'Well-maintained interior', 'Skilled driver available', 'High Speed Wi-Fi']
   },
   {
     _id: 'car_2',
     name: 'Toyota Innova Crysta ZX',
     category: 'Luxury Limo',
     photo: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop',
+    photos: [
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&auto=format&fit=crop'
+    ],
     ratePerKm: 18,
     capacity: 7,
     hourlyRate: 650,
@@ -33,11 +65,15 @@ let inMemoryCars = [
     name: 'Maruti Suzuki Ertiga ZXi',
     category: 'Executive Sedan',
     photo: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&auto=format&fit=crop',
+    photos: [
+      'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop'
+    ],
     ratePerKm: 12,
     capacity: 6,
     hourlyRate: 350,
     status: 'AVAILABLE',
-    features: ['Budget Shared Comfort', 'Dual AC', 'Clean Hygiene interior', 'Luggage Carrier']
+    features: ['Affordable comfort', 'Dual AC', 'Clean interior', 'Luggage space']
   }
 ];
 
@@ -47,7 +83,12 @@ router.get('/', async (req, res) => {
     if (isMongoConnected()) {
       const cars = await Car.find().sort({ createdAt: -1 });
       if (cars && cars.length > 0) {
-        return res.json({ success: true, data: cars });
+        const data = cars.map(car => {
+          const item = car.toObject();
+          Object.assign(item, normalizePhotos(item.photos, item.photo));
+          return item;
+        });
+        return res.json({ success: true, data });
       }
     }
     return res.json({ success: true, data: inMemoryCars });
@@ -59,15 +100,20 @@ router.get('/', async (req, res) => {
 // POST /api/cars - Add a new car (Admin service)
 router.post('/', requireAdmin, async (req, res) => {
   try {
-    const { name, category, photo, ratePerKm, capacity, hourlyRate, status, features } = req.body || {};
+    const { name, category, photo, photos, ratePerKm, capacity, hourlyRate, status, features } = req.body || {};
     if (!name) {
       return res.status(400).json({ success: false, message: 'Car name is required' });
     }
 
+    const carPhotos = cleanPhotos(photos || (photo ? [photo] : []));
+    if (carPhotos.length < 2) {
+      return res.status(400).json({ success: false, message: 'At least two car photos are required.' });
+    }
+
     const newCarData = {
       name,
-      category: category || 'EV SUV',
-      photo: photo || 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&auto=format&fit=crop',
+      category: category || 'Premium SUV',
+      ...normalizePhotos(carPhotos, photo),
       ratePerKm: Number(ratePerKm) || 14,
       capacity: Number(capacity) || 7,
       hourlyRate: Number(hourlyRate) || 450,
@@ -96,7 +142,14 @@ router.post('/', requireAdmin, async (req, res) => {
 router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body };
+    if ('photos' in updateData || 'photo' in updateData) {
+      const updatedPhotos = cleanPhotos(updateData.photos || (updateData.photo ? [updateData.photo] : []));
+      if (updatedPhotos.length < 2) {
+        return res.status(400).json({ success: false, message: 'At least two car photos are required.' });
+      }
+      Object.assign(updateData, normalizePhotos(updatedPhotos, updateData.photo));
+    }
 
     if (isMongoConnected()) {
       try {

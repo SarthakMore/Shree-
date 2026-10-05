@@ -11,7 +11,7 @@ export default function MainPortals() {
   return (
     <section style={{ padding: '56px 0', background: '#FFFFFF' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <span style={{ background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB', padding: '6px 16px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.85rem' }}>
             <i className="fa-solid fa-route"></i> Select Service Category
@@ -20,48 +20,46 @@ export default function MainPortals() {
             Where Would You Like To Travel?
           </h2>
           <p style={{ color: '#64748B', fontSize: '1.05rem' }}>
-            Click on your preferred travel category below to start your instant reservation!
+            Choose a premium car for a comfortable, reliable journey.
           </p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
-          
-          {/* MAIN CLICKABLE OPTION 1: DAILY SHARED CAB SCHEDULE */}
-          <div 
-            onClick={() => scrollToSection('hero')}
-            style={{ 
-              background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: '20px', padding: '36px 32px', 
-              cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
+
+          {/* ADDITIONAL RENTAL SERVICES: COMING SOON */}
+          <div
+            style={{
+              background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: '20px', padding: '36px 32px',
+              transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
             }}
             className="portal-hover-card"
           >
             <div style={{ alignSelf: 'flex-start', background: 'rgba(37, 99, 235, 0.1)', color: '#2563EB', padding: '6px 14px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '20px' }}>
-              <i className="fa-solid fa-bolt"></i> Daily Fixed Hourly Departures
+              <i className="fa-regular fa-clock"></i> Coming Soon
             </div>
-            
+
             <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', marginBottom: '20px', boxShadow: '0 8px 16px rgba(37, 99, 235, 0.25)' }}>
-              <i className="fa-solid fa-van-shuttle"></i>
+              <i className="fa-regular fa-clock" aria-hidden="true"></i>
             </div>
 
             <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '10px', color: '#111827' }}>
-              Daily Shared Cab Schedule
+              Additional Rental Services
             </h3>
 
             <p style={{ fontSize: '0.95rem', color: '#64748B', lineHeight: '1.6', marginBottom: '24px' }}>
-              Kolhapur ⇄ Pune Highway Shared Cabs in VinFast Limo Green EV 7-Seater. Front Row (Max 1 Seat), Middle Row (Max 3 Seats), Third Row (Max 3 Seats).
+              We're preparing more convenient ways to book with us.
             </p>
 
-            <div style={{ marginTop: 'auto', background: 'linear-gradient(135deg, #2563EB, #1D4ED8)', color: '#FFFFFF', fontWeight: 'bold', padding: '14px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)' }}>
-              <span><i className="fa-solid fa-chair"></i> Reserve Shared Cab Seat</span>
-              <i className="fa-solid fa-arrow-right"></i>
+            <div style={{ marginTop: 'auto', background: '#E2E8F0', color: '#475569', fontWeight: 'bold', padding: '14px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <i className="fa-regular fa-clock" aria-hidden="true"></i> Coming Soon
             </div>
           </div>
 
           {/* MAIN CLICKABLE OPTION 2: AIRPORT & FULL VEHICLE HIRE */}
-          <div 
+          <div
             onClick={() => scrollToSection('maharashtra-tours')}
-            style={{ 
-              background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: '20px', padding: '36px 32px', 
+            style={{
+              background: '#F8FAFC', border: '2px solid #E2E8F0', borderRadius: '20px', padding: '36px 32px',
               cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
             }}
             className="portal-hover-card"
@@ -69,7 +67,7 @@ export default function MainPortals() {
             <div style={{ alignSelf: 'flex-start', background: 'rgba(249, 115, 22, 0.1)', color: '#F97316', padding: '6px 14px', borderRadius: '9999px', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '20px' }}>
               <i className="fa-solid fa-plane"></i> Dedicated Full Vehicle
             </div>
-            
+
             <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'linear-gradient(135deg, #F97316, #EA580C)', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', marginBottom: '20px', boxShadow: '0 8px 16px rgba(249, 115, 22, 0.25)' }}>
               <i className="fa-solid fa-car-side"></i>
             </div>
@@ -79,7 +77,7 @@ export default function MainPortals() {
             </h3>
 
             <p style={{ fontSize: '0.95rem', color: '#64748B', lineHeight: '1.6', marginBottom: '24px' }}>
-              Pune (PNQ) & Mumbai (BOM) Airport drops, private outstation cabs, and famous tourist trip packages across Maharashtra with custom pickup.
+              Private airport transfers and custom trips with premium cars, skilled drivers, and clear quotes.
             </p>
 
             <div style={{ marginTop: 'auto', background: 'linear-gradient(135deg, #F97316, #EA580C)', color: '#FFFFFF', fontWeight: 'bold', padding: '14px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)' }}>

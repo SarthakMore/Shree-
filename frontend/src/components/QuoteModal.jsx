@@ -28,8 +28,8 @@ export default function QuoteModal({ onClose }) {
           <span style={{ background: 'rgba(0, 229, 255, 0.15)', color: '#00B0FF', fontWeight: 'bold', fontSize: '0.8rem', padding: '4px 12px', borderRadius: '20px' }}>
             CUSTOM TRAVEL INQUIRY
           </span>
-          <h3 style={{ fontFamily: 'Outfit', fontSize: '1.6rem', fontWeight: 800, marginTop: '6px' }}>Airport & Outstation Quote</h3>
-          <p style={{ color: '#64748B', fontSize: '0.88rem' }}>Tell us your route and timing. Our dispatch team will call you within 15 minutes.</p>
+          <h3 style={{ fontFamily: 'Outfit', fontSize: '1.6rem', fontWeight: 800, marginTop: '6px' }}>Car Rental Quote</h3>
+          <p style={{ color: '#64748B', fontSize: '0.88rem' }}>Tell us where and when you need a car, and whether you prefer to drive or have a skilled driver.</p>
         </div>
 
         {submitted ? (
@@ -51,7 +51,7 @@ export default function QuoteModal({ onClose }) {
 
             <div className="form-group" style={{ marginBottom: '20px' }}>
               <label>Travel Details</label>
-              <textarea className="input-field" style={{ height: '90px', resize: 'none' }} placeholder="e.g. Pune Airport to Kolhapur on 28th Sep, 3 passengers" value={formData.travelDetails} onChange={(e) => setFormData({ ...formData, travelDetails: e.target.value })} required></textarea>
+              <textarea className="input-field" style={{ height: '90px', resize: 'none' }} placeholder="Trip details, dates, and driver preference" value={formData.travelDetails} onChange={(e) => setFormData({ ...formData, travelDetails: e.target.value })} required></textarea>
             </div>
 
             <button type="submit" className="btn-cyan" style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>

@@ -1,7 +1,7 @@
 {
   "name": "anandyatra-backend",
   "version": "1.0.0",
-  "description": "Node.js Express REST API backend for AnandYatra Kolhapur-Pune Shared Cab Service",
+  "description": "Node.js Express REST API for Shree Venkateshwara car rentals",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

@@ -10,6 +10,8 @@ const siteFiles = [
     'fleet.html',
     'login.html',
     'shared-cabs.html',
+    'manifest.webmanifest',
+    'service-worker.js',
     'script.js',
     'styles.css'
 ];
