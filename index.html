@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#2a8c7b">
+  <meta name="theme-color" content="#0a0c0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Shree Express">
   <link rel="manifest" href="manifest.webmanifest">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=10.0">
+  <link rel="stylesheet" href="styles.css?v=16.0">
 </head>
 
 <body>
@@ -52,6 +52,7 @@
                 aria-hidden="true"></i> Coming Soon</a></li>
           <li><a href="fleet.html" class="nav-link">Rent A Car</a></li>
           <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+          <li><a href="admin.html" class="nav-link">Admin</a></li>
         </ul>
       </nav>
 
@@ -75,37 +76,44 @@
     <!-- ==========================================================================
          PAGE 1: HOME HERO LANDING SECTION
          ========================================================================== -->
-    <section class="hero" style="padding: 64px 0 44px; background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);">
-      <div class="container" style="text-align: center; max-width: 960px;">
-        <div class="badge" style="margin-bottom: 20px;">
-          <i class="fa-solid fa-car-side" style="color: var(--accent);"></i>
-          <span>Premium Cars • With or Without a Driver</span>
-        </div>
-
-        <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 16px; color: var(--text-heading);">
-          Welcome to <span style="color: var(--primary);">Shree Venkateshwara Express</span>
-        </h1>
-
-        <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6;">
-          Choose a premium car with a skilled driver or enjoy the freedom to drive yourself. Count on reliable service,
-          punctual pickups, and affordable options.
-        </p>
-
-        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px;">
-          <a href="login.html" class="btn btn-primary" style="padding: 16px 28px; font-size: 1rem;">
-            <i class="fa-solid fa-user-check"></i> 1. Open Login Portal
-          </a>
-          <a href="fleet.html" class="btn btn-secondary"
-            style="padding: 16px 28px; font-size: 1rem; border-color: var(--primary); color: var(--primary);">
-            <i class="fa-solid fa-car-side"></i> 2. Rent A Car
-          </a>
-          <a href="shared-cabs.html" class="btn btn-accent" style="padding: 16px 28px; font-size: 1rem;">
-            <i class="fa-regular fa-clock" aria-hidden="true"></i> 3. Additional Services: Coming Soon
-          </a>
-          <a href="airport-tours.html" class="btn btn-secondary"
-            style="padding: 16px 28px; font-size: 1rem; border-color: var(--primary); color: var(--primary);">
-            <i class="fa-solid fa-plane-departure"></i> 4. Airport & Tour Packages
-          </a>
+    <section class="hero home-hero">
+      <div class="container">
+        <div class="home-hero-grid">
+          <div class="home-hero-copy">
+            <span class="home-kicker"><i class="fa-solid fa-circle"></i> PREMIUM CAR RENTALS · KOLHAPUR</span>
+            <h1>Make every<br>mile <span>yours.</span></h1>
+            <p>Find a car that fits your journey. Enjoy the freedom of self-drive or travel easy with a professional driver.</p>
+            <div class="home-hero-actions">
+              <a href="fleet.html" class="btn btn-primary"><i class="fa-solid fa-arrow-right"></i> Explore the fleet</a>
+              <a href="https://wa.me/918669410303?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20renting%20a%20car." class="hero-whatsapp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> Talk to our team</a>
+            </div>
+            <div class="home-proof">
+              <span><i class="fa-solid fa-shield-halved"></i> Trusted local service</span>
+              <span><i class="fa-solid fa-car"></i> With or without a driver</span>
+            </div>
+          </div>
+          <div class="home-hero-visual">
+            <img src="images/home-feature-car.jpg" alt="White SUV parked outside a modern building" fetchpriority="high">
+            <div class="hero-image-shade" aria-hidden="true"></div>
+            <div class="hero-car-caption"><span>THE OPEN ROAD</span><strong>Starts here.</strong></div>
+          </div>
+          <div class="home-booking-panel">
+            <div class="booking-panel-intro">
+              <span class="booking-panel-icon"><i class="fa-solid fa-location-arrow"></i></span>
+              <span><strong>Plan your next ride</strong><small>Choose your route. We’ll find the right car.</small></span>
+            </div>
+            <form id="home-rental-search" class="home-booking-form">
+              <fieldset class="rental-mode" aria-label="Choose your rental option">
+                <legend>Drive option</legend>
+                <label><input type="radio" name="home-driver-option" value="With driver" checked><span>With driver</span></label>
+                <label><input type="radio" name="home-driver-option" value="Self-drive"><span>Self-drive</span></label>
+              </fieldset>
+              <label class="booking-field"><span>Pick-up from</span><span class="booking-input"><i class="fa-solid fa-location-dot"></i><input id="home-rental-pickup" name="pickup" type="text" placeholder="Your city or location" autocomplete="address-level2" required></span></label>
+              <label class="booking-field"><span>Going to</span><span class="booking-input"><i class="fa-solid fa-flag-checkered"></i><input id="home-rental-destination" name="destination" type="text" placeholder="Where to?" required></span></label>
+              <label class="booking-field booking-date-field"><span>Pick-up date</span><span class="booking-input"><i class="fa-regular fa-calendar"></i><input id="home-rental-date" name="date" type="date" required></span></label>
+              <button type="submit" class="btn btn-primary booking-submit"><span>Find my car</span><i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+          </div>
         </div>
       </div>
     </section>
@@ -113,77 +121,74 @@
     <!-- ==========================================================================
          ATTACHED PAGES SEQUENCE CARDS (Home -> Login -> More Services -> Airport & Tours -> Admin)
          ========================================================================== -->
-    <section class="section-padding" style="background-color: #FFFFFF;">
+    <section class="section-padding home-services-section">
       <div class="container">
-
-        <div class="section-header" style="margin-bottom: 44px;">
-          <span class="badge"><i class="fa-solid fa-diagram-project"></i> Multi-Page Connected System</span>
-          <h2>Explore Attached Website Pages</h2>
-          <p>Click on any page card below to navigate directly to its dedicated system section.</p>
+        <div class="section-header home-section-heading">
+          <span class="section-eyebrow">YOUR JOURNEY, YOUR WAY</span>
+          <h2>One good ride changes everything.</h2>
+          <p>From everyday plans to once-in-a-lifetime road trips, we make getting there feel like part of the adventure.</p>
         </div>
-
-        <div class="steps-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-
-          <!-- PAGE 1: HOME -->
-          <a href="index.html" class="step-card"
-            style="text-decoration: none; color: inherit; transition: var(--transition-smooth); border-color: var(--primary);">
-            <div class="step-number" style="background: var(--primary);">1</div>
-            <h3>Home Page</h3>
-            <p>Premium rental cars, skilled drivers, affordable options, and service information.</p>
-            <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--primary);">
-              Current Page <i class="fa-solid fa-arrow-right"></i>
-            </div>
+        <div class="journey-cards">
+          <a href="fleet.html" class="journey-card journey-card-fleet">
+            <span class="journey-card-number">01 / RENT A CAR</span>
+            <span class="journey-card-icon"><i class="fa-solid fa-car-side"></i></span>
+            <h3>Pick your perfect ride.</h3>
+            <p>Browse our fleet, compare rates, and choose the way you want to travel.</p>
+            <span class="journey-card-link">Explore the fleet <i class="fa-solid fa-arrow-right"></i></span>
           </a>
-
-          <!-- PAGE 2: LOGIN PORTAL -->
-          <a href="login.html" class="step-card"
-            style="text-decoration: none; color: inherit; transition: var(--transition-smooth);">
-            <div class="step-number" style="background: var(--primary);">2</div>
-            <h3>Login Portal</h3>
-            <p>Dual-panel login page for Passenger Profile pre-fill & System Administrator access.</p>
-            <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--accent);">
-              Open Login Page <i class="fa-solid fa-arrow-right"></i>
-            </div>
+          <a href="airport-tours.html" class="journey-card journey-card-tours">
+            <span class="journey-card-number">02 / AIRPORT & TOURS</span>
+            <span class="journey-card-icon"><i class="fa-solid fa-plane-departure"></i></span>
+            <h3>Go a little further.</h3>
+            <p>Airport transfers, private outstation trips, and Maharashtra getaways.</p>
+            <span class="journey-card-link">Find your getaway <i class="fa-solid fa-arrow-right"></i></span>
           </a>
-
-          <!-- PAGE 3: ADDITIONAL RENTAL SERVICES -->
-          <a href="shared-cabs.html" class="step-card"
-            style="text-decoration: none; color: inherit; transition: var(--transition-smooth);">
-            <div class="step-number" style="background: var(--primary);">3</div>
-            <h3>Additional Rental Services</h3>
-            <p>We're preparing more convenient rental options. Contact us for current availability.</p>
-            <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--primary);">
-              <i class="fa-regular fa-clock" aria-hidden="true"></i> Coming Soon
-            </div>
+          <a href="login.html" class="journey-card journey-card-account">
+            <span class="journey-card-number">03 / YOUR ACCOUNT</span>
+            <span class="journey-card-icon"><i class="fa-solid fa-user-check"></i></span>
+            <h3>Every trip, a little easier.</h3>
+            <p>Save your details for quicker enquiries or securely access fleet management.</p>
+            <span class="journey-card-link">Customer & admin login <i class="fa-solid fa-arrow-right"></i></span>
           </a>
-
-          <!-- PAGE 4: AIRPORT & TOURS -->
-          <a href="airport-tours.html" class="step-card"
-            style="text-decoration: none; color: inherit; transition: var(--transition-smooth);">
-            <div class="step-number" style="background: var(--accent);">4</div>
-            <h3>Airport & Tours</h3>
-            <p>Airport transfers and Maharashtra sightseeing packages with convenient WhatsApp enquiries.
-            </p>
-            <div style="margin-top: 14px; font-weight: 700; font-size: 0.85rem; color: var(--accent);">
-              Open Airport & Tours Page <i class="fa-solid fa-arrow-right"></i>
-            </div>
-          </a>
-
-
-
         </div>
+      </div>
+    </section>
 
+    <section class="section-padding road-steps-section">
+      <div class="container">
+        <div class="section-header road-steps-heading">
+          <span class="section-eyebrow">SIMPLE FROM THE START</span>
+          <h2>Three steps to your next escape.</h2>
+          <p>No complicated forms. Just choose a car, tell us about your trip, and confirm the details with our team.</p>
+        </div>
+        <div class="road-step-grid">
+          <article class="road-step">
+            <span class="road-step-number">01</span>
+            <h3>Choose your car</h3>
+            <p>Explore the fleet and find the right ride for your plans.</p>
+          </article>
+          <article class="road-step">
+            <span class="road-step-number">02</span>
+            <h3>Share your trip</h3>
+            <p>Pick your dates, route, and self-drive or driver option.</p>
+          </article>
+          <article class="road-step">
+            <span class="road-step-number">03</span>
+            <h3>Confirm on WhatsApp</h3>
+            <p>We’ll check availability and help you finalise the details.</p>
+          </article>
+        </div>
       </div>
     </section>
 
     <!-- ==========================================================================
          WHY CHOOSE US & FLEET SHOWCASE
          ========================================================================== -->
-    <section class="section-padding" style="background: #F8FAFC;">
+    <section class="section-padding home-benefits-section" id="why-shree">
       <div class="container">
         <div class="section-header">
-          <span class="badge">Our Fleet & Features</span>
-          <h2>Why Ride With Shree Venkateshwara Express?</h2>
+          <span class="section-eyebrow">THE SHREE DIFFERENCE</span>
+          <h2>A better way to get there.</h2>
           <p>Premium cars, skilled drivers, reliable pickups, and affordable rental options for your journey.</p>
         </div>
 
@@ -289,7 +294,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=10.0"></script>
+  <script src="script.js?v=16.0"></script>
 </body>
 
 </html>

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const { connectDB } = require('./config/db');
@@ -7,7 +9,7 @@ const app = express();
 // Connect to Database
 connectDB();
 
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:4173')
+const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:4173,http://127.0.0.1:4173')
   .split(',')
   .map(origin => origin.trim());
 

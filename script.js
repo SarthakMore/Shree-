@@ -36,6 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
       return '';
     }
   };
+  const revealObserver = !window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 })
+    : null;
+  const observeRevealElements = (root, selector) => {
+    if (!revealObserver) return;
+    root.querySelectorAll(selector).forEach(element => {
+      element.classList.add('reveal-on-scroll');
+      revealObserver.observe(element);
+    });
+  };
 
   async function adminFetch(url, options = {}) {
     const token = localStorage.getItem('sv_admin_token');
@@ -84,12 +101,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const currentPageFile = window.location.pathname.split('/').pop();
+  const offersWhatsAppEnquiries = ['', 'index.html', 'fleet.html', 'airport-tours.html'].includes(currentPageFile);
+  if (offersWhatsAppEnquiries && !document.querySelector('.floating-whatsapp')) {
+    const whatsappLink = document.createElement('a');
+    whatsappLink.className = 'floating-whatsapp';
+    whatsappLink.href = `https://wa.me/${HOTLINE_NUMBER}?text=${encodeURIComponent('Hi, I would like to enquire about a car rental.')}`;
+    whatsappLink.target = '_blank';
+    whatsappLink.rel = 'noopener noreferrer';
+    whatsappLink.setAttribute('aria-label', 'Chat with Shree Venkateshwara on WhatsApp');
+    whatsappLink.innerHTML = '<i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>Chat with us</span>';
+    document.body.append(whatsappLink);
+  }
+
+  observeRevealElements(document, '.journey-card, .road-step');
+
   // 3. DATE PICKER - PREVENT PAST DATES
   const dateInput = document.getElementById('date-input');
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
     if (!dateInput.value) dateInput.value = today;
+  }
+
+  const homeRentalSearch = document.getElementById('home-rental-search');
+  const homeRentalDate = document.getElementById('home-rental-date');
+  if (homeRentalDate) {
+    const today = new Date();
+    homeRentalDate.min = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    homeRentalDate.value = homeRentalDate.min;
+  }
+  if (homeRentalSearch) {
+    homeRentalSearch.addEventListener('submit', event => {
+      event.preventDefault();
+      const tripRequest = {
+        pickup: document.getElementById('home-rental-pickup').value.trim(),
+        destination: document.getElementById('home-rental-destination').value.trim(),
+        date: homeRentalDate.value,
+        driverOption: homeRentalSearch.querySelector('input[name="home-driver-option"]:checked')?.value || 'With driver'
+      };
+      sessionStorage.setItem('sv_rental_prefill', JSON.stringify(tripRequest));
+      window.location.href = 'fleet.html#available-cars';
+    });
   }
 
   // 4. PER-ROW PASSENGER LIMITS & INTERACTIVE SEAT MAP
@@ -274,20 +327,104 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(syncLiveSettings, 3000);
 
   // 6. DYNAMIC CARS & TOURS MANAGEMENT (FETCH & RENDER)
+  let fleetCars = [];
+  const fleetSearch = document.getElementById('fleet-search');
+  const fleetCategoryFilter = document.getElementById('fleet-category-filter');
+  const fleetSort = document.getElementById('fleet-sort');
+  const fleetResultsCount = document.getElementById('fleet-results-count');
+
+  function renderFleetLoadError() {
+    const container = document.getElementById('fleet-cars-container');
+    if (!container) return;
+    container.setAttribute('aria-busy', 'false');
+    if (fleetResultsCount) fleetResultsCount.textContent = 'We could not load the cars right now.';
+    container.innerHTML = `
+      <div class="fleet-empty" role="alert">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <h3>Cars are temporarily unavailable</h3>
+        <p>Please try again, or call us and we’ll help you choose a car.</p>
+        <button type="button" class="btn btn-primary fleet-retry-cars"><i class="fa-solid fa-rotate-right"></i> Try again</button>
+        <a class="btn btn-secondary" href="tel:+918669410303"><i class="fa-solid fa-phone"></i> Call 866 941 0303</a>
+      </div>`;
+  }
+
   async function loadFleetCars() {
+    const container = document.getElementById('fleet-cars-container');
     try {
       const res = await fetch(`${API_BASE}/api/cars`);
+      if (!res.ok) throw new Error(`Fleet request failed with status ${res.status}`);
       const data = await res.json();
-      if (data.success && data.data) {
-        renderFleetCars(data.data);
-        renderAdminCarsList(data.data);
-      }
-    } catch (err) { }
+      if (!data.success || !Array.isArray(data.data)) throw new Error('Fleet response did not include vehicle data');
+      fleetCars = data.data;
+      updateFleetCategoryOptions();
+      renderFleetCars(getVisibleFleetCars());
+      renderAdminCarsList(data.data);
+    } catch (err) {
+      renderFleetLoadError();
+    }
+    if (container) container.setAttribute('aria-busy', 'false');
+  }
+
+  function updateFleetCategoryOptions() {
+    if (!fleetCategoryFilter) return;
+    const selectedCategory = fleetCategoryFilter.value;
+    const categories = [...new Set(fleetCars
+      .map(car => rentalDisplayText(car.category, 'Premium Car'))
+      .filter(Boolean))]
+      .sort((first, second) => first.localeCompare(second));
+    fleetCategoryFilter.innerHTML = '<option value="">All categories</option>' +
+      categories.map(category => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`).join('');
+    if (categories.includes(selectedCategory)) fleetCategoryFilter.value = selectedCategory;
+  }
+
+  function getVisibleFleetCars() {
+    const searchTerm = fleetSearch?.value.trim().toLowerCase() || '';
+    const selectedCategory = fleetCategoryFilter?.value || '';
+    const sortBy = fleetSort?.value || 'featured';
+    const matches = fleetCars.filter(car => {
+      const name = rentalDisplayText(car.name).toLowerCase();
+      const category = rentalDisplayText(car.category, 'Premium Car');
+      return (!searchTerm || name.includes(searchTerm) || category.toLowerCase().includes(searchTerm)) &&
+        (!selectedCategory || category === selectedCategory);
+    });
+
+    if (sortBy === 'price-asc') matches.sort((a, b) => (Number(a.ratePerKm) || 14) - (Number(b.ratePerKm) || 14));
+    if (sortBy === 'price-desc') matches.sort((a, b) => (Number(b.ratePerKm) || 14) - (Number(a.ratePerKm) || 14));
+    if (sortBy === 'seats-desc') matches.sort((a, b) => (Number(b.capacity) || 0) - (Number(a.capacity) || 0));
+    return matches;
   }
 
   function renderFleetCars(cars) {
     const container = document.getElementById('fleet-cars-container');
     if (!container) return;
+
+    container.setAttribute('aria-busy', 'false');
+    if (fleetResultsCount) {
+      const count = cars.length;
+      fleetResultsCount.innerHTML = `<strong>${count}</strong> ${count === 1 ? 'car' : 'cars'} ${fleetCars.length ? 'to choose from' : 'available'}`;
+    }
+
+    if (!fleetCars.length) {
+      container.innerHTML = `
+        <div class="fleet-empty">
+          <i class="fa-solid fa-car-side" aria-hidden="true"></i>
+          <h3>Your next ride starts here</h3>
+          <p>Our team can help you find the right car, driver option, and rate for your trip.</p>
+          <a class="btn btn-primary" href="tel:+918669410303"><i class="fa-solid fa-phone"></i> Call 866 941 0303</a>
+        </div>`;
+      return;
+    }
+
+    if (!cars.length) {
+      container.innerHTML = `
+        <div class="fleet-empty">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <h3>No cars match those filters</h3>
+          <p>Try a different search or show all available cars.</p>
+          <button type="button" class="btn btn-secondary fleet-clear-filters">Clear filters</button>
+        </div>`;
+      return;
+    }
 
     container.innerHTML = cars.map(car => {
       const photos = (Array.isArray(car.photos) && car.photos.length ? car.photos : [car.photo])
@@ -296,47 +433,68 @@ document.addEventListener('DOMContentLoaded', () => {
         .slice(0, 5);
       const carName = rentalDisplayText(car.name);
       const rate = Number(car.ratePerKm) || 14;
+      const category = rentalDisplayText(car.category, 'Premium Car');
+      const capacity = Number(car.capacity) || 0;
+      const hourlyRate = Number(car.hourlyRate) || 0;
+      const available = String(car.status || 'AVAILABLE').toUpperCase() === 'AVAILABLE';
       const photoGallery = photos.length > 1 ? `
-        <div style="display:flex; gap:8px; padding:10px 12px; overflow-x:auto;">
-          ${photos.map((photo, index) => `<button type="button" class="fleet-photo-thumb" data-photo-src="${escapeHtml(photo)}" aria-label="Show photo ${index + 1} of ${escapeHtml(carName)}" style="border:1px solid #CBD5E1; padding:0; border-radius:6px; width:56px; height:44px; flex:0 0 auto; overflow:hidden; cursor:pointer; background:#F8FAFC;"><img src="${escapeHtml(photo)}" alt="" style="width:100%; height:100%; object-fit:cover;"></button>`).join('')}
+        <div class="fleet-photo-gallery" aria-label="Photos of ${escapeHtml(carName)}">
+          ${photos.map((photo, index) => `<button type="button" class="fleet-photo-thumb" data-photo-src="${escapeHtml(photo)}" aria-pressed="${index === 0}" aria-label="Show photo ${index + 1} of ${escapeHtml(carName)}"><img src="${escapeHtml(photo)}" alt="" loading="lazy"></button>`).join('')}
         </div>` : '';
 
       return `
-        <div class="vehicle-card" style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:16px; overflow:hidden; transition:transform 0.2s, box-shadow 0.2s;">
-          <div style="position:relative; height:220px; overflow:hidden;">
-            <img class="vehicle-photo" src="${escapeHtml(photos[0] || '')}" alt="${escapeHtml(carName)}" style="width:100%; height:100%; object-fit:cover;">
-            <span style="position:absolute; top:12px; right:12px; background:#10B981; color:#FFFFFF; padding:4px 12px; border-radius:9999px; font-weight:bold; font-size:0.75rem;">
-              ₹${rate}/km
-            </span>
-            <span style="position:absolute; top:12px; left:12px; background:rgba(15,23,42,0.85); color:#FFFFFF; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600;">
-              ${escapeHtml(rentalDisplayText(car.category))}
-            </span>
+        <article class="vehicle-card">
+          <div class="vehicle-media">
+            <img class="vehicle-photo" src="${escapeHtml(photos[0] || '')}" alt="${escapeHtml(carName)}" loading="lazy">
+            <span class="vehicle-category">${escapeHtml(category)}</span>
+            <span class="vehicle-status${available ? '' : ' is-unavailable'}"><i class="fa-solid ${available ? 'fa-circle-check' : 'fa-circle-xmark'}" aria-hidden="true"></i>${available ? 'Available' : 'Currently unavailable'}</span>
+            <span class="vehicle-rate"><i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i>${rate}/km</span>
+            ${photos.length > 1 ? `<button type="button" class="fleet-photo-step fleet-photo-step--previous" data-photo-step="-1" aria-label="Previous photo of ${escapeHtml(carName)}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button><button type="button" class="fleet-photo-step fleet-photo-step--next" data-photo-step="1" aria-label="Next photo of ${escapeHtml(carName)}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>` : ''}
+            <span class="fleet-photo-count" aria-live="polite">${photos.length > 1 ? `01 / ${String(photos.length).padStart(2, '0')}` : ''}</span>
           </div>
           ${photoGallery}
-          <div style="padding:20px;">
-            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:8px; color:#0F172A;">${escapeHtml(carName)}</h3>
-            <div style="display:flex; gap:16px; color:#64748B; font-size:0.88rem; margin-bottom:14px;">
-              <span><i class="fa-solid fa-users" style="color:var(--primary);"></i> ${Number(car.capacity) || 0} Seats</span>
-              <span><i class="fa-solid fa-gauge-high" style="color:#10B981;"></i> ₹${rate}/km</span>
-              <span><i class="fa-solid fa-clock" style="color:#EAB308;"></i> ₹${Number(car.hourlyRate) || 0}/hr</span>
+          <div class="vehicle-details">
+            <h3>${escapeHtml(carName)}</h3>
+            <div class="vehicle-specs">
+              ${capacity ? `<span><i class="fa-solid fa-users" aria-hidden="true"></i>${capacity} seats</span>` : ''}
+              <span><i class="fa-solid fa-route" aria-hidden="true"></i>₹${rate}/km</span>
+              ${hourlyRate ? `<span><i class="fa-regular fa-clock" aria-hidden="true"></i>₹${hourlyRate}/hr</span>` : ''}
             </div>
-            <ul style="list-style:none; padding:0; margin:0 0 16px; font-size:0.82rem; color:#475569;">
-              ${(car.features || []).map(feature => `<li style="margin-bottom:4px;"><i class="fa-solid fa-check" style="color:#10B981; margin-right:6px;"></i>${escapeHtml(rentalDisplayText(feature, 'Premium comfort'))}</li>`).join('')}
+            <ul class="vehicle-features">
+              ${(Array.isArray(car.features) ? car.features : []).slice(0, 4).map(feature => `<li><i class="fa-solid fa-check" aria-hidden="true"></i>${escapeHtml(rentalDisplayText(feature, 'Premium comfort'))}</li>`).join('')}
             </ul>
-            <button type="button" class="fleet-hire-car btn btn-primary" data-car-name="${escapeHtml(carName)}" data-rate="${rate}" style="width:100%; text-align:center; padding:10px; font-weight:700; cursor:pointer;">
-              <i class="fa-brands fa-whatsapp"></i> Hire Car at ₹${rate}/km
+            <button type="button" class="fleet-hire-car btn btn-primary" data-car-name="${escapeHtml(carName)}" data-rate="${rate}" ${available ? '' : 'disabled'} aria-label="${available ? `Enquire about ${escapeHtml(carName)}` : `${escapeHtml(carName)} is currently unavailable`}">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> ${available ? 'Enquire about this car' : 'Currently unavailable'}
             </button>
           </div>
-        </div>`;
+        </article>`;
     }).join('');
 
     container.querySelectorAll('.fleet-photo-thumb').forEach(button => {
       button.addEventListener('click', () => {
         const card = button.closest('.vehicle-card');
         const mainPhoto = card?.querySelector('.vehicle-photo');
+        const thumbs = [...(card?.querySelectorAll('.fleet-photo-thumb') || [])];
+        const index = thumbs.indexOf(button);
         if (mainPhoto) mainPhoto.src = button.dataset.photoSrc;
+        card?.querySelectorAll('.fleet-photo-thumb').forEach(thumb => thumb.setAttribute('aria-pressed', String(thumb === button)));
+        const counter = card?.querySelector('.fleet-photo-count');
+        if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(thumbs.length).padStart(2, '0')}`;
       });
     });
+
+    container.querySelectorAll('.fleet-photo-step').forEach(button => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.vehicle-card');
+        const thumbs = [...(card?.querySelectorAll('.fleet-photo-thumb') || [])];
+        const currentIndex = thumbs.findIndex(thumb => thumb.getAttribute('aria-pressed') === 'true');
+        const nextIndex = (currentIndex + Number(button.dataset.photoStep) + thumbs.length) % thumbs.length;
+        thumbs[nextIndex]?.click();
+        thumbs[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+      });
+    });
+
+    observeRevealElements(container, '.vehicle-card');
 
     container.querySelectorAll('.fleet-hire-car').forEach(button => {
       button.addEventListener('click', () => {
@@ -344,6 +502,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  function refreshFleetCars() {
+    renderFleetCars(getVisibleFleetCars());
+  }
+
+  fleetSearch?.addEventListener('input', refreshFleetCars);
+  fleetCategoryFilter?.addEventListener('change', refreshFleetCars);
+  fleetSort?.addEventListener('change', refreshFleetCars);
+  document.getElementById('fleet-cars-container')?.addEventListener('click', event => {
+    if (event.target.closest('.fleet-retry-cars')) loadFleetCars();
+    if (event.target.closest('.fleet-clear-filters')) {
+      if (fleetSearch) fleetSearch.value = '';
+      if (fleetCategoryFilter) fleetCategoryFilter.value = '';
+      if (fleetSort) fleetSort.value = 'featured';
+      refreshFleetCars();
+    }
+  });
 
   const carHireModal = document.getElementById('car-hire-modal');
   const carHireForm = document.getElementById('car-hire-form');
@@ -365,6 +540,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('car-hire-title').textContent = name;
     document.getElementById('car-hire-rate').textContent = `₹${rateKm}/km`;
     document.getElementById('car-hire-date').min = minimumDate;
+    if (activeClient?.name && activeClient.phone) {
+      document.getElementById('car-hire-name').value = activeClient.name;
+      document.getElementById('car-hire-phone').value = activeClient.phone;
+    }
+    const savedRequest = sessionStorage.getItem('sv_rental_prefill');
+    if (savedRequest) {
+      try {
+        const tripRequest = JSON.parse(savedRequest);
+        document.getElementById('car-hire-pickup').value = tripRequest.pickup || '';
+        document.getElementById('car-hire-destination').value = tripRequest.destination || '';
+        document.getElementById('car-hire-date').value = tripRequest.date || '';
+        carHireForm.querySelectorAll('input[name="car-hire-driver-option"]').forEach(option => {
+          option.checked = option.value === tripRequest.driverOption;
+        });
+        sessionStorage.removeItem('sv_rental_prefill');
+      } catch (error) {
+        console.error('Could not load saved rental details.', error);
+        sessionStorage.removeItem('sv_rental_prefill');
+      }
+    }
     carHireModal.classList.add('is-open');
     carHireModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -383,6 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = document.getElementById('car-hire-name').value.trim();
       const phone = document.getElementById('car-hire-phone').value.trim();
       const date = document.getElementById('car-hire-date').value;
+      const pickup = document.getElementById('car-hire-pickup').value.trim();
       const destination = document.getElementById('car-hire-destination').value.trim();
       const driverOption = carHireForm.querySelector('input[name="car-hire-driver-option"]:checked')?.value || 'With driver';
       const message = encodeURIComponent(
@@ -392,6 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `*Trip date:* ${date}\n` +
         `*Car:* ${carHireModal.dataset.carName}\n` +
         `*Rate:* ₹${carHireModal.dataset.rateKm}/km\n` +
+        `*Pick-up from:* ${pickup}\n` +
         `*Destination:* ${destination}\n` +
         `*Rental option:* ${driverOption}`
       );
@@ -693,6 +890,81 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function showAdminLoginMessage(element, message, isSuccess = false) {
+    if (!element) return;
+    const icon = document.createElement('i');
+    icon.className = `fa-solid ${isSuccess ? 'fa-circle-check' : 'fa-triangle-exclamation'}`;
+    icon.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    text.textContent = message;
+    element.replaceChildren(icon, text);
+    element.style.display = 'flex';
+    element.style.backgroundColor = isSuccess ? '#DCFCE7' : '#FEE2E2';
+    element.style.color = isSuccess ? '#15803D' : '#991B1B';
+  }
+
+  async function authenticateAdmin(password, messageElement) {
+    try {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'admin', password })
+      });
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const message = response.status === 401
+          ? 'Incorrect admin password. Please check it and try again.'
+          : response.status === 503
+            ? 'Admin login is not configured on the server. Contact the site administrator.'
+            : data?.message || `The admin server returned an error (HTTP ${response.status}).`;
+        showAdminLoginMessage(messageElement, message);
+        return false;
+      }
+
+      if (!data || typeof data !== 'object') {
+        showAdminLoginMessage(messageElement, 'The admin server returned an unreadable response. Please try again or contact the site administrator.');
+        return false;
+      }
+      if (!data.success) {
+        showAdminLoginMessage(messageElement, data.message || 'The admin server could not authenticate this request.');
+        return false;
+      }
+      if (!data.token) {
+        showAdminLoginMessage(messageElement, 'The server response was incomplete. Please try again or contact the site administrator.');
+        return false;
+      }
+      localStorage.setItem('sv_admin_authenticated', 'true');
+      localStorage.setItem('sv_admin_token', data.token);
+      return true;
+    } catch {
+      showAdminLoginMessage(
+        messageElement,
+        `Cannot reach the admin server at ${API_BASE}. Check your connection or ask the site administrator to check the API server and CORS settings.`
+      );
+      return false;
+    }
+  }
+
+  const adminApiStatus = document.getElementById('admin-api-status');
+  if (adminApiStatus) {
+    fetch(`${API_BASE}/api/health`)
+      .then(async response => {
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+          adminApiStatus.textContent = `The admin server responded with HTTP ${response.status}. Please contact the site administrator.`;
+          adminApiStatus.classList.add('is-offline');
+          return;
+        }
+        adminApiStatus.textContent = `Admin server online${data?.status ? ` (${data.status})` : ''}.`;
+        adminApiStatus.classList.add('is-online');
+      })
+      .catch(() => {
+        adminApiStatus.textContent = `Cannot reach the admin server at ${API_BASE}. Check your connection or ask the site administrator to check the API server and CORS settings.`;
+        adminApiStatus.classList.add('is-offline');
+      });
+  }
+
   // 9. ADMIN SECURITY AUTHENTICATION HANDLERS (VIA SECURE BACKEND AUTH ROUTE)
   const adminLoginForm = document.getElementById('admin-login-form');
   const adminPassInput = document.getElementById('admin-pass-input');
@@ -702,43 +974,13 @@ document.addEventListener('DOMContentLoaded', () => {
     adminLoginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const enteredPass = adminPassInput ? adminPassInput.value : '';
-
-      try {
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ role: 'admin', password: enteredPass })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          if (adminLoginMsg) {
-            adminLoginMsg.style.display = 'flex';
-            adminLoginMsg.style.backgroundColor = '#DCFCE7';
-            adminLoginMsg.style.color = '#15803D';
-            adminLoginMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> <strong>Admin Password Verified!</strong> Opening Control Center...';
-          }
-          localStorage.setItem('sv_admin_authenticated', 'true');
-          localStorage.setItem('sv_admin_token', data.token);
-          setTimeout(() => {
-            window.location.href = 'admin.html';
-          }, 600);
-        } else {
-          if (adminLoginMsg) {
-            adminLoginMsg.style.display = 'flex';
-            adminLoginMsg.style.backgroundColor = '#FEE2E2';
-            adminLoginMsg.style.color = '#991B1B';
-            adminLoginMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${data.message || 'Invalid Admin Password!'}</strong>`;
-          }
-        }
-      } catch (err) {
-        if (adminLoginMsg) {
-          adminLoginMsg.style.display = 'flex';
-          adminLoginMsg.style.backgroundColor = '#FEE2E2';
-          adminLoginMsg.style.color = '#991B1B';
-          adminLoginMsg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <strong>Server connection failed. Please try again later.</strong>';
-        }
-      }
+      const submitButton = adminLoginForm.querySelector('[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      const authenticated = await authenticateAdmin(enteredPass, adminLoginMsg);
+      if (submitButton) submitButton.disabled = false;
+      if (!authenticated) return;
+      showAdminLoginMessage(adminLoginMsg, 'Admin password verified. Opening the Control Center...', true);
+      setTimeout(() => { window.location.href = 'admin.html'; }, 600);
     });
   }
 
@@ -781,39 +1023,16 @@ document.addEventListener('DOMContentLoaded', () => {
     adminPageLoginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const enteredPass = adminPagePassword ? adminPagePassword.value : '';
-
-      try {
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ role: 'admin', password: enteredPass })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          localStorage.setItem('sv_admin_authenticated', 'true');
-          localStorage.setItem('sv_admin_token', data.token);
-          if (adminPageLoginBox) adminPageLoginBox.style.display = 'none';
-          if (adminPageDashboard) adminPageDashboard.style.display = 'block';
-          if (adminLogoutTopBtn) adminLogoutTopBtn.style.display = 'inline-block';
-          syncLiveSettings();
-          loadBookings();
-        } else {
-          if (adminPageLoginMsg) {
-            adminPageLoginMsg.style.display = 'flex';
-            adminPageLoginMsg.style.backgroundColor = '#FEE2E2';
-            adminPageLoginMsg.style.color = '#991B1B';
-            adminPageLoginMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${data.message || 'Invalid Password!'}</strong>`;
-          }
-        }
-      } catch (err) {
-        if (adminPageLoginMsg) {
-          adminPageLoginMsg.style.display = 'flex';
-          adminPageLoginMsg.style.backgroundColor = '#FEE2E2';
-          adminPageLoginMsg.style.color = '#991B1B';
-          adminPageLoginMsg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <strong>Server connection failed. Please try again later.</strong>';
-        }
-      }
+      const submitButton = adminPageLoginForm.querySelector('[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      const authenticated = await authenticateAdmin(enteredPass, adminPageLoginMsg);
+      if (submitButton) submitButton.disabled = false;
+      if (!authenticated) return;
+      if (adminPageLoginBox) adminPageLoginBox.style.display = 'none';
+      if (adminPageDashboard) adminPageDashboard.style.display = 'block';
+      if (adminLogoutTopBtn) adminLogoutTopBtn.style.display = 'inline-block';
+      syncLiveSettings();
+      loadBookings();
     });
   }
 

@@ -25,6 +25,6 @@ Admin booking and quote data, settings updates, fleet edits, and tour edits requ
 
 ## Local Development
 
-The root static site build can be generated with `node scripts/build-static-site.js`. It uses `API_BASE_URL` if set, otherwise it targets `http://localhost:5000`.
+The root static site build can be generated with `node scripts/build-static-site.js`. It uses `API_BASE_URL` if set, otherwise it targets the production API at `https://shree-venkateshwara-api.onrender.com`. For local API development, set `API_BASE_URL=http://localhost:5000` when building the static site.
 
-Run the API with `npm start` from `backend`. Set `MONGO_URI` and `ADMIN_PASSWORD` in the local environment before testing persistent data or admin login.
+Run the API with `npm start` from `backend`; it loads `backend/.env` automatically. Copy `.env.example` to `.env` and set a private `ADMIN_PASSWORD` before signing in. Keep `.env` out of source control. For the local website preview, build with `API_BASE_URL=http://localhost:5000` and open it from `http://localhost:4173` or `http://127.0.0.1:4173` so the API's local CORS allowlist applies.

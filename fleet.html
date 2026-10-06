@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#2a8c7b">
+    <meta name="theme-color" content="#0a0c0a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Shree Express">
     <link rel="manifest" href="manifest.webmanifest">
@@ -16,36 +16,298 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=10.0">
+    <link rel="stylesheet" href="styles.css?v=16.0">
     <style>
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background: #f8fafc;
-            color: #0f172a;
+        .fleet-page {
+            padding: 44px 0 72px;
+            background: var(--bg-main);
         }
-
         .fleet-hero {
-            background: linear-gradient(135deg, #eff6ff 0%, #ecfeff 100%);
+            position: relative;
+            overflow: hidden;
+            padding: clamp(28px, 5vw, 56px);
+            border: 1px solid var(--border-light);
             border-radius: 20px;
-            padding: 32px;
-            border: 1px solid #dbeafe;
+            background: linear-gradient(120deg, #eaf2ee 0%, #f7f8f5 58%, #fff 100%);
+            box-shadow: var(--shadow-sm);
         }
-
+        .fleet-hero::after {
+            position: absolute;
+            content: "";
+            width: 300px;
+            height: 300px;
+            right: -95px;
+            top: -100px;
+            border: 1px solid rgba(42, 140, 123, .16);
+            border-radius: 50%;
+            box-shadow: 0 0 0 32px rgba(42, 140, 123, .035), 0 0 0 64px rgba(42, 140, 123, .025);
+            pointer-events: none;
+        }
+        .fleet-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 740px;
+        }
+        .fleet-hero h2 {
+            margin: 4px 0 12px;
+            font-size: clamp(2.1rem, 4.5vw, 3.5rem);
+            letter-spacing: -.04em;
+        }
+        .fleet-hero p {
+            max-width: 620px;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+        .fleet-highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-top: 24px;
+            list-style: none;
+        }
+        .fleet-highlights li {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-heading);
+            font-size: .9rem;
+            font-weight: 600;
+        }
+        .fleet-highlights i { color: var(--primary); }
+        .fleet-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+        }
+        .fleet-toolbar {
+            display: grid;
+            grid-template-columns: minmax(220px, 1.5fr) repeat(2, minmax(170px, 1fr));
+            gap: 14px;
+            align-items: end;
+            margin: 34px 0 18px;
+            padding: 18px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-card);
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+        .fleet-filter label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-heading);
+            font-size: .8rem;
+            font-weight: 700;
+        }
+        .fleet-filter input,
+        .fleet-filter select {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-input);
+            background: #fff;
+            color: var(--text-main);
+            font: inherit;
+        }
+        .fleet-filter input:focus,
+        .fleet-filter select:focus {
+            outline: 2px solid rgba(42, 140, 123, .2);
+            border-color: var(--primary);
+        }
+        .fleet-results {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            min-height: 28px;
+            margin: 0 2px 14px;
+            color: var(--text-muted);
+            font-size: .9rem;
+        }
+        .fleet-results strong { color: var(--text-heading); }
         .fleet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+            gap: 22px;
         }
-
-        .fleet-empty {
-            background: white;
-            border: 1px solid #e2e8f0;
+        .vehicle-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
             border-radius: 16px;
-            padding: 20px;
-            color: #475569;
+            background: #fff;
+            box-shadow: var(--shadow-card);
+            transition: transform .2s ease, box-shadow .2s ease;
         }
+        .vehicle-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .vehicle-media {
+            position: relative;
+            height: 228px;
+            overflow: hidden;
+            background: var(--bg-alt);
+        }
+        .vehicle-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease;
+        }
+        .vehicle-card:hover .vehicle-photo { transform: scale(1.035); }
+        .vehicle-category,
+        .vehicle-status,
+        .vehicle-rate {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: var(--radius-pill);
+            font-size: .76rem;
+            font-weight: 700;
+        }
+        .vehicle-category {
+            top: 12px;
+            left: 12px;
+            max-width: calc(100% - 24px);
+            padding: 6px 11px;
+            overflow: hidden;
+            background: rgba(18, 52, 71, .88);
+            color: #fff;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .vehicle-status {
+            top: 12px;
+            right: 12px;
+            padding: 6px 10px;
+            background: #e7f6ef;
+            color: #16734b;
+        }
+        .vehicle-status.is-unavailable {
+            background: #fff1ee;
+            color: #a43d2f;
+        }
+        .vehicle-rate {
+            right: 12px;
+            bottom: 12px;
+            padding: 7px 12px;
+            background: #fff;
+            color: var(--text-heading);
+            box-shadow: var(--shadow-sm);
+        }
+        .fleet-photo-gallery {
+            display: flex;
+            gap: 8px;
+            padding: 10px 16px 0;
+            overflow-x: auto;
+        }
+        .fleet-photo-thumb {
+            flex: 0 0 auto;
+            width: 54px;
+            height: 42px;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            border-radius: 7px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .fleet-photo-thumb[aria-pressed="true"] { border: 2px solid var(--primary); }
+        .fleet-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .vehicle-details {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 18px 20px 20px;
+        }
+        .vehicle-details h3 {
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        .vehicle-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 15px;
+            margin-bottom: 14px;
+            color: var(--text-muted);
+            font-size: .83rem;
+        }
+        .vehicle-specs i { margin-right: 5px; color: var(--primary); }
+        .vehicle-features {
+            display: grid;
+            gap: 6px;
+            margin: 0 0 18px;
+            padding: 0;
+            color: var(--text-main);
+            font-size: .84rem;
+            list-style: none;
+        }
+        .vehicle-features i { margin-right: 7px; color: var(--success); }
+        .fleet-hire-car { width: 100%; margin-top: auto; }
+        .fleet-hire-car:disabled {
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: .65;
+            transform: none;
+        }
+        .fleet-empty {
+            grid-column: 1 / -1;
+            padding: 34px 20px;
+            border: 1px dashed var(--border-light);
+            border-radius: 16px;
+            background: #fff;
+            text-align: center;
+        }
+        .fleet-empty i { margin-bottom: 12px; color: var(--primary); font-size: 1.8rem; }
+        .fleet-empty h3 { margin-bottom: 6px; }
+        .fleet-empty p { color: var(--text-muted); }
+        .fleet-empty .btn { margin-top: 16px; }
+        @media (max-width: 700px) {
+            .fleet-page { padding: 28px 0 52px; }
+            .fleet-toolbar { grid-template-columns: 1fr; padding: 14px; }
+            .fleet-results { align-items: flex-start; flex-direction: column; }
+            .vehicle-media { height: 210px; }
+        }
+        .fleet-page .fleet-hero {
+            border-color: #30392a;
+            background:
+                radial-gradient(ellipse at 88% 52%, rgba(115, 137, 67, .16), transparent 40%),
+                linear-gradient(120deg, #171b15 0%, #0d100d 76%);
+            box-shadow: 0 16px 44px rgba(0, 0, 0, .24);
+        }
+        .fleet-page .fleet-hero::after { border-color: rgba(200, 243, 107, .14); }
+        .fleet-page .fleet-toolbar { border-color: #2c3129; background: #151815; }
+        .fleet-page .fleet-filter label { color: #b9c0b2; }
+        .fleet-page .fleet-filter input,
+        .fleet-page .fleet-filter select {
+            border-color: #343a32;
+            background: #101310;
+            color: #edf0e8;
+            color-scheme: dark;
+        }
+        .fleet-page .fleet-results { color: #9ba193; }
+        .fleet-page .fleet-results h2,
+        .fleet-page .fleet-results strong { color: #f5f6ef; }
+        .fleet-page .vehicle-card {
+            border-color: #2b3028;
+            background: #151815;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, .26);
+        }
+        .fleet-page .vehicle-card:hover { border-color: rgba(200, 243, 107, .44); }
+        .fleet-page .vehicle-media { background: #1b201a; }
+        .fleet-page .vehicle-rate { background: #c8f36b; color: #12150d; }
+        .fleet-page .fleet-photo-thumb { border-color: #343a32; background: #101310; }
+        .fleet-page .fleet-empty {
+            border-color: #343a32;
+            background: #151815;
+            color: #d1d5cc;
+        }
+        .fleet-page .fleet-empty h3 { color: #f5f6ef; }
+        .fleet-page .fleet-empty p { color: #9ba193; }
     </style>
 </head>
 
@@ -69,6 +331,7 @@
                                 aria-hidden="true"></i> Coming Soon</a></li>
                     <li><a href="fleet.html" class="nav-link active">Rent A Car</a></li>
                     <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+                    <li><a href="admin.html" class="nav-link">Admin</a></li>
                 </ul>
             </nav>
 
@@ -85,18 +348,55 @@
         </div>
     </header>
 
-    <main style="padding: 48px 0; background: #F8FAFC;">
-        <div class="container" style="max-width: 1200px;">
+    <main class="fleet-page">
+        <div class="container">
             <div class="fleet-hero">
-                <span class="badge"><i class="fa-solid fa-car-side"></i> Premium Cars</span>
-                <h2 style="margin-top: 12px; font-size: clamp(2rem, 4vw, 3rem);">Rent A Car & View Rates</h2>
-                <p style="margin-top: 12px; max-width: 760px; color: #475569; font-size: 1rem; line-height: 1.7;">
-                    Explore premium cars for self-drive and chauffeur-driven rentals, with clear pricing and convenient
-                    booking.
-                </p>
+                <div class="fleet-hero-content">
+                    <span class="badge"><i class="fa-solid fa-car-side"></i> Premium car rentals</span>
+                    <h2>Make the journey yours.</h2>
+                    <p>Find the right car for a quick city ride or a longer getaway. Choose a professional driver or self-drive, then send us your trip details for a quick quote.</p>
+                    <ul class="fleet-highlights" aria-label="Rental benefits">
+                        <li><i class="fa-solid fa-circle-check"></i> Clear per-kilometre rates</li>
+                        <li><i class="fa-solid fa-user-shield"></i> With driver or self-drive</li>
+                        <li><i class="fa-brands fa-whatsapp"></i> Easy WhatsApp enquiry</li>
+                    </ul>
+                    <div class="fleet-actions">
+                        <a class="btn btn-primary" href="#available-cars"><i class="fa-solid fa-magnifying-glass"></i> Explore cars</a>
+                        <a class="btn btn-secondary" href="tel:+918669410303"><i class="fa-solid fa-phone"></i> Call 866 941 0303</a>
+                    </div>
+                </div>
             </div>
 
-            <div id="fleet-cars-container" class="fleet-grid" aria-live="polite"></div>
+            <section id="available-cars" aria-labelledby="available-cars-title">
+                <div class="fleet-toolbar" aria-label="Find a rental car">
+                    <div class="fleet-filter">
+                        <label for="fleet-search">Search cars</label>
+                        <input type="search" id="fleet-search" placeholder="Search by car name..." autocomplete="off">
+                    </div>
+                    <div class="fleet-filter">
+                        <label for="fleet-category-filter">Vehicle category</label>
+                        <select id="fleet-category-filter">
+                            <option value="">All categories</option>
+                        </select>
+                    </div>
+                    <div class="fleet-filter">
+                        <label for="fleet-sort">Sort cars</label>
+                        <select id="fleet-sort">
+                            <option value="featured">Recommended</option>
+                            <option value="price-asc">Rate: low to high</option>
+                            <option value="price-desc">Rate: high to low</option>
+                            <option value="seats-desc">Most seats</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="fleet-results">
+                    <h2 id="available-cars-title" style="font-size:1.35rem;">Explore our cars</h2>
+                    <span id="fleet-results-count" aria-live="polite">Loading available cars...</span>
+                </div>
+                <div id="fleet-cars-container" class="fleet-grid" aria-live="polite" aria-busy="true">
+                    <div class="fleet-empty"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><h3>Finding your ride</h3><p>Loading the latest cars and rates...</p></div>
+                </div>
+            </section>
         </div>
     </main>
 
@@ -121,8 +421,13 @@
                     <label for="car-hire-date" class="form-label">Trip date</label>
                     <input type="date" id="car-hire-date" class="form-control" required>
                 </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="car-hire-pickup" class="form-label">Pick-up from</label>
+                    <input type="text" id="car-hire-pickup" class="form-control"
+                        placeholder="Your city or location" autocomplete="address-level2" required>
+                </div>
                 <div class="form-group" style="margin-bottom:16px;">
-                    <label for="car-hire-destination" class="form-label">Destination</label>
+                    <label for="car-hire-destination" class="form-label">Going to</label>
                     <input type="text" id="car-hire-destination" class="form-control"
                         placeholder="Where would you like to go?" required>
                 </div>
@@ -150,7 +455,7 @@
         </div>
     </footer>
 
-    <script src="script.js?v=10.0"></script>
+    <script src="script.js?v=16.0"></script>
 </body>
 
 </html>

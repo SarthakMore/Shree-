@@ -22,7 +22,7 @@ mkdirSync(output, { recursive: true });
 for (const file of siteFiles) {
     if (file === 'script.js') {
         const script = readFileSync(path.join(root, file), 'utf8');
-        const apiBase = process.env.API_BASE_URL || 'http://localhost:5000';
+        const apiBase = process.env.API_BASE_URL || 'https://shree-venkateshwara-api.onrender.com';
         const localApiBase = "const API_BASE = 'http://localhost:5000';";
 
         if (!script.includes(localApiBase)) {

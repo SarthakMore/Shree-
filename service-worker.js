@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shree-express-v10';
+const CACHE_NAME = 'shree-express-v16';
 const APP_SHELL = [
     './',
     'index.html',
@@ -11,6 +11,7 @@ const APP_SHELL = [
     'styles.css',
     'script.js',
     'images/logo.jpeg',
+    'images/home-feature-car.jpg',
     'images/app-icon-192.png',
     'images/app-icon-512.png'
 ];

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#2a8c7b">
+  <meta name="theme-color" content="#0a0c0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Shree Express">
   <link rel="manifest" href="manifest.webmanifest">
@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=10.0">
+  <link rel="stylesheet" href="styles.css?v=16.0">
 </head>
 
 <body>
@@ -47,6 +47,7 @@
               aria-label="Additional Rental Services, Coming Soon"><i class="fa-regular fa-clock"
                 aria-hidden="true"></i> Coming Soon</a></li>
           <li><a href="airport-tours.html" class="nav-link">Airport & Tours</a></li>
+          <li><a href="admin.html" class="nav-link active" aria-current="page">Admin</a></li>
         </ul>
       </nav>
 
@@ -93,6 +94,7 @@
         </div>
 
         <div id="admin-page-login-msg" class="auth-status-banner" style="display: none;"></div>
+        <p class="admin-api-status" id="admin-api-status" role="status" aria-live="polite">Checking admin server connection...</p>
 
         <form id="admin-page-login-form">
           <div class="form-group" style="margin-bottom: 14px;">
@@ -374,7 +376,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=10.0"></script>
+  <script src="script.js?v=16.0"></script>
 </body>
 
 </html>
