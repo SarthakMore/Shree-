@@ -17,10 +17,12 @@ services:
   - type: web
     name: shree-website
     runtime: static
+    domains:
+      - shreevenkateshwaraexpress.in
     buildCommand: node scripts/build-static-site.js
     staticPublishPath: dist
     envVars:
       - key: API_BASE_URL
         value: https://shree-venkateshwara-api.onrender.com
       - key: SITE_URL
-        value: https://shree-website-93o4.onrender.com
+        value: https://shreevenkateshwaraexpress.in
