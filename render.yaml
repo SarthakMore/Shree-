@@ -11,18 +11,16 @@ services:
       - key: MONGO_URI
         sync: false
       - key: FRONTEND_URL
-        value: "https://shree-website-93o4.onrender.com,https://shreevenkateshwaraexpress.in,https://www.shreevenkateshwaraexpress.in,https://shree-2fmkhc165-sarthakmore.vercel.app"
+        value: "https://shree-website-93o4.onrender.com,https://shree-2fmkhc165-sarthakmore.vercel.app"
       - key: ADMIN_PASSWORD
         generateValue: true
   - type: web
     name: shree-website
     runtime: static
-    domains:
-      - shreevenkateshwaraexpress.in
     buildCommand: node scripts/build-static-site.js
     staticPublishPath: dist
     envVars:
       - key: API_BASE_URL
         value: https://shree-venkateshwara-api.onrender.com
       - key: SITE_URL
-        value: https://shreevenkateshwaraexpress.in
+        value: https://shree-website-93o4.onrender.com
