@@ -36,6 +36,10 @@ const carSchema = new mongoose.Schema({
     enum: ['AVAILABLE', 'FULL', 'MAINTENANCE'],
     default: 'AVAILABLE'
   },
+  availableFrom: {
+    type: String,
+    default: ''
+  },
   features: {
     type: [String],
     default: ['Premium comfort', 'Well-maintained interior', 'Skilled driver available', 'High Speed Wi-Fi', 'AC Climate Control']

@@ -19,6 +19,49 @@ router.get('/', requireAdmin, async (req, res) => {
   }
 });
 
+// @route   POST /api/bookings/delete-exported
+// @desc    Delete only the bookings included in an admin CSV export
+router.post('/delete-exported', requireAdmin, async (req, res) => {
+  const { bookingIds } = req.body || {};
+  const maxExportedBookings = 10000;
+
+  if (
+    !Array.isArray(bookingIds) ||
+    bookingIds.length === 0 ||
+    bookingIds.length > maxExportedBookings ||
+    bookingIds.some(id => typeof id !== 'string' || !id.trim())
+  ) {
+    return res.status(400).json({ success: false, message: 'A valid list of exported booking IDs is required' });
+  }
+
+  const uniqueIds = [...new Set(bookingIds)];
+
+  try {
+    if (isMongoConnected()) {
+      if (uniqueIds.some(id => !/^[a-f\d]{24}$/i.test(id))) {
+        return res.status(400).json({ success: false, message: 'One or more booking IDs are invalid' });
+      }
+
+      const result = await Booking.deleteMany({ _id: { $in: uniqueIds } });
+      return res.json({
+        success: true,
+        message: 'Exported bookings deleted successfully',
+        deletedCount: result.deletedCount
+      });
+    }
+
+    const originalCount = inMemoryStore.bookings.length;
+    inMemoryStore.bookings = inMemoryStore.bookings.filter(booking => !uniqueIds.includes(booking._id));
+    return res.json({
+      success: true,
+      message: 'Exported bookings deleted successfully',
+      deletedCount: originalCount - inMemoryStore.bookings.length
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to delete exported bookings', error: err.message });
+  }
+});
+
 // @route   POST /api/bookings
 // @desc    Create a vehicle booking
 router.post('/', async (req, res) => {

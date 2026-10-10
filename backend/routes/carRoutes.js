@@ -28,6 +28,12 @@ function normalizePhotos(photos, fallbackPhoto) {
   return { photo: primaryPhoto, photos: normalized.slice(0, 5) };
 }
 
+function isValidAvailabilityDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 // Default initial fleet cars
 let inMemoryCars = [
   {
@@ -43,6 +49,7 @@ let inMemoryCars = [
     capacity: 7,
     hourlyRate: 450,
     status: 'AVAILABLE',
+    availableFrom: '',
     features: ['Premium comfort', 'Well-maintained interior', 'Skilled driver available', 'High Speed Wi-Fi']
   },
   {
@@ -58,6 +65,7 @@ let inMemoryCars = [
     capacity: 7,
     hourlyRate: 650,
     status: 'AVAILABLE',
+    availableFrom: '',
     features: ['Luxury Captain Seats', 'Rear AC Vents', 'Dual Sunroof', 'Outstation Special']
   },
   {
@@ -73,6 +81,7 @@ let inMemoryCars = [
     capacity: 6,
     hourlyRate: 350,
     status: 'AVAILABLE',
+    availableFrom: '',
     features: ['Affordable comfort', 'Dual AC', 'Clean interior', 'Luggage space']
   }
 ];
@@ -100,9 +109,20 @@ router.get('/', async (req, res) => {
 // POST /api/cars - Add a new car (Admin service)
 router.post('/', requireAdmin, async (req, res) => {
   try {
-    const { name, category, photo, photos, ratePerKm, capacity, hourlyRate, status, features } = req.body || {};
+    const { name, category, photo, photos, ratePerKm, capacity, hourlyRate, status, availableFrom, features } = req.body || {};
     if (!name) {
       return res.status(400).json({ success: false, message: 'Car name is required' });
+    }
+
+    const carStatus = status || 'AVAILABLE';
+    if (!['AVAILABLE', 'FULL', 'MAINTENANCE'].includes(carStatus)) {
+      return res.status(400).json({ success: false, message: 'Please choose a valid car availability status.' });
+    }
+    if (carStatus !== 'AVAILABLE' && !isValidAvailabilityDate(availableFrom)) {
+      return res.status(400).json({ success: false, message: 'Enter the exact date this car will be available again.' });
+    }
+    if (availableFrom && !isValidAvailabilityDate(availableFrom)) {
+      return res.status(400).json({ success: false, message: 'Enter a valid availability date.' });
     }
 
     const carPhotos = cleanPhotos(photos || (photo ? [photo] : []));
@@ -117,7 +137,8 @@ router.post('/', requireAdmin, async (req, res) => {
       ratePerKm: Number(ratePerKm) || 14,
       capacity: Number(capacity) || 7,
       hourlyRate: Number(hourlyRate) || 450,
-      status: status || 'AVAILABLE',
+      status: carStatus,
+      availableFrom: carStatus === 'AVAILABLE' ? '' : availableFrom,
       features: Array.isArray(features) ? features : (features ? features.split(',') : ['100% AC Comfort', 'Clean Interior'])
     };
 
@@ -143,6 +164,18 @@ router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body };
+    if ('status' in updateData) {
+      if (!['AVAILABLE', 'FULL', 'MAINTENANCE'].includes(updateData.status)) {
+        return res.status(400).json({ success: false, message: 'Please choose a valid car availability status.' });
+      }
+      if (updateData.status === 'AVAILABLE') {
+        updateData.availableFrom = '';
+      } else if (!isValidAvailabilityDate(updateData.availableFrom)) {
+        return res.status(400).json({ success: false, message: 'Enter the exact date this car will be available again.' });
+      }
+    } else if ('availableFrom' in updateData && updateData.availableFrom && !isValidAvailabilityDate(updateData.availableFrom)) {
+      return res.status(400).json({ success: false, message: 'Enter a valid availability date.' });
+    }
     if ('photos' in updateData || 'photo' in updateData) {
       const updatedPhotos = cleanPhotos(updateData.photos || (updateData.photo ? [updateData.photo] : []));
       if (updatedPhotos.length < 2) {

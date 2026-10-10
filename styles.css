@@ -512,7 +512,7 @@ a { color: inherit; }
 .booking-panel-intro small { margin-top: 4px; color: #858b80; font-size: .67rem; line-height: 1.4; }
 .home-booking-form {
   display: grid;
-  grid-template-columns: minmax(175px, .9fr) repeat(3, minmax(135px, 1fr)) auto;
+  grid-template-columns: minmax(175px, .9fr) repeat(4, minmax(135px, 1fr)) auto;
   align-items: end;
   gap: 12px;
 }
@@ -2624,6 +2624,60 @@ body #admin-page-dashboard textarea {
   border-color: #343a32 !important;
   background: #101310 !important;
   color: #edf0e8 !important;
+}
+body #admin-page-dashboard .admin-panel {
+  border-color: #2b3028 !important;
+  background: #151815 !important;
+  color: var(--text-main);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .2) !important;
+}
+body #admin-page-dashboard .admin-panel h4 {
+  color: var(--text-heading) !important;
+}
+body #admin-page-dashboard .admin-panel h5,
+body #admin-page-dashboard .admin-panel p {
+  color: var(--text-main);
+}
+body #admin-page-dashboard #admin-add-car-form,
+body #admin-page-dashboard #admin-add-tour-form {
+  border: 1px solid #343a32;
+  background: #101310 !important;
+}
+body #admin-page-dashboard #car-availability-date-help {
+  color: var(--text-muted);
+  font-size: .78rem;
+}
+body #admin-page-dashboard #car-availability-date-group[hidden] {
+  display: none !important;
+}
+body #admin-page-dashboard .admin-record-card,
+body #admin-page-dashboard .admin-booking-item {
+  border-color: #343a32 !important;
+  background: #101310 !important;
+}
+body #admin-page-dashboard .admin-record-title,
+body #admin-page-dashboard .admin-booking-name {
+  color: var(--text-heading) !important;
+}
+body #admin-page-dashboard .admin-record-meta,
+body #admin-page-dashboard .admin-booking-meta {
+  color: var(--text-muted) !important;
+}
+body #admin-page-dashboard .admin-booking-details {
+  color: #c8cec1;
+}
+body #admin-page-dashboard .admin-booking-details strong {
+  color: #f0f2eb;
+}
+body #admin-page-dashboard .booking-update-form {
+  border-color: #343a32 !important;
+  background: #171c15 !important;
+}
+body #admin-page-dashboard .admin-booking-field-label {
+  color: #c8cec1 !important;
+}
+body #admin-page-dashboard .admin-bookings-container > div:not(.admin-booking-item) {
+  color: var(--text-muted) !important;
 }
 
 @media (max-width: 992px) {

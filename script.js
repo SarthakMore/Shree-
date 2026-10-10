@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
       .trim();
     return cleaned || fallback;
   };
+  const formatAvailabilityDate = value => {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return '';
+    const date = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&': '&amp;',
     '<': '&lt;',
@@ -126,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const homeRentalSearch = document.getElementById('home-rental-search');
   const homeRentalDate = document.getElementById('home-rental-date');
+  const homeRentalTime = document.getElementById('home-rental-time');
   if (homeRentalDate) {
     const today = new Date();
     homeRentalDate.min = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -138,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pickup: document.getElementById('home-rental-pickup').value.trim(),
         destination: document.getElementById('home-rental-destination').value.trim(),
         date: homeRentalDate.value,
+        time: homeRentalTime.value,
         driverOption: homeRentalSearch.querySelector('input[name="home-driver-option"]:checked')?.value || 'With driver'
       };
       sessionStorage.setItem('sv_rental_prefill', JSON.stringify(tripRequest));
@@ -365,6 +373,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (container) container.setAttribute('aria-busy', 'false');
   }
 
+  async function refreshFleetAvailability() {
+    if (document.visibilityState !== 'visible') return;
+    try {
+      const response = await fetch(`${API_BASE}/api/cars`);
+      if (!response.ok) throw new Error(`Fleet availability refresh failed with status ${response.status}`);
+      const result = await response.json();
+      if (!result.success || !Array.isArray(result.data)) {
+        throw new Error('Fleet availability response did not include vehicle data');
+      }
+
+      const latestCars = new Map(result.data.map(car => [String(car._id), car]));
+      fleetCars = fleetCars.map(car => {
+        const latest = latestCars.get(String(car._id));
+        return latest ? { ...car, status: latest.status, availableFrom: latest.availableFrom } : car;
+      });
+
+      document.querySelectorAll('#fleet-cars-container .vehicle-card').forEach(card => {
+        const car = latestCars.get(card.dataset.carId);
+        if (!car) return;
+        const available = String(car.status || 'AVAILABLE').toUpperCase() === 'AVAILABLE';
+        const statusBadge = card.querySelector('[data-vehicle-status]');
+        const availabilityNote = card.querySelector('[data-vehicle-availability]');
+        const hireButton = card.querySelector('.fleet-hire-car');
+        const availableFrom = formatAvailabilityDate(car.availableFrom);
+
+        if (statusBadge) {
+          statusBadge.classList.toggle('is-unavailable', !available);
+          statusBadge.innerHTML = `<i class="fa-solid ${available ? 'fa-circle-check' : 'fa-circle-xmark'}" aria-hidden="true"></i>${available ? 'Available' : 'Currently unavailable'}`;
+        }
+        if (availabilityNote) {
+          availabilityNote.textContent = !available && availableFrom ? `Available from ${availableFrom}` : '';
+        }
+        if (hireButton) {
+          hireButton.disabled = !available;
+          hireButton.setAttribute('aria-label', available ? `Enquire about ${rentalDisplayText(car.name)}` : `${rentalDisplayText(car.name)} is currently unavailable`);
+          hireButton.innerHTML = `<i class="fa-brands fa-whatsapp" aria-hidden="true"></i> ${available ? 'Enquire about this car' : 'Currently unavailable'}`;
+        }
+      });
+    } catch (error) {
+      console.error('Could not refresh live fleet availability.', error);
+    }
+  }
+
   function updateFleetCategoryOptions() {
     if (!fleetCategoryFilter) return;
     const selectedCategory = fleetCategoryFilter.value;
@@ -437,17 +488,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const capacity = Number(car.capacity) || 0;
       const hourlyRate = Number(car.hourlyRate) || 0;
       const available = String(car.status || 'AVAILABLE').toUpperCase() === 'AVAILABLE';
+      const availableFrom = formatAvailabilityDate(car.availableFrom);
       const photoGallery = photos.length > 1 ? `
         <div class="fleet-photo-gallery" aria-label="Photos of ${escapeHtml(carName)}">
           ${photos.map((photo, index) => `<button type="button" class="fleet-photo-thumb" data-photo-src="${escapeHtml(photo)}" aria-pressed="${index === 0}" aria-label="Show photo ${index + 1} of ${escapeHtml(carName)}"><img src="${escapeHtml(photo)}" alt="" loading="lazy"></button>`).join('')}
         </div>` : '';
 
       return `
-        <article class="vehicle-card">
+        <article class="vehicle-card" data-car-id="${escapeHtml(car._id)}">
           <div class="vehicle-media">
             <img class="vehicle-photo" src="${escapeHtml(photos[0] || '')}" alt="${escapeHtml(carName)}" loading="lazy">
             <span class="vehicle-category">${escapeHtml(category)}</span>
-            <span class="vehicle-status${available ? '' : ' is-unavailable'}"><i class="fa-solid ${available ? 'fa-circle-check' : 'fa-circle-xmark'}" aria-hidden="true"></i>${available ? 'Available' : 'Currently unavailable'}</span>
+            <span class="vehicle-status${available ? '' : ' is-unavailable'}" data-vehicle-status><i class="fa-solid ${available ? 'fa-circle-check' : 'fa-circle-xmark'}" aria-hidden="true"></i>${available ? 'Available' : 'Currently unavailable'}</span>
             <span class="vehicle-rate"><i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i>${rate}/km</span>
             ${photos.length > 1 ? `<button type="button" class="fleet-photo-step fleet-photo-step--previous" data-photo-step="-1" aria-label="Previous photo of ${escapeHtml(carName)}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button><button type="button" class="fleet-photo-step fleet-photo-step--next" data-photo-step="1" aria-label="Next photo of ${escapeHtml(carName)}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>` : ''}
             <span class="fleet-photo-count" aria-live="polite">${photos.length > 1 ? `01 / ${String(photos.length).padStart(2, '0')}` : ''}</span>
@@ -455,6 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${photoGallery}
           <div class="vehicle-details">
             <h3>${escapeHtml(carName)}</h3>
+            <p class="vehicle-availability-note" data-vehicle-availability>${!available && availableFrom ? `Available from ${escapeHtml(availableFrom)}` : ''}</p>
             <div class="vehicle-specs">
               ${capacity ? `<span><i class="fa-solid fa-users" aria-hidden="true"></i>${capacity} seats</span>` : ''}
               <span><i class="fa-solid fa-route" aria-hidden="true"></i>₹${rate}/km</span>
@@ -551,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('car-hire-pickup').value = tripRequest.pickup || '';
         document.getElementById('car-hire-destination').value = tripRequest.destination || '';
         document.getElementById('car-hire-date').value = tripRequest.date || '';
+        document.getElementById('car-hire-time').value = tripRequest.time || '';
         carHireForm.querySelectorAll('input[name="car-hire-driver-option"]').forEach(option => {
           option.checked = option.value === tripRequest.driverOption;
         });
@@ -578,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = document.getElementById('car-hire-name').value.trim();
       const phone = document.getElementById('car-hire-phone').value.trim();
       const date = document.getElementById('car-hire-date').value;
+      const time = document.getElementById('car-hire-time').value;
       const pickup = document.getElementById('car-hire-pickup').value.trim();
       const destination = document.getElementById('car-hire-destination').value.trim();
       const driverOption = carHireForm.querySelector('input[name="car-hire-driver-option"]:checked')?.value || 'With driver';
@@ -586,6 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `*Name:* ${name}\n` +
         `*Phone:* ${phone}\n` +
         `*Trip date:* ${date}\n` +
+        `*Pick-up time:* ${time}\n` +
         `*Car:* ${carHireModal.dataset.carName}\n` +
         `*Rate:* ₹${carHireModal.dataset.rateKm}/km\n` +
         `*Pick-up from:* ${pickup}\n` +
@@ -603,11 +659,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listEl) return;
 
     listEl.innerHTML = cars.map(car => `
-      <div style="background:#F8FAFC; border:1px solid #CBD5E1; border-radius:12px; padding:14px; display:flex; gap:12px; align-items:center;">
+      <div class="admin-record-card" style="border:1px solid #CBD5E1; border-radius:12px; padding:14px; display:flex; gap:12px; align-items:center;">
         <img src="${escapeHtml(safePhotoUrl(car.photo))}" alt="${escapeHtml(rentalDisplayText(car.name))}" style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
         <div style="flex:1;">
-          <h5 style="margin:0; font-size:0.95rem; font-weight:700;">${escapeHtml(rentalDisplayText(car.name))}</h5>
-          <span style="font-size:0.75rem; color:#64748B;">${escapeHtml(rentalDisplayText(car.category))} • ₹${Number(car.ratePerKm) || 0}/km • ${Number(car.photos?.length || (car.photo ? 1 : 0))} photos • ${Number(car.capacity) || 0} Seats</span>
+          <h5 class="admin-record-title" style="margin:0; font-size:0.95rem; font-weight:700;">${escapeHtml(rentalDisplayText(car.name))}</h5>
+          <span class="admin-record-meta" style="font-size:0.75rem;">${escapeHtml(rentalDisplayText(car.category))} • ₹${Number(car.ratePerKm) || 0}/km • ${Number(car.photos?.length || (car.photo ? 1 : 0))} photos • ${Number(car.capacity) || 0} Seats</span>
+          <span class="admin-record-availability" style="display:block; margin-top:5px; font-size:0.75rem; color:${car.status === 'AVAILABLE' ? '#16A34A' : '#DC2626'};">
+            ${car.status === 'AVAILABLE' ? 'Available now' : `Unavailable${formatAvailabilityDate(car.availableFrom) ? ` • Available from ${escapeHtml(formatAvailabilityDate(car.availableFrom))}` : ''}`}
+          </span>
         </div>
         <button type="button" class="edit-car-record btn btn-secondary" data-car-id="${escapeHtml(car._id)}" aria-label="Edit ${escapeHtml(rentalDisplayText(car.name))}" style="padding:6px 10px; font-size:0.75rem;">
           <i class="fa-solid fa-pen-to-square"></i>
@@ -637,6 +696,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('car-input-ratekm').value = car.ratePerKm || 14;
       document.getElementById('car-input-capacity').value = car.capacity || 7;
       document.getElementById('car-input-hourly').value = car.hourlyRate || 450;
+      document.getElementById('car-input-status').value = car.status === 'AVAILABLE' ? 'AVAILABLE' : 'FULL';
+      document.getElementById('car-input-available-from').value = car.availableFrom || '';
+      updateCarAvailabilityFields();
       for (let index = 0; index < 5; index += 1) {
         document.getElementById(`car-input-photo-${index + 1}`).value = photos[index] || '';
       }
@@ -650,9 +712,27 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const cancelCarEditBtn = document.getElementById('car-cancel-edit-btn');
+  const carAvailabilityStatus = document.getElementById('car-input-status');
+  const carAvailabilityDate = document.getElementById('car-input-available-from');
+  const carAvailabilityDateGroup = document.getElementById('car-availability-date-group');
+  function updateCarAvailabilityFields() {
+    if (!carAvailabilityStatus || !carAvailabilityDate || !carAvailabilityDateGroup) return;
+    const unavailable = carAvailabilityStatus.value !== 'AVAILABLE';
+    carAvailabilityDate.required = unavailable;
+    carAvailabilityDate.disabled = !unavailable;
+    carAvailabilityDateGroup.hidden = !unavailable;
+    if (!unavailable) carAvailabilityDate.value = '';
+  }
+  if (carAvailabilityStatus) {
+    const now = new Date();
+    carAvailabilityDate.min = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    carAvailabilityStatus.addEventListener('change', updateCarAvailabilityFields);
+    updateCarAvailabilityFields();
+  }
   if (cancelCarEditBtn) {
     cancelCarEditBtn.addEventListener('click', () => {
       document.getElementById('admin-add-car-form').reset();
+      updateCarAvailabilityFields();
       document.getElementById('car-input-edit-id').value = '';
       document.getElementById('car-form-title').textContent = 'Add Car to Fleet';
       document.getElementById('car-submit-btn').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Car to Fleet';
@@ -712,11 +792,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listEl) return;
 
     listEl.innerHTML = tours.map(tour => `
-      <div style="background:#F8FAFC; border:1px solid #CBD5E1; border-radius:12px; padding:14px; display:flex; gap:12px; align-items:center;">
+      <div class="admin-record-card" style="border:1px solid #CBD5E1; border-radius:12px; padding:14px; display:flex; gap:12px; align-items:center;">
         <img src="${tour.photo}" alt="${tour.title}" style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
         <div style="flex:1;">
-          <h5 style="margin:0; font-size:0.95rem; font-weight:700;">${tour.title}</h5>
-          <span style="font-size:0.75rem; color:#64748B;">₹${tour.price} • ${tour.duration}</span>
+          <h5 class="admin-record-title" style="margin:0; font-size:0.95rem; font-weight:700;">${tour.title}</h5>
+          <span class="admin-record-meta" style="font-size:0.75rem;">₹${tour.price} • ${tour.duration}</span>
         </div>
         <button onclick="deleteTourRecord('${tour._id}')" class="btn btn-accent" style="padding:6px 12px; font-size:0.75rem; background:#EF4444; border-color:#EF4444;">
           <i class="fa-solid fa-trash"></i>
@@ -759,6 +839,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadFleetCars();
   loadTravelTours();
+  if (document.getElementById('fleet-cars-container')) {
+    window.setInterval(refreshFleetAvailability, 15000);
+  }
 
   // 7. ADMIN SERVICES - ADD CAR FORM & ADD TOUR FORM HANDLERS
   const addCarForm = document.getElementById('admin-add-car-form');
@@ -780,7 +863,9 @@ document.addEventListener('DOMContentLoaded', () => {
         photos,
         ratePerKm: document.getElementById('car-input-ratekm')?.value,
         capacity: document.getElementById('car-input-capacity')?.value,
-        hourlyRate: document.getElementById('car-input-hourly')?.value
+        hourlyRate: document.getElementById('car-input-hourly')?.value,
+        status: carAvailabilityStatus?.value || 'AVAILABLE',
+        availableFrom: carAvailabilityDate?.value || ''
       };
 
       try {
@@ -793,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success) {
           alert(editId ? 'Car details updated successfully!' : 'Car added to fleet successfully!');
           addCarForm.reset();
+          updateCarAvailabilityFields();
           document.getElementById('car-input-edit-id').value = '';
           document.getElementById('car-form-title').textContent = 'Add Car to Fleet';
           document.getElementById('car-submit-btn').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Car to Fleet';
@@ -1168,15 +1254,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const tagTxtColor = status === 'Confirmed' ? '#15803D' : status === 'Completed' ? '#0369A1' : status === 'Cancelled' ? '#991B1B' : '#92400E';
 
         return `
-          <div style="border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; background:#F8FAFC;">
+          <div class="admin-booking-item" style="border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
             <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
               <div>
-                <strong style="font-size:1rem; color:#0F172A;">${booking.name || 'Passenger'}</strong>
-                <div style="font-size:0.82rem; color:#64748B;">${booking.phone || 'No phone'}</div>
+                <strong class="admin-booking-name" style="font-size:1rem;">${booking.name || 'Passenger'}</strong>
+                <div class="admin-booking-meta" style="font-size:0.82rem;">${booking.phone || 'No phone'}</div>
               </div>
               <span style="padding:6px 10px; border-radius:9999px; font-size:0.72rem; font-weight:800; background:${tagColor}; color:${tagTxtColor};">${status}</span>
             </div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; font-size:0.82rem; color:#475569;">
+            <div class="admin-booking-details" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; font-size:0.82rem;">
               <div><strong>Route:</strong> ${booking.pickup || 'N/A'} → ${booking.drop || 'N/A'}</div>
               <div><strong>Date:</strong> ${booking.date || 'N/A'}</div>
               <div><strong>Time:</strong> ${booking.time || 'N/A'}</div>
@@ -1184,13 +1270,13 @@ document.addEventListener('DOMContentLoaded', () => {
               <div><strong>Seat:</strong> ${booking.seatPosition || 'Middle Row (Comfort)'}</div>
               <div><strong>Fare:</strong> ₹${booking.totalFare || 0}</div>
             </div>
-            <div class="booking-update-form" style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:end; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; padding:10px;">
+            <div class="booking-update-form" style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:end; border:1px solid #E2E8F0; border-radius:10px; padding:10px;">
               <div style="display:flex; flex-direction:column; gap:4px; min-width:150px;">
-                <label style="font-size:0.72rem; font-weight:700; color:#475569;">Driver Name</label>
+                <label class="admin-booking-field-label" style="font-size:0.72rem; font-weight:700;">Driver Name</label>
                 <input type="text" class="driver-name-input" value="${driverName}" placeholder="Enter driver name" style="padding:8px 10px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.8rem; width:160px;">
               </div>
               <div style="display:flex; flex-direction:column; gap:4px; min-width:140px;">
-                <label style="font-size:0.72rem; font-weight:700; color:#475569;">Ride Status</label>
+                <label class="admin-booking-field-label" style="font-size:0.72rem; font-weight:700;">Ride Status</label>
                 <select class="booking-status-input" style="padding:8px 10px; border:1px solid #CBD5E1; border-radius:8px; font-size:0.8rem; background:#fff;">
                   <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>Pending</option>
                   <option value="Confirmed" ${status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
@@ -1250,6 +1336,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const downloadBookingsBtn = document.getElementById('download-bookings-btn');
   if (downloadBookingsBtn) {
     downloadBookingsBtn.addEventListener('click', async () => {
+      const shouldClearLog = window.confirm(
+        'Download all reservations currently in the log as a CSV and permanently delete those exported records from the database? New bookings created after the export will not be deleted.'
+      );
+      if (!shouldClearLog) return;
+
       const originalLabel = downloadBookingsBtn.innerHTML;
       downloadBookingsBtn.disabled = true;
       downloadBookingsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing...';
@@ -1301,6 +1392,19 @@ document.addEventListener('DOMContentLoaded', () => {
         link.click();
         link.remove();
         setTimeout(() => URL.revokeObjectURL(fileUrl), 1000);
+
+        const deleteResponse = await adminFetch(`${API_BASE}/api/bookings/delete-exported`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bookingIds: result.data.map(booking => booking._id) })
+        });
+        const deleteResult = await deleteResponse.json();
+        if (!deleteResponse.ok || !deleteResult.success) {
+          throw new Error(`CSV download started, but database cleanup failed: ${deleteResult.message || 'Please refresh the reservation log and try again.'}`);
+        }
+
+        await loadBookings();
+        showAdminNotice(`CSV download started. ${deleteResult.deletedCount} exported reservation(s) removed from the database.`);
       } catch (error) {
         alert(error.message || 'Could not download the reservation report.');
       } finally {

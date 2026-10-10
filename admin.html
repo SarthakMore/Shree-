@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- External CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=16.0">
+  <link rel="stylesheet" href="styles.css?v=18.0">
 </head>
 
 <body>
@@ -152,7 +152,7 @@
         </div>
 
         <!-- SECTION 1: LIVE FARES, RATE PER KM & CAB STATUS CONTROL -->
-        <div
+        <div class="admin-panel"
           style="background:#FFFFFF; border:2px solid var(--primary); border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 6px 16px rgba(0,0,0,0.04);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin:0;">
@@ -201,7 +201,7 @@
         </div>
 
         <!-- SECTION 2: FLEET CARS MANAGEMENT SERVICE (ADD NEW CARS WITH PHOTOS) -->
-        <div
+        <div class="admin-panel"
           style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
           <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin-bottom:12px;">
             <i class="fa-solid fa-car-side" style="color:var(--primary); margin-right:8px;"></i> Rental Fleet Management
@@ -264,6 +264,18 @@
               <label class="form-label">Hourly Rental Rate (₹/hr)</label>
               <input type="number" id="car-input-hourly" class="form-control" value="450" required>
             </div>
+            <div class="form-group">
+              <label for="car-input-status" class="form-label">Car availability</label>
+              <select id="car-input-status" class="form-control">
+                <option value="AVAILABLE">Available now</option>
+                <option value="FULL">Unavailable</option>
+              </select>
+            </div>
+            <div class="form-group" id="car-availability-date-group" hidden>
+              <label for="car-input-available-from" class="form-label">Available again on</label>
+              <input type="date" id="car-input-available-from" class="form-control" aria-describedby="car-availability-date-help">
+              <small id="car-availability-date-help">Required when the car is unavailable.</small>
+            </div>
             <div style="grid-column: 1 / -1;">
               <button type="submit" id="car-submit-btn" class="btn btn-primary"
                 style="padding:12px 24px; font-weight:700;">
@@ -279,13 +291,13 @@
           <!-- ACTIVE CARS LIST -->
           <h5 style="font-size:1rem; font-weight:700; margin-bottom:12px;">Active Fleet Cars List</h5>
           <div id="admin-cars-list"
-            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:16px;">
             <!-- Cars loaded via JS -->
           </div>
         </div>
 
         <!-- SECTION 3: TRAVEL PACKAGES SERVICE (ADD TOUR PACKAGES) -->
-        <div
+        <div class="admin-panel"
           style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
           <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin-bottom:12px;">
             <i class="fa-solid fa-route" style="color:var(--primary); margin-right:8px;"></i> Traveling Packages Service
@@ -335,13 +347,13 @@
           <!-- ACTIVE TOURS LIST -->
           <h5 style="font-size:1rem; font-weight:700; margin-bottom:12px;">Active Travel Packages</h5>
           <div id="admin-tours-list"
-            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap:16px;">
             <!-- Tours loaded via JS -->
           </div>
         </div>
 
         <!-- SECTION 4: LIVE RESERVATIONS LOG -->
-        <div
+        <div class="admin-panel"
           style="background:#FFFFFF; border:1.5px solid #CBD5E1; border-radius:16px; padding:24px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h4 style="font-size:1.2rem; font-weight:800; color:#0F172A; margin:0;">
@@ -351,7 +363,7 @@
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
               <button type="button" id="download-bookings-btn" class="btn btn-primary"
                 style="padding:8px 16px; font-size:0.85rem; font-weight:700;">
-                <i class="fa-solid fa-download"></i> Download CSV
+                <i class="fa-solid fa-download"></i> Download CSV &amp; Clear Log
               </button>
               <button type="button" id="refresh-bookings-btn" class="btn btn-secondary"
                 style="padding:8px 16px; font-size:0.85rem; font-weight:700;">
@@ -376,7 +388,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=16.0"></script>
+  <script src="script.js?v=20.0"></script>
 </body>
 
 </html>
