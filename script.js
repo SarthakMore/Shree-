@@ -1437,29 +1437,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (quoteModalForm) {
-      quoteModalForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('quote-name')?.value || activeClient?.name || 'Valued Client';
-        const phone = document.getElementById('quote-phone')?.value || activeClient?.phone || 'Not provided';
-        const details = document.getElementById('quote-details')?.value || 'Airport / Outstation Hire Request';
+        quoteModalForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const name = document.getElementById('quote-name')?.value.trim() || activeClient?.name || '';
+          const phone = document.getElementById('quote-phone')?.value.trim() || activeClient?.phone || '';
+          const details = document.getElementById('quote-details')?.value.trim() || '';
+          const submitButton = quoteModalForm.querySelector('[type="submit"]');
+          const originalLabel = submitButton?.innerHTML;
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Saving enquiry...';
+          }
 
-        const payload = { name, phone, travelDetails: details };
-
-        // Save to backend DB asynchronously
-        fetch(`${API_BASE}/api/quotes`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).catch(err => { });
-
-        const waMsg = encodeURIComponent(
-          `*AIRPORT & OUTSTATION VEHICLE HIRE REQUEST*\n\n` +
+          const payload = { name, phone, travelDetails: details };
+          const waMsg = encodeURIComponent(
+            `*AIRPORT & OUTSTATION VEHICLE HIRE REQUEST*\n\n` +
           `👤 *Client Name:* ${name}\n` +
           `📞 *Contact Phone:* ${phone}\n` +
           `✈️ *Trip & Vehicle Requirements:* ${details}\n` +
           `⚡ *Vehicle Rate:* ₹${liveSettings.ratePerKm}/km AC Outstation Hire\n\n` +
           `Please provide full vehicle hire quote and confirm pickup slot!`
         );
+
+        try {
+          const response = await fetch(`${API_BASE}/api/quotes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const result = await response.json().catch(() => null);
+          if (!response.ok || !result?.success) {
+            throw new Error(result?.message || `The enquiry could not be saved (HTTP ${response.status}).`);
+          }
+          alert('Your quote enquiry has been recorded. WhatsApp will open so you can also message the team. This is not a confirmed booking.');
+        } catch (error) {
+          alert(`The website could not record your enquiry: ${error.message} WhatsApp will open so you can contact the team directly. This is not a confirmed booking.`);
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalLabel;
+          }
+        }
 
         safeWhatsAppDispatch(waMsg);
         quoteModalForm.reset();
@@ -1509,6 +1527,8 @@ document.addEventListener('DOMContentLoaded', () => {
         specialNotes: `Route: ${pickup} to ${drop}`
       };
 
+      let requestSaved = false;
+      let requestFailure = 'The request could not be saved.';
       try {
         const res = await fetch(`${API_BASE}/api/bookings`, {
           method: 'POST',
@@ -1517,10 +1537,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const result = await res.json();
         if (result.success) {
-          loadBookings();
+          requestSaved = true;
+        } else {
+          requestFailure = result.message || requestFailure;
         }
       } catch (err) {
-        console.log('Booking save failed from browser');
+        requestFailure = 'The booking server could not be reached.';
       }
 
       const waMsg = encodeURIComponent(
@@ -1536,7 +1558,11 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       safeWhatsAppDispatch(waMsg);
-      alert(`Booking Confirmed for ${passengerName}! Opening WhatsApp ticket confirmation for hotline ${HOTLINE_TEXT}.`);
+      if (requestSaved) {
+        alert(`Your trip request has been recorded for ${passengerName}. Please send the WhatsApp message to contact us. This is not a confirmed booking.`);
+      } else {
+        alert(`${requestFailure} Your details are ready in WhatsApp; send the message to contact us. This is not a confirmed booking.`);
+      }
     });
   }
 

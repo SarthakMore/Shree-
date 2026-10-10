@@ -9,7 +9,18 @@
     <meta name="apple-mobile-web-app-title" content="Shree Express">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="images/app-icon-192.png">
-    <title>Rent A Car | Shree Venkateshwara</title>
+    <meta name="description" content="Explore self-drive and chauffeur-driven car rentals from Kolhapur. View the current fleet, request a trip quote, and check self-drive requirements.">
+    <link rel="canonical" href="__SITE_URL__/fleet.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Self-Drive &amp; Chauffeur Car Rentals in Kolhapur">
+    <meta property="og:description" content="Explore the current fleet and request self-drive or chauffeur-driven car rentals from Kolhapur.">
+    <meta property="og:url" content="__SITE_URL__/fleet.html">
+    <meta property="og:image" content="__SITE_URL__/images/home-feature-car.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Self-Drive &amp; Chauffeur Car Rentals in Kolhapur">
+    <meta name="twitter:description" content="Explore the current fleet and request a rental quote from Kolhapur.">
+    <meta name="twitter:image" content="__SITE_URL__/images/home-feature-car.jpg">
+    <title>Self-Drive &amp; Chauffeur Car Rentals in Kolhapur | Shree Venkateshwara</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -48,6 +59,7 @@
             z-index: 1;
             max-width: 740px;
         }
+        .fleet-hero h1,
         .fleet-hero h2 {
             margin: 4px 0 12px;
             font-size: clamp(2.1rem, 4.5vw, 3.5rem);
@@ -324,7 +336,7 @@
             <a href="index.html" class="logo">
                 <img src="images/logo.jpeg" alt="Shree Venkateshwara Express logo" class="logo-image" />
                 <div class="logo-text-box">
-                    <h1>SHREE VENKATESHWARA</h1>
+                    <span class="logo-heading">SHREE VENKATESHWARA</span>
                     <span>PREMIUM CAR RENTALS</span>
                 </div>
             </a>
@@ -360,8 +372,8 @@
             <div class="fleet-hero">
                 <div class="fleet-hero-content">
                     <span class="badge"><i class="fa-solid fa-car-side"></i> Premium car rentals</span>
-                    <h2>Make the journey yours.</h2>
-                    <p>Find the right car for a quick city ride or a longer getaway. Choose a professional driver or self-drive, then send us your trip details for a quick quote.</p>
+                    <h1>Make the journey yours.</h1>
+                    <p>Explore self-drive cars and chauffeur-driven rentals from Kolhapur. Request a quote for a local trip or an outstation journey starting here.</p>
                     <ul class="fleet-highlights" aria-label="Rental benefits">
                         <li><i class="fa-solid fa-circle-check"></i> Clear per-kilometre rates</li>
                         <li><i class="fa-solid fa-user-shield"></i> With driver or self-drive</li>
@@ -373,6 +385,16 @@
                     </div>
                 </div>
             </div>
+
+            <section class="section-padding" aria-labelledby="self-drive-requirements-title" style="padding-bottom:24px;">
+                <div class="fleet-hero">
+                    <div class="fleet-hero-content">
+                        <h2 id="self-drive-requirements-title" style="font-size:1.6rem;">Self-drive rental requirements</h2>
+                        <p>Drivers must be at least 19 years old and have an Indian driving licence. A copy of an Aadhaar card is also required. A 25% payment is applied toward the rental amount. Rates are confirmed when you enquire and may vary with current fuel prices. There is no fixed rental-duration limit; contact us to confirm availability and your quote.</p>
+                        <p style="margin-top:12px;">For your privacy, ask our team for the appropriate way to provide identity documents; do not include document copies in a public enquiry.</p>
+                    </div>
+                </div>
+            </section>
 
             <section id="available-cars" aria-labelledby="available-cars-title">
                 <div class="fleet-toolbar" aria-label="Find a rental car">
@@ -466,7 +488,7 @@
         </div>
     </footer>
 
-    <script src="script.js?v=18.0"></script>
+    <script src="script.js?v=21.0"></script>
 </body>
 
 </html>
