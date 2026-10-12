@@ -17,6 +17,7 @@ const siteFiles = [
     'index.html',
     'kolhapur-taxi.html',
     'contact.html',
+    'privacy-policy.html',
     'admin.html',
     'airport-tours.html',
     'fleet.html',
@@ -58,7 +59,7 @@ for (const file of siteFiles) {
 
 cpSync(path.join(root, 'images'), path.join(output, 'images'), { recursive: true });
 
-const sitemapPages = ['/', '/kolhapur-taxi.html', '/fleet.html', '/airport-tours.html', '/contact.html'];
+const sitemapPages = ['/', '/kolhapur-taxi.html', '/fleet.html', '/airport-tours.html', '/contact.html', '/privacy-policy.html'];
 const sitemap = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',

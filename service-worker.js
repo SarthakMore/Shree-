@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shree-express-v18';
+const CACHE_NAME = 'shree-express-v19';
 const APP_SHELL = [
     './',
     'index.html',
@@ -7,6 +7,7 @@ const APP_SHELL = [
     'kolhapur-taxi.html',
     'fleet.html',
     'contact.html',
+    'privacy-policy.html',
     'login.html',
     'shared-cabs.html',
     'manifest.webmanifest',

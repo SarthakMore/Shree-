@@ -2853,6 +2853,26 @@ body #admin-page-dashboard .admin-bookings-container > div:not(.admin-booking-it
 }
 .local-service-hero + .section-padding { padding-bottom: 24px; }
 .journey-card address { color: var(--text-muted); font-style: normal; line-height: 1.8; }
+
+.privacy-policy {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+
+.privacy-policy section + section { margin-top: 28px; }
+.privacy-policy h2 { margin-bottom: 10px; font-size: 1.25rem; }
+.privacy-policy p,
+.privacy-policy address { color: var(--text-muted); line-height: 1.8; }
+.privacy-policy address { font-style: normal; }
+
+@media (max-width: 600px) {
+  .privacy-policy { padding: 24px 20px; }
+}
 @media (max-width: 700px) {
   .local-service-hero { padding: 26px 20px; }
   .local-service-actions { flex-direction: column; align-items: stretch; }
